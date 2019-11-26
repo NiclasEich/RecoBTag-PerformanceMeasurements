@@ -579,31 +579,31 @@ bTagDiscriminators = set([
   , 'pfPositiveDeepCSVJetTags:probc'
   , 'pfPositiveDeepCSVJetTags:probbb'
     # DeepFlavour
-  , 'pfDeepFlavourJetTags:probb'
-  , 'pfDeepFlavourJetTags:probbb'
-  , 'pfDeepFlavourJetTags:problepb'
-  , 'pfDeepFlavourJetTags:probc'
-  , 'pfDeepFlavourJetTags:probuds'
-  , 'pfDeepFlavourJetTags:probg'
-  , 'pfNegativeDeepFlavourJetTags:probb'
-  , 'pfNegativeDeepFlavourJetTags:probbb'
-  , 'pfNegativeDeepFlavourJetTags:problepb'
-  , 'pfNegativeDeepFlavourJetTags:probc'
-  , 'pfNegativeDeepFlavourJetTags:probuds'
-  , 'pfNegativeDeepFlavourJetTags:probg'
-    # DeepFlavour with pruned input
-  , 'pfDeepFlavourPrunedJetTags:probb'
-  , 'pfDeepFlavourPrunedJetTags:probbb'
-  , 'pfDeepFlavourPrunedJetTags:problepb'
-  , 'pfDeepFlavourPrunedJetTags:probc'
-  , 'pfDeepFlavourPrunedJetTags:probuds'
-  , 'pfDeepFlavourPrunedJetTags:probg'
-  , 'pfNegativeDeepFlavourPrunedJetTags:probb'
-  , 'pfNegativeDeepFlavourPrunedJetTags:probbb'
-  , 'pfNegativeDeepFlavourPrunedJetTags:problepb'
-  , 'pfNegativeDeepFlavourPrunedJetTags:probc'
-  , 'pfNegativeDeepFlavourPrunedJetTags:probuds'
-  , 'pfNegativeDeepFlavourPrunedJetTags:probg'
+  #~ , 'pfDeepFlavourJetTags:probb'
+  #~ , 'pfDeepFlavourJetTags:probbb'
+  #~ , 'pfDeepFlavourJetTags:problepb'
+  #~ , 'pfDeepFlavourJetTags:probc'
+  #~ , 'pfDeepFlavourJetTags:probuds'
+  #~ , 'pfDeepFlavourJetTags:probg'
+  #~ , 'pfNegativeDeepFlavourJetTags:probb'
+  #~ , 'pfNegativeDeepFlavourJetTags:probbb'
+  #~ , 'pfNegativeDeepFlavourJetTags:problepb'
+  #~ , 'pfNegativeDeepFlavourJetTags:probc'
+  #~ , 'pfNegativeDeepFlavourJetTags:probuds'
+  #~ , 'pfNegativeDeepFlavourJetTags:probg'
+    #~ # DeepFlavour with pruned input
+  #~ , 'pfDeepFlavourPrunedJetTags:probb'
+  #~ , 'pfDeepFlavourPrunedJetTags:probbb'
+  #~ , 'pfDeepFlavourPrunedJetTags:problepb'
+  #~ , 'pfDeepFlavourPrunedJetTags:probc'
+  #~ , 'pfDeepFlavourPrunedJetTags:probuds'
+  #~ , 'pfDeepFlavourPrunedJetTags:probg'
+  #~ , 'pfNegativeDeepFlavourPrunedJetTags:probb'
+  #~ , 'pfNegativeDeepFlavourPrunedJetTags:probbb'
+  #~ , 'pfNegativeDeepFlavourPrunedJetTags:problepb'
+  #~ , 'pfNegativeDeepFlavourPrunedJetTags:probc'
+  #~ , 'pfNegativeDeepFlavourPrunedJetTags:probuds'
+  #~ , 'pfNegativeDeepFlavourPrunedJetTags:probg'
 
 ])
 
@@ -871,9 +871,22 @@ process.options   = cms.untracked.PSet(
 )
 
 #Set GT by hand:
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+
+
+process.load('Configuration.StandardSequences.Services_cff')
+process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
+process.load('FWCore.MessageService.MessageLogger_cfi')
+process.load('Configuration.EventContent.EventContent_cff')
+process.load('SimGeneral.MixingModule.mixNoPU_cfi')
+process.load('Configuration.Geometry.GeometryExtended2026D41Reco_cff')
+process.load('Configuration.StandardSequences.MagneticField_cff')
+
+process.load('Configuration.StandardSequences.Reconstruction_cff')
+process.load('Configuration.StandardSequences.EndOfProcess_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag.globaltag = globalTag
+#~ process.GlobalTag.globaltag = globalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
 #Choose automatically:
 #process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 #from Configuration.AlCa.GlobalTag import GlobalTag
@@ -943,16 +956,16 @@ if options.usePrivateJEC:
 
 ### to activate the new JP calibration: using the data base
 trkProbaCalibTag = options.JPCalibration
-process.GlobalTag.toGet = cms.VPSet(
-    cms.PSet(record = cms.string("BTagTrackProbability3DRcd"),
-      tag = cms.string(trkProbaCalibTag),
-      connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
-    )
-)
+#~ process.GlobalTag.toGet = cms.VPSet(
+    #~ cms.PSet(record = cms.string("BTagTrackProbability3DRcd"),
+      #~ tag = cms.string(trkProbaCalibTag),
+      #~ connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
+    #~ )
+#~ )
 
-process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
-process.load("Configuration.Geometry.GeometryRecoDB_cff")
-process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+#~ process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
+#~ process.load("Configuration.Geometry.GeometryRecoDB_cff")
+#~ process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 
 #-------------------------------------
 ## Output Module Configuration (expects a path 'p')
@@ -1725,18 +1738,18 @@ if options.processStdAK4Jets and options.useTTbarFilter:
 #---------------------------------------
 
 #Trick to make it work in 9_1_X
-process.tsk = cms.Task()
-for mod in process.producers_().itervalues():
-    process.tsk.add(mod)
-for mod in process.filters_().itervalues():
-    process.tsk.add(mod)
+#~ process.tsk = cms.Task()
+#~ for mod in process.producers_().itervalues():
+    #~ process.tsk.add(mod)
+#~ for mod in process.filters_().itervalues():
+    #~ process.tsk.add(mod)
 
 process.p = cms.Path(
     process.allEvents
     * process.filtSeq
     * process.selectedEvents
-    * process.analyzerSeq,
-    process.tsk
+    * process.analyzerSeq#,
+    #~ process.tsk
 )
 
 # Delete predefined output module (needed for running with CRAB)
