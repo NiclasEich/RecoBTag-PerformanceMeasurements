@@ -12,7 +12,7 @@ git cms-init
 git cms-addpkg RecoBTag
 git cms-addpkg PhysicsTools/PatAlgos
 git clone -b PrunedTraining_NoPuppi https://github.com/emilbols/RecoBTag-Combined RecoBTag/Combined/data
-git clone https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements.git git checkout -b PhaseIIOffline origin/PhaseIIOffline
+git clone https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
 cd RecoBTag/PerformanceMeasurements/
 git checkout -b PhaseIIOffline origin/PhaseIIOffline
 
