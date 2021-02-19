@@ -9,15 +9,15 @@ import argparse
 def getOptions() :
 
   parser = argparse.ArgumentParser(description='CLI for CRAB config file settings')
-  parser.add_argument('cmsRun_cfg', type=str, default="runBTagAnalyzer_cfg.py", 
+  parser.add_argument('cmsRun_cfg', type=str, default="runBTagAnalyzer_cfg.py",
       help='The crab script you want to submit')
   parser.add_argument('-i', '--inputFiles', type=str, default='CRAB/input.txt',
       help='Input files that need to be shipped with the job')
   parser.add_argument('-p', '--pyCfgParams', nargs='+', type=str, default='',
       help='Input parameters for config file')
-  parser.add_argument('-t', '--maxJobRuntimeMin', type=int, default=2000,
+  parser.add_argument('-t', '--maxJobRuntimeMin', type=int, default=2750,
       help='The maximum runtime (in minutes) per job')
-  parser.add_argument('-m', '--maxMemoryMB', type=int, default=2500,
+  parser.add_argument('-m', '--maxMemoryMB', type=int, default=4000,
       help='Maximum amount of memory (in MB) a job is allowed to use')
   parser.add_argument('-l', '--lumiMask', type=str, default='',
       help='The JSON file containing good lumi list')
@@ -50,7 +50,7 @@ def main():
     from CRABAPI.RawCommand import crabCommand
     from httplib import HTTPException
 
-    config.General.workArea = args.version 
+    config.General.workArea = args.version
     config.General.transferLogs = False
     config.General.transferOutputs = True
 
@@ -58,23 +58,26 @@ def main():
     config.JobType.psetName = args.cmsRun_cfg
     if args.inputFiles != None:
       inFiles = glob.glob( args.inputFiles )
-      config.JobType.inputFiles = inFiles 
+      config.JobType.inputFiles = inFiles
     config.JobType.pyCfgParams = args.pyCfgParams
-    config.JobType.sendExternalFolder = True
+    #~ config.JobType.sendExternalFolder = True
     config.JobType.maxJobRuntimeMin = args.maxJobRuntimeMin
     config.JobType.maxMemoryMB = args.maxMemoryMB
-    
+
     config.Data.inputDataset = None
     config.Data.splitting = ''
     config.Data.unitsPerJob = 1
-    config.Data.ignoreLocality = False
+    config.Data.ignoreLocality = True
     config.Data.publication = False
-    config.Data.publishDBS = 'phys03'
+    #~ config.Data.publishDBS = 'phys03'
+    config.Data.totalUnits = -1
     config.Site.storageSite = args.storageSite
+    if config.Data.ignoreLocality:
+       config.Site.whitelist = ['T2_CH_CERN', 'T2_DE_*','T1_US_FNAL*']
 
     print('Using config  {}'.format(args.cmsRun_cfg))
     print('Writing to versionectory {}'.format(args.version))
-    
+
     def submit(config):
         try:
             crabCommand('submit', config = config)
@@ -95,7 +98,7 @@ def main():
         s = ijob.rstrip()
         jobs.append( s )
         print '  --> added ' + s
-        
+
     for ijob, job in enumerate(jobs) :
 
         pdname = job.split('/')[1]
@@ -105,19 +108,23 @@ def main():
         if len(requestname) > 100: requestname = '_'.join(pdname.split('_')[:2]) + '_' + cond
         config.General.requestName = requestname
         config.Data.inputDataset = job
-        if datatier == 'MINIAODSIM': 
+        if datatier == 'MINIAODSIM':
+          config.Data.splitting = 'EventAwareLumiBased'
+          config.Data.unitsPerJob = 100
+        if datatier == 'FEVT':
+          config.Data.splitting = 'EventAwareLumiBased'
+          config.Data.unitsPerJob = 100
+        elif datatier == 'AODSIM':
           config.Data.splitting = 'FileBased'
-        elif datatier == 'AODSIM': 
-          config.Data.splitting = 'FileBased'
-        elif datatier == 'MINIAOD': 
+        elif datatier == 'MINIAOD':
           config.Data.splitting = 'LumiBased'
           config.Data.unitsPerJob = 40
           config.Data.lumiMask = args.lumiMask
-        elif datatier == 'AOD': 
+        elif datatier == 'AOD':
           config.Data.splitting = 'LumiBased'
           config.Data.unitsPerJob = 100
           config.Data.lumiMask = args.lumiMask
-        if args.outLFNDirBase and not args.outLFNDirBase.isspace(): 
+        if args.outLFNDirBase and not args.outLFNDirBase.isspace():
           config.Data.outLFNDirBase = os.path.join(args.outLFNDirBase,args.version)
         config.Data.outputDatasetTag = cond
         print('Submitting {config.General.requestName} dataset =  {job}'.format(**locals()))
@@ -135,4 +142,4 @@ def main():
           print('Not submitted.')
 
 if __name__ == '__main__':
-  main()            
+  main()

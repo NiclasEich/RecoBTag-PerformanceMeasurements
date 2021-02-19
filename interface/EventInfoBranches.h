@@ -14,7 +14,6 @@ const UInt_t nMaxGenQuarks = 100;
 const UInt_t nMaxGenV0 = 100;
 const UInt_t nMaxGenPruned = 100;
 const UInt_t nMaxPatMuon = 1000;
-const UInt_t nMaxPatElec = 1000;
 
 class EventInfoBranches {
 
@@ -175,30 +174,6 @@ class EventInfoBranches {
     float PatMuon_IPsig[nMaxPatMuon];
     float PatMuon_IP2D[nMaxPatMuon];
     float PatMuon_IP2Dsig[nMaxPatMuon];
-
-    //if storePatMuons
-    //run2 id: https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2
-    int nPatElec;
-    float PatElec_pt[nMaxPatElec];
-    float PatElec_eta[nMaxPatElec];
-    float PatElec_superClusterEta[nMaxPatElec];
-    float PatElec_phi[nMaxPatElec];
-    int  PatElec_isLooseElec[nMaxPatElec];
-    int  PatElec_isMediumElec[nMaxPatElec];
-    int  PatElec_isTightElec[nMaxPatElec];
-    float PatElec_sumChargedHadronPt[nMaxPatElec];
-    float PatElec_sumNeutralHadronEt[nMaxPatElec];
-    float PatElec_sumPhotonEt[nMaxPatElec]; 
-    float PatElec_sumPUPt[nMaxPatElec];
-
-    //float PatMuon_iso[nMaxPatMuon];
-    //float PatMuon_isoTrackerOnly[nMaxPatMuon];
-    //float PatMuon_IP[nMaxPatMuon];
-    //float PatMuon_IPsig[nMaxPatMuon];
-    //float PatMuon_IP2D[nMaxPatMuon];
-    //float PatMuon_IP2Dsig[nMaxPatMuon];
-
-
 
     int   ttbar_chan, ttbar_trigWord, ttbar_metfilterWord, ttbar_allmepartons, ttbar_matchmepartons;
     int   ttbar_ng,ttbar_gid[25];
@@ -387,23 +362,6 @@ class EventInfoBranches {
       if(variableParser.isToBeStored("PatMuon_IPsig")) tree->Branch("PatMuon_IPsig", PatMuon_IPsig, "PatMuon_IPsig[nPatMuon]/F");
       if(variableParser.isToBeStored("PatMuon_IP2D")) tree->Branch("PatMuon_IP2D", PatMuon_IP2D, "PatMuon_IP2D[nPatMuon]/F");
       if(variableParser.isToBeStored("PatMuon_IP2Dsig")) tree->Branch("PatMuon_IP2Dsig", PatMuon_IP2Dsig, "PatMuon_IP2Dsig[nPatMuon]/F");
-
-
-      if(variableParser.isToBeStored("nPatElec")) tree->Branch("nPatElec", &nPatElec, "nPatElec/I");
-      if(variableParser.isToBeStored("PatElec_pt")) tree->Branch("PatElec_pt", PatElec_pt, "PatElec_pt[nPatElec]/F");
-      if(variableParser.isToBeStored("PatElec_eta")) tree->Branch("PatElec_eta", PatElec_eta, "PatElec_eta[nPatElec]/F");
-      if(variableParser.isToBeStored("PatElec_superClusterEta")) tree->Branch("PatElec_superClusterEta", PatElec_superClusterEta, "PatElec_superClusterEta[nPatElec]/F");
-      if(variableParser.isToBeStored("PatElec_phi")) tree->Branch("PatElec_phi", PatElec_phi, "PatElec_phi[nPatElec]/F");
-      if(variableParser.isToBeStored("PatElec_isLooseElec")) tree->Branch("PatElec_isLooseElec", PatElec_isLooseElec, "PatElec_isLooseElec[nPatElec]/I");
-      if(variableParser.isToBeStored("PatElec_isMediumElec")) tree->Branch("PatElec_isMediumElec", PatElec_isMediumElec, "PatElec_isMediumElec[nPatElec]/I");
-      if(variableParser.isToBeStored("PatElec_isTightElec")) tree->Branch("PatElec_isTightElec", PatElec_isTightElec, "PatElec_isTightElec[nPatElec]/I");
-
-       if(variableParser.isToBeStored("PatElec_sumChargedHadronPt")) tree->Branch("PatElec_sumChargedHadronPt", PatElec_sumChargedHadronPt ,  "PatElec_sumChargedHadronPt[nPatElec]/F");
-       if(variableParser.isToBeStored("PatElec_sumNeutralHadronEt")) tree->Branch("PatElec_sumNeutralHadronEt",	PatElec_sumNeutralHadronEt ,  "PatElec_sumNeutralHadronEt[nPatElec]/F");
-       if(variableParser.isToBeStored("PatElec_sumPhotonEt"       )) tree->Branch("PatElec_sumPhotonEt"       ,	PatElec_sumPhotonEt        ,  "PatElec_sumPhotonEt[nPatElec]/F"       );
-       if(variableParser.isToBeStored("PatElec_sumPUPt"           )) tree->Branch("PatElec_sumPUPt"           ,	PatElec_sumPUPt            ,  "PatElec_sumPUPt[nPatElec]/F"           );
-
-
     }
 
     void ReadBranches(TTree *tree, VariableParser variableParser){
@@ -582,20 +540,6 @@ class EventInfoBranches {
       if(variableParser.isToBeStored("PatMuon_IPsig")) tree->SetBranchAddress("PatMuon_IPsig", PatMuon_IPsig);
       if(variableParser.isToBeStored("PatMuon_IP2D")) tree->SetBranchAddress("PatMuon_IP2D", PatMuon_IP2D);
       if(variableParser.isToBeStored("PatMuon_IP2Dsig")) tree->SetBranchAddress("PatMuon_IP2Dsig", PatMuon_IP2Dsig);
-
-      if(variableParser.isToBeStored("nPatElec")) tree->SetBranchAddress("nPatElec", &nPatElec);
-      if(variableParser.isToBeStored("PatElec_pt")) tree->SetBranchAddress("PatElec_pt", PatElec_pt);
-      if(variableParser.isToBeStored("PatElec_eta")) tree->SetBranchAddress("PatElec_eta", PatElec_eta);
-      if(variableParser.isToBeStored("PatElec_superClusterEta")) tree->SetBranchAddress("PatElec_superClusterEta", PatElec_superClusterEta);
-      if(variableParser.isToBeStored("PatElec_phi")) tree->SetBranchAddress("PatElec_phi", PatElec_phi);
-      if(variableParser.isToBeStored("PatElec_isLooseElec")) tree->SetBranchAddress("PatElec_isLooseElec", PatElec_isLooseElec);
-      if(variableParser.isToBeStored("PatElec_isMediumElec")) tree->SetBranchAddress("PatElec_isMediumElec", PatElec_isMediumElec);
-      if(variableParser.isToBeStored("PatElec_isTightElec")) tree->SetBranchAddress("PatElec_isTightElec", PatElec_isTightElec);
-      if(variableParser.isToBeStored("PatElec_sumChargedHadronPt"))  tree->SetBranchAddress("PatElec_sumChargedHadronPt"  , PatElec_sumChargedHadronPt);
-      if(variableParser.isToBeStored("PatElec_sumNeutralHadronEt"))  tree->SetBranchAddress("PatElec_sumNeutralHadronEt"  , PatElec_sumNeutralHadronEt);
-      if(variableParser.isToBeStored("PatElec_sumPhotonEt"       ))  tree->SetBranchAddress("PatElec_sumPhotonEt"         , PatElec_sumPhotonEt);
-      if(variableParser.isToBeStored("PatElec_sumPUPt"           ))  tree->SetBranchAddress("PatElec_sumPUPt"             , PatElec_sumPUPt);
-
     }
 
 };

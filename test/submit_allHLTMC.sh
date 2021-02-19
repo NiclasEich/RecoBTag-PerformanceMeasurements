@@ -1,13 +1,18 @@
-
 #!/bin/bash
 
-#echo "!!!! WARNING: Submitting for Data!!!!"
 echo "!!!! WARNING: Submitting for MC!!!"
-python submit_allHLT.py \
-  runHLTBTagAnalyzer_cfg.py \
-  -f CRAB/tosubmit_MC.txt \
-  -s T3_US_FNALLPC \
-  -p groups="HLTEventInfo,HLTJetInfo,HLTTagVar,HLTJetTrack,HLTJetSV,HLTCSVTagVar" runOnData=False globalTag="102X_upgrade2018_realistic_v15" \
-  -o /store/user/johnda/BTagNTuples/2018/ \
-  -v crab_projects_v2
+# python submit_all.py \
+#   runBTagAnalyzer_cfg.py \
+#   -f CRAB/tosubmit.txt \
+#   -s T2_DE_DESY \
+#   -p defaults=PhaseII runOnData=False \
+#   -o /store/user/sewuchte/BTagServiceWork/PhaseII/Offline/ \
+#   -v crab_projects_HLTTDR_v4
 
+python submit_all.py \
+  runBTagAnalyzer_cfg.py \
+  -f CRAB/tosubmit.txt \
+  -s T2_DE_DESY \
+  -p defaults=PhaseII_puppi runOnData=False \
+  -o /store/user/sewuchte/BTagServiceWork/PhaseII/Offline/ \
+  -v crab_projects_SeptemberL1_v4

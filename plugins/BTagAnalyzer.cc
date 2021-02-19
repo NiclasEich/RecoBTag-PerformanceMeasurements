@@ -243,7 +243,7 @@ private:
 
   void setTracksSV(const TrackRef & trackRef, const SVTagInfo *, int & isFromSV, int & iSV, float & SVweight);
   void vertexKinematicsAndChange(const Vertex & vertex, reco::TrackKinematics & vertexKinematics, Int_t & charge);
-  
+
   void etaRelToTauAxis(const Vertex & vertex, const fastjet::PseudoJet & tauAxis, std::vector<float> & tau_trackEtaRel);
 
   bool NameCompatible(const std::string& pattern, const std::string& name);
@@ -313,9 +313,6 @@ private:
   std::string deepFlavourJetTags_;
   std::string deepFlavourNegJetTags_;
 
-  std::string deepFlavourPrunedJetTags_;
-  std::string deepFlavourPrunedNegJetTags_;
-
   std::string deepCSVBJetTags_;
   std::string deepCSVNegBJetTags_;
   std::string deepCSVPosBJetTags_;
@@ -338,9 +335,7 @@ private:
   std::string softPFElectronPosBJetTags_;
 
   std::string doubleSVBJetTags_;
-  std::string deepDoubleXJetTags_;
-  std::string massIndDeepDoubleXJetTags_;
-  std::string deepBoostedJetTags_;
+  std::string deepDoubleBJetTags_;
 
   std::string cMVABJetTags_;
   std::string cMVAv2BJetTags_;
@@ -394,16 +389,12 @@ private:
   bool runHadronVariables_;
   bool runGenVariables_;
   bool runPatMuons_;
-  bool runPatElecs_;
   bool runTagVariables_;
   bool runTagVariablesSubJets_;
   bool runCSVTagVariables_;
   bool runCSVTagTrackVariables_;
-  bool runPrunedDeepFlavourTaggers_;
   bool runDeepFlavourTagVariables_;
   bool runCSVTagVariablesSubJets_;
-  bool runDeepDoubleXTagVariables_;
-  bool runDeepBoostedJetTagVariables_;
   bool runPFElectronVariables_;
   bool runPFMuonVariables_;
   bool runCTagVariables_;
@@ -417,7 +408,7 @@ private:
   edm::EDGetTokenT<edm::HepMCProduct> generatorhep;
   edm::EDGetTokenT<GenEventInfoProduct> generatorevt;
   edm::EDGetTokenT<LHEEventProduct> generatorlhe;
-  
+
   // Matching clusters to TP token
   edm::EDGetTokenT<ClusterTPAssociation> clusterTPMapToken_;
 
@@ -558,6 +549,7 @@ BTagAnalyzerT<IPTI,VTX>::BTagAnalyzerT(const edm::ParameterSet& iConfig):
 //   variableParser.printGroups(groupSet);
 //   variableParser.printVariables(variableSet);
   variableParser.saveStoredVariablesToFile();
+
   // Parameters
   runFatJets_ = iConfig.getParameter<bool>("runFatJets");
   runSubJets_ = iConfig.getParameter<bool>("runSubJets");
@@ -580,19 +572,16 @@ BTagAnalyzerT<IPTI,VTX>::BTagAnalyzerT(const edm::ParameterSet& iConfig):
   runHadronVariables_ = iConfig.getParameter<bool>("runHadronVariables");
   runGenVariables_ = iConfig.getParameter<bool>("runGenVariables");
   runPatMuons_ = iConfig.getParameter<bool>("runPatMuons");
-  runPatElecs_ = iConfig.getParameter<bool>("runPatElecs");
   runTagVariables_ = iConfig.getParameter<bool>("runTagVariables");
   runTagVariablesSubJets_ = iConfig.getParameter<bool>("runTagVariablesSubJets");
   runCSVTagVariables_ = iConfig.getParameter<bool>("runCSVTagVariables");
   runCSVTagTrackVariables_ = iConfig.getParameter<bool>("runCSVTagTrackVariables");
-  runPrunedDeepFlavourTaggers_ = iConfig.getParameter<bool>("runPrunedDeepFlavourTaggers");
   runDeepFlavourTagVariables_  = iConfig.getParameter<bool>("runDeepFlavourTagVariables");
   runCSVTagVariablesSubJets_ = iConfig.getParameter<bool>("runCSVTagVariablesSubJets");
-  runDeepDoubleXTagVariables_  = iConfig.getParameter<bool>("runDeepDoubleXTagVariables");
-  runDeepBoostedJetTagVariables_  = iConfig.getParameter<bool>("runDeepBoostedJetTagVariables");
   runPFElectronVariables_ = iConfig.getParameter<bool>("runPFElectronVariables");
   runPFMuonVariables_ = iConfig.getParameter<bool>("runPFMuonVariables");
   runCTagVariables_ = iConfig.getParameter<bool>("runCTagVariables");
+
 
   use_ttbar_filter_ = iConfig.getParameter<bool> ("use_ttbar_filter");
   ttbarproducerGen_ = consumes<edm::View<reco::GenParticle>>(iConfig.getParameter<edm::InputTag>("ttbarproducer")),
@@ -658,10 +647,6 @@ BTagAnalyzerT<IPTI,VTX>::BTagAnalyzerT(const edm::ParameterSet& iConfig):
   deepFlavourJetTags_ = iConfig.getParameter<std::string>("deepFlavourJetTags");
   deepFlavourNegJetTags_ = iConfig.getParameter<std::string>("deepFlavourNegJetTags");
 
-  deepFlavourPrunedJetTags_ = iConfig.getParameter<std::string>("deepFlavourPrunedJetTags");
-  deepFlavourPrunedNegJetTags_ = iConfig.getParameter<std::string>("deepFlavourPrunedNegJetTags");
-
-
   deepCSVBJetTags_    = iConfig.getParameter<std::string>("deepCSVBJetTags");
   deepCSVNegBJetTags_ = iConfig.getParameter<std::string>("deepCSVNegBJetTags");
   deepCSVPosBJetTags_ = iConfig.getParameter<std::string>("deepCSVPosBJetTags");
@@ -679,9 +664,7 @@ BTagAnalyzerT<IPTI,VTX>::BTagAnalyzerT(const edm::ParameterSet& iConfig):
   softPFElectronPosBJetTags_    = iConfig.getParameter<std::string>("softPFElectronPosBJetTags");
 
   doubleSVBJetTags_ = iConfig.getParameter<std::string>("doubleSVBJetTags");
-  deepDoubleXJetTags_ = iConfig.getParameter<std::string>("deepDoubleXJetTags");
-  massIndDeepDoubleXJetTags_ = iConfig.getParameter<std::string>("massIndDeepDoubleXJetTags");
-  deepBoostedJetTags_ = iConfig.getParameter<std::string>("deepBoostedJetTags");
+  deepDoubleBJetTags_ = iConfig.getParameter<std::string>("deepDoubleBJetTags");
 
   cMVABJetTags_ = iConfig.getParameter<std::string>("cMVABJetTags");
   cMVAv2BJetTags_ = iConfig.getParameter<std::string>("cMVAv2BJetTags");
@@ -853,8 +836,9 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
     std::string moduleName = "";
     const edm::Provenance& prov = iEvent.getProvenance(genEvtInfoProduct.id());
     if( genEvtInfoProduct.isValid() )
-      moduleName = edm::moduleName(prov);
-
+      // moduleName = edm::moduleName(prov);
+      moduleName = edm::moduleName(prov,iEvent.processHistory());
+    //
     if( moduleName.find("Pythia8")!=std::string::npos )
       hadronizerType_ |= ( 1 << 1 ); // set the 2nd bit
     else // assuming Pythia6
@@ -920,7 +904,7 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
       }
       EventInfo.nPUtrue = ipu->getTrueNumInteractions();
       if(fillPU_){
-	      if(EventInfo.nPU==0) EventInfo.nPU = ipu->getPU_NumInteractions(); // needed in case getPU_zpositions() is empty
+        if(EventInfo.nPU==0) EventInfo.nPU = ipu->getPU_NumInteractions(); // needed in case getPU_zpositions() is empty
       }
     }
 
@@ -997,27 +981,27 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
             for (unsigned int d=0; d<nDaughters; ++d) {
               int daughterID = abs(genIt.daughter(d)->pdgId());
               if( (daughterID == 1 || daughterID == 2 || daughterID == 3 ||
-            daughterID == 4 || daughterID == 5 || daughterID == 6 || daughterID == 21))
-          nparton_daughters++;
+              daughterID == 4 || daughterID == 5 || daughterID == 6 || daughterID == 21))
+                nparton_daughters++;
             }
             if( nparton_daughters == 0 ) {
               if ( ID == 5 ) {
-          EventInfo.bQuark_pT[EventInfo.nbQuarks]  = genIt.p4().pt();
-          EventInfo.bQuark_eta[EventInfo.nbQuarks] = genIt.p4().eta();
-          EventInfo.bQuark_phi[EventInfo.nbQuarks] = genIt.p4().phi();
-          EventInfo.bQuark_pdgID[EventInfo.nbQuarks] = genIt.pdgId();
-          EventInfo.bQuark_status[EventInfo.nbQuarks] = genIt.status();
-          EventInfo.bQuark_fromGSP[EventInfo.nbQuarks] = isFromGSP(&genIt);
-          ++EventInfo.nbQuarks;
+                EventInfo.bQuark_pT[EventInfo.nbQuarks]  = genIt.p4().pt();
+                EventInfo.bQuark_eta[EventInfo.nbQuarks] = genIt.p4().eta();
+                EventInfo.bQuark_phi[EventInfo.nbQuarks] = genIt.p4().phi();
+                EventInfo.bQuark_pdgID[EventInfo.nbQuarks] = genIt.pdgId();
+                EventInfo.bQuark_status[EventInfo.nbQuarks] = genIt.status();
+                EventInfo.bQuark_fromGSP[EventInfo.nbQuarks] = isFromGSP(&genIt);
+                ++EventInfo.nbQuarks;
               }
               if ( ID == 4 ) {
-          EventInfo.cQuark_pT[EventInfo.ncQuarks]  = genIt.p4().pt();
-          EventInfo.cQuark_eta[EventInfo.ncQuarks] = genIt.p4().eta();
-          EventInfo.cQuark_phi[EventInfo.ncQuarks] = genIt.p4().phi();
-          EventInfo.cQuark_pdgID[EventInfo.ncQuarks] = genIt.pdgId();
-          EventInfo.cQuark_status[EventInfo.ncQuarks] = genIt.status();
-          EventInfo.cQuark_fromGSP[EventInfo.ncQuarks] = isFromGSP(&genIt);
-          ++EventInfo.ncQuarks;
+                EventInfo.cQuark_pT[EventInfo.ncQuarks]  = genIt.p4().pt();
+                EventInfo.cQuark_eta[EventInfo.ncQuarks] = genIt.p4().eta();
+                EventInfo.cQuark_phi[EventInfo.ncQuarks] = genIt.p4().phi();
+                EventInfo.cQuark_pdgID[EventInfo.ncQuarks] = genIt.pdgId();
+                EventInfo.cQuark_status[EventInfo.ncQuarks] = genIt.status();
+                EventInfo.cQuark_fromGSP[EventInfo.ncQuarks] = isFromGSP(&genIt);
+                ++EventInfo.ncQuarks;
               }
             }
           }
@@ -1026,25 +1010,25 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
 
       if(runHadronVariables_){
         if ( (ID/100)%10 == 5 || (ID/1000)%10 == 5 ) AreBHadrons = true;
-  //       // Primary b Hadrons
-  //       if ( (ID/100)%10 == 5 || (ID/1000)%10 == 5 ) {
-  //         //  cout << " pdgId " << genIt.pdgId()  << " pT " << genIt.p4().pt() << " mother " << mother->pdgId() << endl;
-  //         EventInfo.BHadron_pT[EventInfo.nBHadrons]    = genIt.p4().pt();
-  //         EventInfo.BHadron_eta[EventInfo.nBHadrons]   = genIt.p4().eta();
-  //         EventInfo.BHadron_phi[EventInfo.nBHadrons]   = genIt.p4().phi();
-  //         EventInfo.BHadron_mass[EventInfo.nBHadrons]  = genIt.mass();
-  //         EventInfo.BHadron_pdgID[EventInfo.nBHadrons] = genIt.pdgId();
-  //         EventInfo.BHadron_status[EventInfo.nBHadrons] = genIt.status();
-  //         EventInfo.BHadron_mother[EventInfo.nBHadrons] = genIt.mother()->pdgId();
-  //         // check if any of the daughters is also B hadron
-  //         int hasBHadronDaughter = 0;
-  //         for (unsigned int d=0; d<nDaughters; ++d) {
-  //           int daughterID = abs(genIt.daughter(d)->pdgId());
-  //           if ( (daughterID/100)%10 == 5 || (daughterID/1000)%10 == 5 ) { hasBHadronDaughter = 1; break; }
-  //         }
-  //         EventInfo.BHadron_hasBdaughter[EventInfo.nBHadrons] = hasBHadronDaughter;
-  //         ++EventInfo.nBHadrons;
-  //       }
+//         // Primary b Hadrons
+//         if ( (ID/100)%10 == 5 || (ID/1000)%10 == 5 ) {
+//           //  cout << " pdgId " << genIt.pdgId()  << " pT " << genIt.p4().pt() << " mother " << mother->pdgId() << endl;
+//           EventInfo.BHadron_pT[EventInfo.nBHadrons]    = genIt.p4().pt();
+//           EventInfo.BHadron_eta[EventInfo.nBHadrons]   = genIt.p4().eta();
+//           EventInfo.BHadron_phi[EventInfo.nBHadrons]   = genIt.p4().phi();
+//           EventInfo.BHadron_mass[EventInfo.nBHadrons]  = genIt.mass();
+//           EventInfo.BHadron_pdgID[EventInfo.nBHadrons] = genIt.pdgId();
+//           EventInfo.BHadron_status[EventInfo.nBHadrons] = genIt.status();
+//           EventInfo.BHadron_mother[EventInfo.nBHadrons] = genIt.mother()->pdgId();
+//           // check if any of the daughters is also B hadron
+//           int hasBHadronDaughter = 0;
+//           for (unsigned int d=0; d<nDaughters; ++d) {
+//             int daughterID = abs(genIt.daughter(d)->pdgId());
+//             if ( (daughterID/100)%10 == 5 || (daughterID/1000)%10 == 5 ) { hasBHadronDaughter = 1; break; }
+//           }
+//           EventInfo.BHadron_hasBdaughter[EventInfo.nBHadrons] = hasBHadronDaughter;
+//           ++EventInfo.nBHadrons;
+//         }
 
         // Final c Hadrons
         if ( (ID/100)%10 == 4 || (ID/1000)%10 == 4 ) {
@@ -1380,7 +1364,7 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
   // ttbar information
   //------------------------------------------------------
   if (use_ttbar_filter_) {
-    
+
     //https://twiki.cern.ch/CMS/TopPtReweighting
     EventInfo.ttbar_ptweight = 0.;
     if (!isData_) {
@@ -1398,7 +1382,7 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
        }
        EventInfo.ttbar_ptweight = sqrt(wtop*wantitop);
     }
-      
+
     edm::Handle<int> pIn;
     iEvent.getByToken(ttbartop, pIn);
     EventInfo.ttbar_chan=*pIn;
@@ -1412,13 +1396,13 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
     iEvent.getByToken(ttbarproducerGen_,selGen);
     for (size_t i = 0; i < selGen->size(); ++i)
       {
-	const auto g = selGen->ptrAt(i);
-	EventInfo.ttbar_gpt[gctr] = g->pt();
-	EventInfo.ttbar_geta[gctr] = g->eta();
-	EventInfo.ttbar_gphi[gctr] = g->phi();	
-	EventInfo.ttbar_gm[gctr] = g->mass();
-	EventInfo.ttbar_gid[gctr] = g->pdgId();
-	gctr++;
+        const auto g = selGen->ptrAt(i);
+        EventInfo.ttbar_gpt[gctr] = g->pt();
+        EventInfo.ttbar_geta[gctr] = g->eta();
+        EventInfo.ttbar_gphi[gctr] = g->phi();
+        EventInfo.ttbar_gm[gctr] = g->mass();
+        EventInfo.ttbar_gid[gctr] = g->pdgId();
+        gctr++;
       }
     EventInfo.ttbar_ng=gctr;
 
@@ -1431,30 +1415,30 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
     iEvent.getByToken(ttbarproducerEle_,selElectrons);
     for (size_t i = 0; i < selElectrons->size(); ++i)
       {
-	const auto l = selElectrons->ptrAt(i);
-	EventInfo.ttbar_lpt[lctr]  = l->pt();
-	EventInfo.ttbar_leta[lctr] = l->eta();
-	EventInfo.ttbar_lphi[lctr] = l->phi();
-	EventInfo.ttbar_lm[lctr]   = 0;
-	EventInfo.ttbar_lch[lctr]  = l->charge();
-	EventInfo.ttbar_lid[lctr]  = 11;
-	EventInfo.ttbar_lgid[lctr] = l->genParticle() ? l->genParticle()->pdgId() : 0;
-	lctr++;
+        const auto l = selElectrons->ptrAt(i);
+        EventInfo.ttbar_lpt[lctr]  = l->pt();
+        EventInfo.ttbar_leta[lctr] = l->eta();
+        EventInfo.ttbar_lphi[lctr] = l->phi();
+        EventInfo.ttbar_lm[lctr]   = 0;
+        EventInfo.ttbar_lch[lctr]  = l->charge();
+        EventInfo.ttbar_lid[lctr]  = 11;
+        EventInfo.ttbar_lgid[lctr] = l->genParticle() ? l->genParticle()->pdgId() : 0;
+        lctr++;
       }
 
     edm::Handle<edm::View<pat::Muon> > selMuons;
     iEvent.getByToken(ttbarproducerMuon_,selMuons);
     for (size_t i = 0; i < selMuons->size(); ++i)
       {
-	const auto l = selMuons->ptrAt(i);
-	EventInfo.ttbar_lpt[lctr]  = l->pt();
-	EventInfo.ttbar_leta[lctr] = l->eta();
-	EventInfo.ttbar_lphi[lctr] = l->phi();
-	EventInfo.ttbar_lm[lctr]   = 0;
-	EventInfo.ttbar_lch[lctr]  = l->charge();
-	EventInfo.ttbar_lid[lctr]  = 13;
-	EventInfo.ttbar_lgid[lctr] = l->genParticle() ? l->genParticle()->pdgId() : 0;
-	lctr++;
+        const auto l = selMuons->ptrAt(i);
+        EventInfo.ttbar_lpt[lctr]  = l->pt();
+        EventInfo.ttbar_leta[lctr] = l->eta();
+        EventInfo.ttbar_lphi[lctr] = l->phi();
+        EventInfo.ttbar_lm[lctr]   = 0;
+        EventInfo.ttbar_lch[lctr]  = l->charge();
+        EventInfo.ttbar_lid[lctr]  = 13;
+        EventInfo.ttbar_lgid[lctr] = l->genParticle() ? l->genParticle()->pdgId() : 0;
+        lctr++;
       }
     EventInfo.ttbar_nl=lctr;
 
@@ -1467,38 +1451,38 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
     EventInfo.ttbar_nw=0;
     if(!isData_)
       {
-	edm::Handle<GenEventInfoProduct> evt;
-	iEvent.getByToken(generatorevt, evt);
-	if(evt.isValid())
-	  {
-	    EventInfo.ttbar_allmepartons   = evt->nMEPartons();
-	    EventInfo.ttbar_matchmepartons = evt->nMEPartonsFiltered();
-	    EventInfo.ttbar_w[0]           = evt->weight();
-	    EventInfo.ttbar_nw++;
-	  }
-	edm::Handle<LHEEventProduct> evet;
-	iEvent.getByToken(generatorlhe, evet);
-	if(evet.isValid())
-	  {
-	    double asdd=evet->originalXWGTUP();
-	    for(unsigned int i=0; i<evet->weights().size();i++){
-	      double asdde=evet->weights()[i].wgt;
-	      EventInfo.ttbar_w[EventInfo.ttbar_nw]=EventInfo.ttbar_w[0]*asdde/asdd;
- 	      EventInfo.ttbar_nw++;
-	    }
-	    //Code to include PS weights in output ttree branch 'ttbar_w'.
-	    //Code added here to keep order of preceeding weights the same
-	    //considering code later in chain dependant on order.
-	    if(evt.isValid())
-	      {
-		std::vector<double> weights_vector;
-		weights_vector = evt->weights();
-		for(unsigned int j=1; j < weights_vector.size(); j++){
-		  EventInfo.ttbar_w[EventInfo.ttbar_nw] = weights_vector.at(0)*weights_vector.at(j)/evet->originalXWGTUP();
-		  EventInfo.ttbar_nw++;
-		}
-	      }
-	  }
+      edm::Handle<GenEventInfoProduct> evt;
+      iEvent.getByToken(generatorevt, evt);
+      if(evt.isValid())
+        {
+          EventInfo.ttbar_allmepartons   = evt->nMEPartons();
+          EventInfo.ttbar_matchmepartons = evt->nMEPartonsFiltered();
+          EventInfo.ttbar_w[0]           = evt->weight();
+          EventInfo.ttbar_nw++;
+        }
+      edm::Handle<LHEEventProduct> evet;
+      iEvent.getByToken(generatorlhe, evet);
+      if(evet.isValid())
+        {
+          double asdd=evet->originalXWGTUP();
+          for(unsigned int i=0; i<evet->weights().size();i++){
+            double asdde=evet->weights()[i].wgt;
+            EventInfo.ttbar_w[EventInfo.ttbar_nw]=EventInfo.ttbar_w[0]*asdde/asdd;
+            EventInfo.ttbar_nw++;
+          }
+          //Code to include PS weights in output ttree branch 'ttbar_w'.
+          //Code added here to keep order of preceeding weights the same
+          //considering code later in chain dependant on order.
+          if(evt.isValid())
+          {
+            std::vector<double> weights_vector;
+            weights_vector = evt->weights();
+            for(unsigned int j=1; j < weights_vector.size(); j++){
+              EventInfo.ttbar_w[EventInfo.ttbar_nw] = weights_vector.at(0)*weights_vector.at(j)/evet->originalXWGTUP();
+              EventInfo.ttbar_nw++;
+            }
+          }
+        }
       }
   }
 
@@ -1596,7 +1580,7 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
      for (auto i = patElecsHandle->begin(); i != patElecsHandle->end(); ++i) {
        //if (!(muon::isLooseMuon(*i))) continue;
        if(!i->electronID("cutBasedElectronID-Fall17-94X-V1-loose")) continue;
-	 
+
        EventInfo.PatElec_pt[EventInfo.nPatElec] = i->pt();
        EventInfo.PatElec_eta[EventInfo.nPatElec] = i->eta();
        EventInfo.PatElec_superClusterEta[EventInfo.nPatElec] = i->superCluster()->eta();
@@ -1611,7 +1595,7 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
         //} else {
         //   EventInfo.PatMuon_iso[EventInfo.nPatMuon] = 999.;
         //}
-        //EventInfo.PatMuon_isoTrackerOnly[EventInfo.nPatMuon] = 
+        //EventInfo.PatMuon_isoTrackerOnly[EventInfo.nPatMuon] =
        //float iso = i->isolationR03().sumPt/i->pt();
 
        GsfElectron::PflowIsolationVariables ElecIsoVars = i->pfIsolationVariables();
@@ -1810,11 +1794,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
   JetInfo[iJetColl].nTrkEtaRelTagVarCSV = 0;
   JetInfo[iJetColl].nTrkCTagVar = 0;
   JetInfo[iJetColl].nTrkEtaRelCTagVar = 0;
-  JetInfo[iJetColl].nLeptons = 0;  
-  JetInfo[iJetColl].nTrkDeepDoubleX = 0;
-  JetInfo[iJetColl].nTrkDeepBoostedJet = 0;
-  JetInfo[iJetColl].nSVDeepDoubleX = 0;
-  JetInfo[iJetColl].nSVDeepBoostedJet = 0;
+  JetInfo[iJetColl].nLeptons = 0;
 
   //Initialize new test variables for AK4 jets: to be cleaned up in the future
   JetInfo[iJetColl].Jet_trackSip2dSig_AboveBottom_0[JetInfo[iJetColl].nJet] = -19.;
@@ -1844,7 +1824,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     _decayLength = decayLengthSubJets_;
     _deltaR      = deltaRSubJets_;
   }
-   
+
   //// Loop over the jets
   for ( PatJetCollection::const_iterator pjet = jetsColl->begin(); pjet != jetsColl->end(); ++pjet ) {
 
@@ -1858,7 +1838,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     if (use_ttbar_filter_) {
       float minDRlj(9999.);
       TLorentzVector thejet;
-      thejet.SetPtEtaPhiM(ptjet, etajet, phijet, 0.);      
+      thejet.SetPtEtaPhiM(ptjet, etajet, phijet, 0.);
       for(int il=0; il<EventInfo.ttbar_nl; il++)
       {
         TLorentzVector theLepton;
@@ -2069,7 +2049,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     const IPTagInfo *ipTagInfoCTag = toIPTagInfo(*pjet,ipTagInfosCTag_);
     const SVTagInfo *svTagInfoCTag = toSVTagInfo(*pjet,svTagInfosCTag_);
     const reco::CandSoftLeptonTagInfo *softPFMuTagInfoCTag = pjet->tagInfoCandSoftLepton(softPFMuonTagInfosCTag_.c_str());
-    const reco::CandSoftLeptonTagInfo *softPFElTagInfoCTag = pjet->tagInfoCandSoftLepton(softPFElectronTagInfosCTag_.c_str()); 
+    const reco::CandSoftLeptonTagInfo *softPFElTagInfoCTag = pjet->tagInfoCandSoftLepton(softPFElectronTagInfosCTag_.c_str());
 
     // Re-calculate N-subjettiness
     std::vector<fastjet::PseudoJet> currentAxes;
@@ -2116,7 +2096,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     }
 
     reco::TrackKinematics allKinematics;
-    
+
     JetInfo[iJetColl].Jet_trackSip2dSigAboveCharm_0[JetInfo[iJetColl].nJet]  = -19.;
     JetInfo[iJetColl].Jet_trackSip2dSigAboveCharm_1[JetInfo[iJetColl].nJet]  = -19.;
 //     JetInfo[iJetColl].Jet_trackSip2dSigAboveBottom_0[JetInfo[iJetColl].nJet] = -19.;
@@ -2150,7 +2130,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       const TrackRef ptrackRef = ( useSelectedTracks_ ? selectedTracks[itt] : tracks[itt]);
       const reco::Track * ptrackPtr = reco::btag::toTrack(ptrackRef);
       const reco::Track & ptrack = *ptrackPtr;
-       
+
       reco::TransientTrack transientTrack = trackBuilder->build(ptrackRef);
       GlobalVector direction(pjet->px(), pjet->py(), pjet->pz());
 
@@ -2171,7 +2151,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       JetInfo[iJetColl].Track_dz[JetInfo[iJetColl].nTrack]       = ptrack.dz(pv->position());
       JetInfo[iJetColl].Track_dxyError[JetInfo[iJetColl].nTrack]      = ptrack.dxyError();
       JetInfo[iJetColl].Track_dzError[JetInfo[iJetColl].nTrack]       = ptrack.dzError();
-       
+
       {
         TransverseImpactPointExtrapolator extrapolator(transientTrack.field());
         TrajectoryStateOnSurface closestOnTransversePlaneState = extrapolator.extrapolate(transientTrack.impactPointState(),RecoVertex::convertPos(pv->position()));
@@ -2245,7 +2225,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
         else {
           Measurement1D ip2d    = IPTools::signedTransverseImpactParameter(transientTrack, direction, *pv).second;
           Measurement1D ip3d    = IPTools::signedImpactParameter3D(transientTrack, direction, *pv).second;
- 
+
           JetInfo[iJetColl].Track_IP2D[JetInfo[iJetColl].nTrack]     = (ip2d.value());
           JetInfo[iJetColl].Track_IP2Dsig[JetInfo[iJetColl].nTrack]  = (ip2d.significance());
           JetInfo[iJetColl].Track_IP[JetInfo[iJetColl].nTrack]       = (ip3d.value());
@@ -2363,7 +2343,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
            if ( theFlag[TrackCategories::HadronicProcess] )   JetInfo[iJetColl].Track_history[JetInfo[iJetColl].nTrack] += pow(10, -1 + 7);
            if ( theFlag[TrackCategories::Fake] ) 	       JetInfo[iJetColl].Track_history[JetInfo[iJetColl].nTrack] += pow(10, -1 + 8);
            if ( theFlag[TrackCategories::SharedInnerHits] )   JetInfo[iJetColl].Track_history[JetInfo[iJetColl].nTrack] += pow(10, -1 + 9);
-        
+
 
            if ( JetInfo[iJetColl].Track_IPsig[JetInfo[iJetColl].nTrack] > 0 ) {
              if ( theFlag[TrackCategories::BWeakDecay] )	 cap0 = 1;
@@ -2764,6 +2744,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       DeepFlavourG    = pjet->bDiscriminator((deepFlavourJetTags_+":probg").c_str());
     }
 
+    // Maybe set default value to -1000 in future, as this is the default returned by the bDiscriminator function if a tagger is not found there. (see http://cmslxr.fnal.gov/source/DataFormats/PatCandidates/src/Jet.cc#0377)
     float DeepFlavourBN    = -10.;
     float DeepFlavourBBN   = -10.;
     float DeepFlavourLepBN = -10.;
@@ -2777,37 +2758,6 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       DeepFlavourCN    = pjet->bDiscriminator((deepFlavourNegJetTags_+":probc"   ).c_str());
       DeepFlavourUDSN  = pjet->bDiscriminator((deepFlavourNegJetTags_+":probuds").c_str());
       DeepFlavourGN    = pjet->bDiscriminator((deepFlavourNegJetTags_+":probg").c_str());
-    }
-
-    float DeepFlavourPrunedB    = -10.;
-    float DeepFlavourPrunedBB   = -10.;
-    float DeepFlavourPrunedLepB = -10.;
-    float DeepFlavourPrunedC    = -10.;
-    float DeepFlavourPrunedUDS  = -10.;
-    float DeepFlavourPrunedG    = -10.;
-    if(deepFlavourPrunedJetTags_.size() && runPrunedDeepFlavourTaggers_) {
-      DeepFlavourPrunedB    = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":probb"   ).c_str());
-      DeepFlavourPrunedBB   = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":probbb"   ).c_str());
-      DeepFlavourPrunedLepB = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":problepb"   ).c_str());
-      DeepFlavourPrunedC    = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":probc"   ).c_str());
-      DeepFlavourPrunedUDS  = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":probuds").c_str());
-      DeepFlavourPrunedG    = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":probg").c_str());
-    }
-
-    // Maybe set default value to -1000 in future, as this is the default returned by the bDiscriminator function if a tagger is not found there. (see http://cmslxr.fnal.gov/source/DataFormats/PatCandidates/src/Jet.cc#0377)
-    float DeepFlavourPrunedBN    = -10.;
-    float DeepFlavourPrunedBBN   = -10.;
-    float DeepFlavourPrunedLepBN = -10.;
-    float DeepFlavourPrunedCN    = -10.;
-    float DeepFlavourPrunedUDSN  = -10.;
-    float DeepFlavourPrunedGN    = -10.;
-    if(deepFlavourPrunedNegJetTags_.size() && runPrunedDeepFlavourTaggers_) {
-      DeepFlavourPrunedBN    = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":probb"   ).c_str());
-      DeepFlavourPrunedBBN   = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":probbb"   ).c_str());
-      DeepFlavourPrunedLepBN = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":problepb"   ).c_str());
-      DeepFlavourPrunedCN    = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":probc"   ).c_str());
-      DeepFlavourPrunedUDSN  = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":probuds").c_str());
-      DeepFlavourPrunedGN    = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":probg").c_str());
     }
 
     float DeepCSVb   = (deepCSVBJetTags_.size()) ? pjet->bDiscriminator((deepCSVBJetTags_+":probb"   ).c_str()) : -10;
@@ -2841,28 +2791,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
 //     float SoftEP = pjet->bDiscriminator(softPFElectronPosBJetTags_.c_str());
 
     float DoubleSV = pjet->bDiscriminator(doubleSVBJetTags_.c_str());
-    // DeepDoubleX discriminators
-    float deepDoubleBvLQCD = (deepDoubleXJetTags_.size()) ? pjet->bDiscriminator((deepDoubleXJetTags_+"BvLJetTags:probQCD"   ).c_str()) : -10;
-    float deepDoubleBvLHbb = (deepDoubleXJetTags_.size()) ? pjet->bDiscriminator((deepDoubleXJetTags_+"BvLJetTags:probHbb"   ).c_str()) : -10;
-    float deepDoubleCvLQCD = (deepDoubleXJetTags_.size()) ? pjet->bDiscriminator((deepDoubleXJetTags_+"CvLJetTags:probQCD"   ).c_str()) : -10;
-    float deepDoubleCvLHcc = (deepDoubleXJetTags_.size()) ? pjet->bDiscriminator((deepDoubleXJetTags_+"CvLJetTags:probHcc"   ).c_str()) : -10;
-    float deepDoubleCvBHcc = (deepDoubleXJetTags_.size()) ? pjet->bDiscriminator((deepDoubleXJetTags_+"CvBJetTags:probHcc"   ).c_str()) : -10;
-    float deepDoubleCvBHbb = (deepDoubleXJetTags_.size()) ? pjet->bDiscriminator((deepDoubleXJetTags_+"CvBJetTags:probHbb"   ).c_str()) : -10;
-    float massIndDeepDoubleBvLQCD = (massIndDeepDoubleXJetTags_.size()) ? pjet->bDiscriminator((massIndDeepDoubleXJetTags_+"BvLJetTags:probQCD"   ).c_str()) : -10;
-    float massIndDeepDoubleBvLHbb = (massIndDeepDoubleXJetTags_.size()) ? pjet->bDiscriminator((massIndDeepDoubleXJetTags_+"BvLJetTags:probHbb"   ).c_str()) : -10;
-    float massIndDeepDoubleCvLQCD = (massIndDeepDoubleXJetTags_.size()) ? pjet->bDiscriminator((massIndDeepDoubleXJetTags_+"CvLJetTags:probQCD"   ).c_str()) : -10;
-    float massIndDeepDoubleCvLHcc = (massIndDeepDoubleXJetTags_.size()) ? pjet->bDiscriminator((massIndDeepDoubleXJetTags_+"CvLJetTags:probHcc"   ).c_str()) : -10;
-    float massIndDeepDoubleCvBHcc = (massIndDeepDoubleXJetTags_.size()) ? pjet->bDiscriminator((massIndDeepDoubleXJetTags_+"CvBJetTags:probHcc"   ).c_str()) : -10;
-    float massIndDeepDoubleCvBHbb = (massIndDeepDoubleXJetTags_.size()) ? pjet->bDiscriminator((massIndDeepDoubleXJetTags_+"CvBJetTags:probHbb"   ).c_str()) : -10;
-
-    // DeepBoostedJet discriminators 
-    float deepBoostedJetbbvsLight   = (deepBoostedJetTags_.size()) ? pjet->bDiscriminator((deepBoostedJetTags_+":bbvsLight"   ).c_str()) : -10;
-    float deepBoostedJetccvsLight   = (deepBoostedJetTags_.size()) ? pjet->bDiscriminator((deepBoostedJetTags_+":ccvsLight"   ).c_str()) : -10;
-    float deepBoostedJetTvsQCD   = (deepBoostedJetTags_.size()) ? pjet->bDiscriminator((deepBoostedJetTags_+":TvsQCD"   ).c_str()) : -10;
-    float deepBoostedJetZHccvsQCD   = (deepBoostedJetTags_.size()) ? pjet->bDiscriminator((deepBoostedJetTags_+":ZHccvsQCD"   ).c_str()) : -10;
-    float deepBoostedJetWvsQCD   = (deepBoostedJetTags_.size()) ? pjet->bDiscriminator((deepBoostedJetTags_+":WvsQCD"   ).c_str()) : -10;
-    float deepBoostedJetZHbbvsQCD   = (deepBoostedJetTags_.size()) ? pjet->bDiscriminator((deepBoostedJetTags_+":ZHbbvsQCD"   ).c_str()) : -10;
-
+    float DeepDoubleB = pjet->bDiscriminator(deepDoubleBJetTags_.c_str());
 
 //     float cMVA = pjet->bDiscriminator(cMVABJetTags_.c_str());
     float cMVAv2 = pjet->bDiscriminator(cMVAv2BJetTags_.c_str());
@@ -2894,25 +2823,6 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     JetInfo[iJetColl].Jet_DeepFlavourBDiscN[JetInfo[iJetColl].nJet]     = (DeepFlavourBN > -5) ? DeepFlavourBN + DeepFlavourBBN + DeepFlavourLepBN : -10;
     JetInfo[iJetColl].Jet_DeepFlavourCvsLDiscN[JetInfo[iJetColl].nJet]  = (DeepFlavourBN > -5) ? DeepFlavourCN/(DeepFlavourCN + DeepFlavourUDSN + DeepFlavourGN) : -10;
     JetInfo[iJetColl].Jet_DeepFlavourCvsBDiscN[JetInfo[iJetColl].nJet]  = (DeepFlavourBN > -5) ? DeepFlavourCN/(DeepFlavourCN + DeepFlavourBN + DeepFlavourBBN + DeepFlavourLepBN) : -10;
-
-    //DeepFlavourPruned discriminators
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedBDisc[JetInfo[iJetColl].nJet]     = (DeepFlavourPrunedB > -5) ? DeepFlavourPrunedB + DeepFlavourPrunedBB + DeepFlavourPrunedLepB : -10;
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedCvsLDisc[JetInfo[iJetColl].nJet]  = (DeepFlavourPrunedB > -5) ? DeepFlavourPrunedC/(DeepFlavourPrunedC + DeepFlavourPrunedUDS + DeepFlavourPrunedG) : -10;
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedCvsBDisc[JetInfo[iJetColl].nJet]  = (DeepFlavourPrunedB > -5) ? DeepFlavourPrunedC/(DeepFlavourPrunedC + DeepFlavourPrunedB + DeepFlavourPrunedBB + DeepFlavourPrunedLepB) : -10;
-
-    //DeepFlavourPruned probabilities
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedB[JetInfo[iJetColl].nJet]    = DeepFlavourPrunedB   ;
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedBB[JetInfo[iJetColl].nJet]   = DeepFlavourPrunedBB  ;
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedLEPB[JetInfo[iJetColl].nJet] = DeepFlavourPrunedLepB;
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedC[JetInfo[iJetColl].nJet]    = DeepFlavourPrunedC   ;
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedUDS[JetInfo[iJetColl].nJet]  = DeepFlavourPrunedUDS ;
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedG[JetInfo[iJetColl].nJet]    = DeepFlavourPrunedG   ;
-
-    //DeepFlavourPruned negative tags
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedBDiscN[JetInfo[iJetColl].nJet]     = (DeepFlavourPrunedBN > -5) ? DeepFlavourPrunedBN + DeepFlavourPrunedBBN + DeepFlavourPrunedLepBN : -10;
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedCvsLDiscN[JetInfo[iJetColl].nJet]  = (DeepFlavourPrunedBN > -5) ? DeepFlavourPrunedCN/(DeepFlavourPrunedCN + DeepFlavourPrunedUDSN + DeepFlavourPrunedGN) : -10;
-    JetInfo[iJetColl].Jet_DeepFlavourPrunedCvsBDiscN[JetInfo[iJetColl].nJet]  = (DeepFlavourPrunedBN > -5) ? DeepFlavourPrunedCN/(DeepFlavourPrunedCN + DeepFlavourPrunedBN + DeepFlavourPrunedBBN + DeepFlavourPrunedLepBN) : -10;
-
 
     JetInfo[iJetColl].Jet_DeepCSVBDisc[JetInfo[iJetColl].nJet]   = DeepCSVb + DeepCSVbb  ;
     JetInfo[iJetColl].Jet_DeepCSVBDiscN[JetInfo[iJetColl].nJet]  = DeepCSVbN + DeepCSVbbN;
@@ -2959,30 +2869,11 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
 //     JetInfo[iJetColl].Jet_SoftElP[JetInfo[iJetColl].nJet]  = SoftEP;
     JetInfo[iJetColl].Jet_SoftEl[JetInfo[iJetColl].nJet]   = SoftE;
     JetInfo[iJetColl].Jet_DoubleSV[JetInfo[iJetColl].nJet] = DoubleSV;
+    JetInfo[iJetColl].Jet_DeepDoubleB[JetInfo[iJetColl].nJet] = DeepDoubleB;
 //     JetInfo[iJetColl].Jet_cMVA[JetInfo[iJetColl].nJet] = cMVA;
     JetInfo[iJetColl].Jet_cMVAv2[JetInfo[iJetColl].nJet] = cMVAv2;
     JetInfo[iJetColl].Jet_cMVAv2N[JetInfo[iJetColl].nJet] = cMVAv2Neg;
 //     JetInfo[iJetColl].Jet_cMVAv2P[JetInfo[iJetColl].nJet] = cMVAv2Pos;
-    // DeepDoubleX probabilities
-    JetInfo[iJetColl].Jet_DeepDoubleBvLQCD[JetInfo[iJetColl].nJet] = deepDoubleBvLQCD;
-    JetInfo[iJetColl].Jet_DeepDoubleBvLHbb[JetInfo[iJetColl].nJet] = deepDoubleBvLHbb;
-    JetInfo[iJetColl].Jet_DeepDoubleCvLQCD[JetInfo[iJetColl].nJet] = deepDoubleCvLQCD;
-    JetInfo[iJetColl].Jet_DeepDoubleCvLHcc[JetInfo[iJetColl].nJet] = deepDoubleCvLHcc;
-    JetInfo[iJetColl].Jet_DeepDoubleCvBHcc[JetInfo[iJetColl].nJet] = deepDoubleCvBHcc;
-    JetInfo[iJetColl].Jet_DeepDoubleCvBHbb[JetInfo[iJetColl].nJet] = deepDoubleCvBHbb;
-    JetInfo[iJetColl].Jet_MassIndDeepDoubleBvLQCD[JetInfo[iJetColl].nJet] = massIndDeepDoubleBvLQCD;
-    JetInfo[iJetColl].Jet_MassIndDeepDoubleBvLHbb[JetInfo[iJetColl].nJet] = massIndDeepDoubleBvLHbb;
-    JetInfo[iJetColl].Jet_MassIndDeepDoubleCvLQCD[JetInfo[iJetColl].nJet] = massIndDeepDoubleCvLQCD;
-    JetInfo[iJetColl].Jet_MassIndDeepDoubleCvLHcc[JetInfo[iJetColl].nJet] = massIndDeepDoubleCvLHcc;
-    JetInfo[iJetColl].Jet_MassIndDeepDoubleCvBHcc[JetInfo[iJetColl].nJet] = massIndDeepDoubleCvBHcc;
-    JetInfo[iJetColl].Jet_MassIndDeepDoubleCvBHbb[JetInfo[iJetColl].nJet] = massIndDeepDoubleCvBHbb;
-    //DeepBoostedJet probabilities
-    JetInfo[iJetColl].Jet_DeepBoostedJetbbvsLight[JetInfo[iJetColl].nJet]    = deepBoostedJetbbvsLight;
-    JetInfo[iJetColl].Jet_DeepBoostedJetccvsLight[JetInfo[iJetColl].nJet]   = deepBoostedJetccvsLight;
-    JetInfo[iJetColl].Jet_DeepBoostedJetTvsQCD[JetInfo[iJetColl].nJet] = deepBoostedJetTvsQCD;
-    JetInfo[iJetColl].Jet_DeepBoostedJetZHccvsQCD[JetInfo[iJetColl].nJet]    = deepBoostedJetZHccvsQCD;
-    JetInfo[iJetColl].Jet_DeepBoostedJetWvsQCD[JetInfo[iJetColl].nJet]  = deepBoostedJetWvsQCD;
-    JetInfo[iJetColl].Jet_DeepBoostedJetZHbbvsQCD[JetInfo[iJetColl].nJet]    = deepBoostedJetZHbbvsQCD;
 
     // TagInfo TaggingVariables
     if ( runTagVariables )
@@ -3193,7 +3084,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
 
       JetInfo[iJetColl].nTrkEtaRelTagVarCSV += JetInfo[iJetColl].TagVarCSV_jetNTracksEtaRel[JetInfo[iJetColl].nJet];
       JetInfo[iJetColl].Jet_nLastTrkEtaRelTagVarCSV[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkEtaRelTagVarCSV;
-      
+
     }
 
     if ( runCTagVariables )
@@ -3204,12 +3095,12 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       JetInfo[iJetColl].CTag_Jet_CvsL[JetInfo[iJetColl].nJet] = CvsL;
       JetInfo[iJetColl].CTag_Jet_CvsLN[JetInfo[iJetColl].nJet] = CvsLNeg;
       JetInfo[iJetColl].CTag_Jet_CvsLP[JetInfo[iJetColl].nJet] = CvsLPos;
-  
+
       std::vector<const reco::BaseTagInfo*>  slbaseTagInfos;
       slbaseTagInfos.push_back( ipTagInfoCTag );
       slbaseTagInfos.push_back( svTagInfoCTag );
       slbaseTagInfos.push_back( softPFMuTagInfoCTag );
-      slbaseTagInfos.push_back( softPFElTagInfoCTag ); 
+      slbaseTagInfos.push_back( softPFElTagInfoCTag );
       JetTagComputer::TagInfoHelper slhelper(slbaseTagInfos);
       // TaggingVariables
       reco::TaggingVariableList slvars = slcomputer->taggingVariables(slhelper);
@@ -3229,15 +3120,15 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       JetInfo[iJetColl].CTag_flightDistance3dSig[JetInfo[iJetColl].nJet]         = ( slvars.checkTag(reco::btau::flightDistance3dSig) ? slvars.get(reco::btau::flightDistance3dSig) : -9999 );
       JetInfo[iJetColl].CTag_massVertexEnergyFraction[JetInfo[iJetColl].nJet]    = ( slvars.checkTag(reco::btau::massVertexEnergyFraction) ? slvars.get(reco::btau::massVertexEnergyFraction) : -0.1);
       JetInfo[iJetColl].CTag_vertexBoostOverSqrtJetPt[JetInfo[iJetColl].nJet]    = ( slvars.checkTag(reco::btau::vertexBoostOverSqrtJetPt) ? slvars.get(reco::btau::vertexBoostOverSqrtJetPt) : -0.1);
-      JetInfo[iJetColl].CTag_vertexLeptonCategory[JetInfo[iJetColl].nJet]        = ( slvars.checkTag(reco::btau::vertexLeptonCategory) ? slvars.get(reco::btau::vertexLeptonCategory) : -1);      
- 
+      JetInfo[iJetColl].CTag_vertexLeptonCategory[JetInfo[iJetColl].nJet]        = ( slvars.checkTag(reco::btau::vertexLeptonCategory) ? slvars.get(reco::btau::vertexLeptonCategory) : -1);
+
       // per jet per track
       JetInfo[iJetColl].Jet_nFirstTrkCTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkCTagVar;
       std::vector<float> tagValList = slvars.getList(reco::btau::trackSip2dSig,false);
-      JetInfo[iJetColl].CTag_jetNTracks[JetInfo[iJetColl].nJet] = tagValList.size(); 
+      JetInfo[iJetColl].CTag_jetNTracks[JetInfo[iJetColl].nJet] = tagValList.size();
 
       tagValList = slvars.getList(reco::btau::trackPtRel,false);
-      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].CTag_trackPtRel[JetInfo[iJetColl].nTrkCTagVar] );  
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].CTag_trackPtRel[JetInfo[iJetColl].nTrkCTagVar] );
       tagValList = slvars.getList(reco::btau::trackPPar,false);
       if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].CTag_trackPPar[JetInfo[iJetColl].nTrkCTagVar] );
       tagValList = slvars.getList(reco::btau::trackDeltaR,false);
@@ -3254,7 +3145,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].CTag_trackDecayLenVal[JetInfo[iJetColl].nTrkCTagVar] );
       tagValList = slvars.getList(reco::btau::trackJetDistVal,false);
       if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].CTag_trackJetDistVal[JetInfo[iJetColl].nTrkCTagVar] );
-     
+
       JetInfo[iJetColl].nTrkCTagVar += JetInfo[iJetColl].CTag_jetNTracks[JetInfo[iJetColl].nJet];
       JetInfo[iJetColl].Jet_nLastTrkCTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkCTagVar;
       //---------------------------
@@ -3266,7 +3157,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
 
       JetInfo[iJetColl].nTrkEtaRelCTagVar += JetInfo[iJetColl].CTag_jetNTracksEtaRel[JetInfo[iJetColl].nJet];
       JetInfo[iJetColl].Jet_nLastTrkEtaRelCTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkEtaRelCTagVar;
-      
+
       //per jet per lepton
       JetInfo[iJetColl].Jet_nFirstLepCTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nLeptons;
       std::vector<float> sltagValList = slvars.getList(reco::btau::leptonPtRel,false);
@@ -3283,7 +3174,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       sltagValList = slvars.getList(reco::btau::leptonEtaRel,false);
       if(sltagValList.size()>0) std::copy( sltagValList.begin(), sltagValList.end(), &JetInfo[iJetColl].CTag_leptonEtaRel[JetInfo[iJetColl].nLeptons] );
       sltagValList = slvars.getList(reco::btau::leptonRatio,false);
-      if(sltagValList.size()>0) std::copy( sltagValList.begin(), sltagValList.end(), &JetInfo[iJetColl].CTag_leptonRatio[JetInfo[iJetColl].nLeptons] );     
+      if(sltagValList.size()>0) std::copy( sltagValList.begin(), sltagValList.end(), &JetInfo[iJetColl].CTag_leptonRatio[JetInfo[iJetColl].nLeptons] );
 
       JetInfo[iJetColl].nLeptons += JetInfo[iJetColl].CTag_jetNLeptons[JetInfo[iJetColl].nJet];
       JetInfo[iJetColl].Jet_nLastLepCTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nLeptons;
@@ -3323,7 +3214,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     JetInfo[iJetColl].Jet_hist1[JetInfo[iJetColl].nJet] = 0;
     JetInfo[iJetColl].Jet_hist2[JetInfo[iJetColl].nJet] = 0;
     JetInfo[iJetColl].Jet_hist3[JetInfo[iJetColl].nJet] = 0;
-     
+
     // Track Histosry
     if ( useTrackHistory_ && indexes.size()!=0 && !isData_ ) {
       if ( flags1P[TrackCategories::BWeakDecay] )         JetInfo[iJetColl].Jet_hist1[JetInfo[iJetColl].nJet] += int(pow(10., -1 + 1));
@@ -3634,149 +3525,6 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       JetInfo[iJetColl].Jet_nTracks_fat[JetInfo[iJetColl].nJet] = vars.get(reco::btau::jetNTracks);
       JetInfo[iJetColl].Jet_nSV_fat[JetInfo[iJetColl].nJet] = vars.get(reco::btau::jetNSecondaryVertices);
       //--------------------------
-      // DeepDoubleX InputFeatures
-      if(runDeepDoubleXTagVariables_) {
-        auto ddb_taginfo = static_cast<const reco::DeepDoubleXTagInfo*>(pjet->tagInfo(deepDoubleXTagInfos_));
-        if(!ddb_taginfo) {
-            throw cms::Exception("CorruptData") << "The jet collection does not have the DeepDoubleX TagInfos embedded!";
-        }
-        const auto & features = ddb_taginfo->features();
-        /// Name of variables https://github.com/andrzejnovak/cmssw/blob/94Xpr/DataFormats/BTauReco/interface/BoostedDoubleSVTagInfoFeatures.h
-        JetInfo[iJetColl].DeepDoubleXInput_jetNTracks[JetInfo[iJetColl].nJet] = features.tag_info_features.jetNTracks;
-        JetInfo[iJetColl].DeepDoubleXInput_jetNSecondaryVertices[JetInfo[iJetColl].nJet] = features.tag_info_features.jetNSecondaryVertices;
-        JetInfo[iJetColl].DeepDoubleXInput_trackSip3dSig_0[JetInfo[iJetColl].nJet] = features.tag_info_features.trackSip3dSig_0;
-        JetInfo[iJetColl].DeepDoubleXInput_trackSip3dSig_1[JetInfo[iJetColl].nJet] = features.tag_info_features.trackSip3dSig_1;
-        JetInfo[iJetColl].DeepDoubleXInput_trackSip3dSig_2[JetInfo[iJetColl].nJet] = features.tag_info_features.trackSip3dSig_2;
-        JetInfo[iJetColl].DeepDoubleXInput_trackSip3dSig_3[JetInfo[iJetColl].nJet] = features.tag_info_features.trackSip3dSig_3;
-        JetInfo[iJetColl].DeepDoubleXInput_tau1_trackSip3dSig_0[JetInfo[iJetColl].nJet] = features.tag_info_features.tau1_trackSip3dSig_0;
-        JetInfo[iJetColl].DeepDoubleXInput_tau1_trackSip3dSig_1[JetInfo[iJetColl].nJet] = features.tag_info_features.tau1_trackSip3dSig_1;
-        JetInfo[iJetColl].DeepDoubleXInput_tau2_trackSip3dSig_0[JetInfo[iJetColl].nJet] = features.tag_info_features.tau2_trackSip3dSig_0;
-        JetInfo[iJetColl].DeepDoubleXInput_tau2_trackSip3dSig_1[JetInfo[iJetColl].nJet] = features.tag_info_features.tau2_trackSip3dSig_1;
-        JetInfo[iJetColl].DeepDoubleXInput_trackSip2dSigAboveBottom_0[JetInfo[iJetColl].nJet] = features.tag_info_features.trackSip2dSigAboveBottom_0;
-        JetInfo[iJetColl].DeepDoubleXInput_trackSip2dSigAboveBottom_1[JetInfo[iJetColl].nJet] = features.tag_info_features.trackSip2dSigAboveBottom_1;
-        JetInfo[iJetColl].DeepDoubleXInput_trackSip2dSigAboveCharm[JetInfo[iJetColl].nJet] = features.tag_info_features.trackSip2dSigAboveCharm;
-        JetInfo[iJetColl].DeepDoubleXInput_tau1_trackEtaRel_0[JetInfo[iJetColl].nJet] = features.tag_info_features.tau1_trackEtaRel_0;
-        JetInfo[iJetColl].DeepDoubleXInput_tau1_trackEtaRel_1[JetInfo[iJetColl].nJet] = features.tag_info_features.tau1_trackEtaRel_1;
-        JetInfo[iJetColl].DeepDoubleXInput_tau1_trackEtaRel_2[JetInfo[iJetColl].nJet] = features.tag_info_features.tau1_trackEtaRel_2;
-        JetInfo[iJetColl].DeepDoubleXInput_tau2_trackEtaRel_0[JetInfo[iJetColl].nJet] = features.tag_info_features.tau2_trackEtaRel_0;
-        JetInfo[iJetColl].DeepDoubleXInput_tau2_trackEtaRel_1[JetInfo[iJetColl].nJet] = features.tag_info_features.tau2_trackEtaRel_1;
-        JetInfo[iJetColl].DeepDoubleXInput_tau2_trackEtaRel_2[JetInfo[iJetColl].nJet] = features.tag_info_features.tau2_trackEtaRel_2;
-        JetInfo[iJetColl].DeepDoubleXInput_tau1_vertexMass[JetInfo[iJetColl].nJet] = features.tag_info_features.tau1_vertexMass;
-        JetInfo[iJetColl].DeepDoubleXInput_tau1_vertexEnergyRatio[JetInfo[iJetColl].nJet] = features.tag_info_features.tau1_vertexEnergyRatio;
-        JetInfo[iJetColl].DeepDoubleXInput_tau1_flightDistance2dSig[JetInfo[iJetColl].nJet] = features.tag_info_features.tau1_flightDistance2dSig;
-        JetInfo[iJetColl].DeepDoubleXInput_tau1_vertexDeltaR[JetInfo[iJetColl].nJet] = features.tag_info_features.tau1_vertexDeltaR;
-        JetInfo[iJetColl].DeepDoubleXInput_tau2_vertexMass[JetInfo[iJetColl].nJet] = features.tag_info_features.tau2_vertexMass;
-        JetInfo[iJetColl].DeepDoubleXInput_tau2_vertexEnergyRatio[JetInfo[iJetColl].nJet] = features.tag_info_features.tau2_vertexEnergyRatio;
-        JetInfo[iJetColl].DeepDoubleXInput_tau2_flightDistance2dSig[JetInfo[iJetColl].nJet] = features.tag_info_features.tau2_flightDistance2dSig;
-        JetInfo[iJetColl].DeepDoubleXInput_tau2_vertexDeltaR[JetInfo[iJetColl].nJet] = features.tag_info_features.tau2_vertexDeltaR;
-        JetInfo[iJetColl].DeepDoubleXInput_z_ratio[JetInfo[iJetColl].nJet] = features.tag_info_features.z_ratio;
-
-        size_t csize = features.c_pf_features.size();
-        JetInfo[iJetColl].Jet_DeepDoubleX_nFirstTrkTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkDeepDoubleX;
-        for(size_t t = 0; t < csize; t++){
-          JetInfo[iJetColl].DeepDoubleXInput_charged_EtaRel[ JetInfo[iJetColl].nTrkDeepDoubleX+t ] = features.c_pf_features[t].btagPf_trackEtaRel;
-          JetInfo[iJetColl].DeepDoubleXInput_charged_PtRatio[ JetInfo[iJetColl].nTrkDeepDoubleX+t ] = features.c_pf_features[t].btagPf_trackPtRatio;
-          JetInfo[iJetColl].DeepDoubleXInput_charged_PParRatio[ JetInfo[iJetColl].nTrkDeepDoubleX+t ] = features.c_pf_features[t].btagPf_trackPParRatio;
-          JetInfo[iJetColl].DeepDoubleXInput_charged_Sip2dVal[ JetInfo[iJetColl].nTrkDeepDoubleX+t ] = features.c_pf_features[t].btagPf_trackSip2dVal;
-          JetInfo[iJetColl].DeepDoubleXInput_charged_Sip2dSig[ JetInfo[iJetColl].nTrkDeepDoubleX+t ] = features.c_pf_features[t].btagPf_trackSip2dSig;
-          JetInfo[iJetColl].DeepDoubleXInput_charged_Sip3dVal[ JetInfo[iJetColl].nTrkDeepDoubleX+t ] = features.c_pf_features[t].btagPf_trackSip3dVal;
-          JetInfo[iJetColl].DeepDoubleXInput_charged_Sip3dSig[ JetInfo[iJetColl].nTrkDeepDoubleX+t ] = features.c_pf_features[t].btagPf_trackSip3dSig;
-          JetInfo[iJetColl].DeepDoubleXInput_charged_JetDistVal[ JetInfo[iJetColl].nTrkDeepDoubleX+t ] = features.c_pf_features[t].btagPf_trackJetDistVal;
-        }
-        JetInfo[iJetColl].nTrkDeepDoubleX += csize;
-        JetInfo[iJetColl].Jet_DeepDoubleX_nLastTrkTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkDeepDoubleX;
-
-        size_t svsize = features.sv_features.size();
-        JetInfo[iJetColl].Jet_DeepDoubleX_nFirstSVTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nSVDeepDoubleX;
-        for(size_t sv = 0; sv < svsize; sv++){
-          JetInfo[iJetColl].DeepDoubleXInput_sv_d3d[ JetInfo[iJetColl].nSVDeepDoubleX+sv ] = features.sv_features[sv].d3d;
-          JetInfo[iJetColl].DeepDoubleXInput_sv_d3dsig[ JetInfo[iJetColl].nSVDeepDoubleX+sv ] = features.sv_features[sv].d3dsig;
-        }
-        JetInfo[iJetColl].nSVDeepDoubleX += svsize;
-        JetInfo[iJetColl].Jet_DeepDoubleX_nLastSVTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nSVDeepDoubleX;
-        //--------------------------
-    }
-
-
-    // additional DeepBoostedJet Input Features
-    if (runDeepBoostedJetTagVariables_) {
-      auto dbj_taginfo = static_cast<const reco::DeepBoostedJetTagInfo*>(pjet->tagInfo(deepBoostedJetTagInfos_));
-      if(!dbj_taginfo) {
-        throw cms::Exception("CorruptData") << "The jet collection does not have the DeepBoostedJet TagInfos embedded!";
-      }
-      // Name of variables from https://github.com/cms-sw/cmssw/blob/master/RecoBTag/FeatureTools/plugins/DeepBoostedJetTagInfoProducer.cc#L75-L136
-
-      const auto & dbj_features = dbj_taginfo->features();
-      size_t dbj_csize = dbj_features.get("pfcand_puppiw").size(); // can be any variable, not necessarily pfcand_puppiw 
-      JetInfo[iJetColl].Jet_DeepBoostedJet_nFirstTrkTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkDeepBoostedJet;
-      for(size_t q = 0; q < dbj_csize; q++){
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_puppiw[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_puppiw")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_hcalFrac[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_hcalFrac")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_VTX_ass[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_VTX_ass")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_lostInnerHits[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_lostInnerHits")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_quality[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_quality")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_charge[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_charge")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_isEl[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_isEl")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_isMu[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_isMu")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_isChargedHad[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_isChargedHad")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_isGamma[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_isGamma")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_isNeutralHad[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_isNeutralHad")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_phirel[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_phirel")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_etarel[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_etarel")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_deltaR[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_deltaR")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_abseta[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_abseta")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_ptrel_log[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_ptrel_log")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_erel_log[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_erel_log")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_pt_log[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_pt_log")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_drminsv[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_drminsv")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_drsubjet1[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_drsubjet1")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_drsubjet2[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_drsubjet2")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_normchi2[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_normchi2")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_dz[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_dz")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_dzsig[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_dzsig")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_dxy[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_dxy")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_dxysig[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_dxysig")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_dptdpt[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_dptdpt")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_detadeta[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_detadeta")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_dphidphi[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_dphidphi")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_dxydxy[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_dxydxy")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_dzdz[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_dzdz")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_dxydz[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_dxydz")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_dphidxy[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_dphidxy")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_dlambdadz[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_dlambdadz")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_btagEtaRel[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_btagEtaRel")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_btagPtRatio[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_btagPtRatio")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_btagPParRatio[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_btagPParRatio")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_btagSip2dVal[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_btagSip2dVal")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_btagSip2dSig[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_btagSip2dSig")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_btagSip3dVal[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_btagSip3dVal")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_btagSip3dSig[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_btagSip3dSig")[q];
-        JetInfo[iJetColl].DeepBoostedJetInput_pf_btagJetDistVal[ JetInfo[iJetColl].nTrkDeepBoostedJet+q ] = dbj_features.get("pfcand_btagJetDistVal")[q];
-      }
-      JetInfo[iJetColl].nTrkDeepBoostedJet += dbj_csize;
-      JetInfo[iJetColl].Jet_DeepBoostedJet_nLastTrkTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkDeepBoostedJet;
-
-      size_t dbj_svsize = dbj_features.get("sv_phirel").size(); 
-      JetInfo[iJetColl].Jet_DeepBoostedJet_nFirstSVTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nSVDeepBoostedJet;
-      for(size_t qsv = 0; qsv < dbj_svsize; qsv++){
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_phirel[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_phirel")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_etarel[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_etarel")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_deltaR[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_deltaR")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_abseta[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_abseta")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_mass[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_mass")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_ptrel_log[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_ptrel_log")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_erel_log[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_erel_log")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_pt_log[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_pt_log")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_ntracks[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_ntracks")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_normchi2[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_normchi2")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_dxy[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_dxy")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_dxysig[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_dxysig")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_d3d[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_d3d")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_d3dsig[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_d3dsig")[qsv];
-        JetInfo[iJetColl].DeepBoostedJetInput_sv_costhetasvpv[ JetInfo[iJetColl].nSVDeepBoostedJet+qsv ] = dbj_features.get("sv_costhetasvpv")[qsv];
-      }
-      JetInfo[iJetColl].nSVDeepBoostedJet += dbj_svsize;
-      JetInfo[iJetColl].Jet_DeepBoostedJet_nLastSVTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nSVDeepBoostedJet;
     }
   }
 
@@ -4103,8 +3851,8 @@ void BTagAnalyzerT<IPTI,VTX>::setTracksPVBase( const reco::TrackRef & trackRef, 
 // ------------ method called once each job just before starting event loop  ------------
 template<typename IPTI,typename VTX>
 void BTagAnalyzerT<IPTI,VTX>::beginJob() {
-  //cat 0  
-  cat0.withFirstPixel = -1;  
+  //cat 0
+  cat0.withFirstPixel = -1;
   cat0.nPixelHitsMin = 1;
   cat0.nPixelHitsMax = 99;
   cat0.etaMin        = 0;
@@ -4117,7 +3865,7 @@ void BTagAnalyzerT<IPTI,VTX>::beginJob() {
   cat0.chiMax        = 5;
 
   //cat 1
-  cat1.withFirstPixel = 1;  
+  cat1.withFirstPixel = 1;
   cat1.nPixelHitsMin = 1;
   cat1.nPixelHitsMax = 3;
   cat1.etaMin        = 0;
@@ -4128,9 +3876,9 @@ void BTagAnalyzerT<IPTI,VTX>::beginJob() {
   cat1.nHitsMax      = 50;
   cat1.chiMin        = 0;
   cat1.chiMax        = 5;
-   
+
   //cat 2
-  cat2.withFirstPixel = 1;  
+  cat2.withFirstPixel = 1;
   cat2.nPixelHitsMin = 4;
   cat2.nPixelHitsMax = 99;
   cat2.etaMin        = 0.;
@@ -4143,7 +3891,7 @@ void BTagAnalyzerT<IPTI,VTX>::beginJob() {
   cat2.chiMax        = 5;
 
   //cat 3
-  cat3.withFirstPixel = 1;  
+  cat3.withFirstPixel = 1;
   cat3.nPixelHitsMin = 4;
   cat3.nPixelHitsMax = 99;
   cat3.etaMin        = 0.;
@@ -4156,7 +3904,7 @@ void BTagAnalyzerT<IPTI,VTX>::beginJob() {
   cat3.chiMax        = 5;
 
   //cat 4
-  cat4.withFirstPixel = 1;  
+  cat4.withFirstPixel = 1;
   cat4.nPixelHitsMin = 4;
   cat4.nPixelHitsMax = 99;
   cat4.etaMin        = 0.;
@@ -4169,7 +3917,7 @@ void BTagAnalyzerT<IPTI,VTX>::beginJob() {
   cat4.chiMax        = 5;
 
   //cat 5
-  cat5.withFirstPixel = 1;  
+  cat5.withFirstPixel = 1;
   cat5.nPixelHitsMin = 4;
   cat5.nPixelHitsMax = 99;
   cat5.etaMin        = 1.;
@@ -4182,7 +3930,7 @@ void BTagAnalyzerT<IPTI,VTX>::beginJob() {
   cat5.chiMax        = 5;
 
   //cat 6
-  cat6.withFirstPixel = 1;  
+  cat6.withFirstPixel = 1;
   cat6.nPixelHitsMin = 4;
   cat6.nPixelHitsMax = 99;
   cat6.etaMin        = 1.;
@@ -4195,7 +3943,7 @@ void BTagAnalyzerT<IPTI,VTX>::beginJob() {
   cat6.chiMax        = 5;
 
   //cat 7
-  cat7.withFirstPixel = 1;  
+  cat7.withFirstPixel = 1;
   cat7.nPixelHitsMin = 4;
   cat7.nPixelHitsMax = 99;
   cat7.etaMin        = 1.;
@@ -4206,9 +3954,9 @@ void BTagAnalyzerT<IPTI,VTX>::beginJob() {
   cat7.nHitsMax      = 50;
   cat7.chiMin        = 0;
   cat7.chiMax        = 5;
- 
+
   //cat 8
-  cat8.withFirstPixel = 1;  
+  cat8.withFirstPixel = 1;
   cat8.nPixelHitsMin = 4;
   cat8.nPixelHitsMax = 99;
   cat8.etaMin        = 2.;
@@ -4221,7 +3969,7 @@ void BTagAnalyzerT<IPTI,VTX>::beginJob() {
   cat8.chiMax        = 5;
 
   //cat 9
-  cat9.withFirstPixel = 1;  
+  cat9.withFirstPixel = 1;
   cat9.nPixelHitsMin = 4;
   cat9.nPixelHitsMax = 99;
   cat9.etaMin        = 2.;
@@ -4309,10 +4057,10 @@ bool BTagAnalyzerT<IPTI,VTX>::findCat(const reco::Track* track, CategoryFinder& 
   double   p = track->p();
   double eta = track->eta();
 
-  bool result = ( 
-     ( (d.withFirstPixel == 1 && isL1 == 1) || 
+  bool result = (
+     ( (d.withFirstPixel == 1 && isL1 == 1) ||
        (d.withFirstPixel == -1 && isL1 == 0) ||
-        d.withFirstPixel == 0 ) && 
+        d.withFirstPixel == 0 ) &&
       npix >= d.nPixelHitsMin && npix <= d.nPixelHitsMax &&
       nhit >= d.nHitsMin      && nhit <= d.nHitsMax	 &&
       chi >= d.chiMin	      && chi <= d.chiMax         &&
