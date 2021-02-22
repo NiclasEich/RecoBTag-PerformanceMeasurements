@@ -27,7 +27,7 @@ git clone https://github.com/veelken/mcStitching.git HLTrigger/mcStitching
 git clone https://github.com/missirol/JMETriggerAnalysis.git -o missirol -b phase2
 
 # BTV setup
-git clone -b PhaseIIOnline --depth 1 https://github.com/johnalison/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
+git clone -b PhaseIIOnline --depth 1 https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
 
 # Get the latest DeepCSV and DeepJet training files. not pretty, but works:
 cd RecoBTag/Combined/data/DeepFlavour_Phase2/
