@@ -369,9 +369,9 @@ for requiredGroup in process.btagana.groups:
 
 process.btagana.MaxEta                = 4.5
 process.btagana.MinPt                 = 25
-# process.btagana.triggerTable          = cms.InputTag('TriggerResults::RECO2') # Data and MC
+# process.btagana.triggerTable          = cms.InputTag('TriggerResults::HLTX') # Data and MC
 # process.btagana.triggerTable          = cms.InputTag('TriggerResults') # Data and MC
-process.btagana.triggerTable          = cms.InputTag("TriggerResults","","RECO2") # Data and MC
+process.btagana.triggerTable          = cms.InputTag("TriggerResults","","HLTX") # Data and MC
 process.btagana.HLTTriggerPathNames   = cms.vstring(
     'MC_JME',
       # L1T seeds
