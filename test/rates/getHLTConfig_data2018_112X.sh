@@ -18,8 +18,11 @@ inputFiles=(
 
 printf -v inputFilesStr '%s,' "${inputFiles[@]}"
 
-hltGetConfiguration /dev/CMSSW_11_2_0/GRun/V19 --full --offline --no-output --data --process MYHLT --type GRun \
- --prescale 2.0e34+ZB+HLTPhysics --globaltag 112X_dataRun3_HLT_v4 --input "${inputFilesStr%,}" --max-events -1 \
+# hltGetConfiguration /dev/CMSSW_11_2_0/GRun/V19 --full --offline --no-output --data --process MYHLT --type GRun \
+#  --prescale 2.0e34+ZB+HLTPhysics --globaltag 112X_dataRun3_HLT_v4 --input "${inputFilesStr%,}" --max-events -1 \
+#  > .tmp.py
+hltGetConfiguration /dev/CMSSW_12_0_0/GRun --full --offline --no-output --data --process MYHLT --type GRun \
+ --prescale 2.0e34+ZB+HLTPhysics --globaltag 112X_dataRun3_HLT_v4 --input "${inputFilesStr%,}" --max-events -1 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
  > .tmp.py
 
 edmConfigDump .tmp.py > "${OUTCFG}"
@@ -27,6 +30,6 @@ rm -f .tmp.py
 
 cat >> "${OUTCFG}" <<@EOF
 
-from HLTrigger.Configuration.customizeHLTforCMSSW import customiseFor2018Input
-customiseFor2018Input(process)
+# from HLTrigger.Configuration.customizeHLTforCMSSW import customiseFor2018Input
+# customiseFor2018Input(process)
 @EOF
