@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OUTCFG="${CMSSW_BASE}"/src/JMETriggerAnalysis/Common/python/configs/HLT_dev_CMSSW_11_2_0_GRun_V19_Data_NoOutput_configDump.py
+OUTCFG="${CMSSW_BASE}"/src/RecoBTag/PerformanceMeasurements/python/Configs/HLT_dev_CMSSW_12_0_0_GRun_V3_Data_NoOutput_configDump.py
 
 inputFiles=(
   # run=323775, ls=[53,62]
