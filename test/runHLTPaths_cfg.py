@@ -68,7 +68,14 @@ options.register(
   VarParsing.varType.string,
   'keyword to define HLT reconstruction'
 )
+options.register(
+    'ptMinThreshold', 0.9,
+  VarParsing.multiplicity.singleton,
+  VarParsing.varType.float,
+  'pt min for tracks - to study'
+)
 options.setDefault('maxEvents', -1)
+options.setDefault('ptMinThreshold', 0.9)
 options.parseArguments()
 globalTag = options.globalTag
 
@@ -110,11 +117,26 @@ elif options.reco == 'HLT_GRun':
     process = fixForGRunConfig(process)
     update_jmeCalibs = True
 
-elif options.reco == 'HLT_Run3TRK':
+elif options.reco == 'HLT_GRun_PatatrackQuadruplets':
+    # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_MC import cms, process
+    process = fixForGRunConfig(process)
+    from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
+    process = customizeHLTforPatatrack(process)
+    update_jmeCalibs = True
+
+elif options.reco == 'HLT_GRun_PatatrackTriplets':
+    # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_MC import cms, process
+    process = fixForGRunConfig(process)
+    from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
+    process = customizeHLTforPatatrackTriplets(process)
+    update_jmeCalibs = True
+
+elif options.reco == 'HLT_Run3TRK' or options.reco == 'HLT_Run3TRK_Pt':
     # (a) Run-3 tracking: standard
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
+    if options.reco == 'HLT_Run3TRK_Pt': process = customizePt(process, options.ptMinThreshold)
     update_jmeCalibs = True
 
     if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
@@ -264,6 +286,14 @@ elif options.reco == 'HLT_Run3TRKForBTag_3':
     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltPixelVertices", nVertices = 2)
+elif options.reco == 'HLT_Run3TRKForBTag_Pt':
+    # (a) Run-3 tracking: standard
+    # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_MC import cms, process
+    from RecoBTag.PerformanceMeasurements.customise_TRK import *
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    process = customiseRun3BTagRegionalTracks(process, clean=False, vertex="hltTrimmedPixelVertices", nVertices = 2)
+    process = customizePt(process, options.ptMinThreshold)
 else:
   raise RuntimeError('keyword "reco = '+options.reco+'" not recognised')
 
@@ -296,8 +326,8 @@ keepPaths = [
   # 'MC_*AK8Calo*',
   # 'MC_*DeepCSV*',
   # 'MC_*CaloBTagDeepCSV*',
-  'MC_*PFBTagDeepCSV*',
-  'MC_ReducedIterativeTracking*',
+  # 'MC_*PFBTagDeepCSV*',
+  # 'MC_ReducedIterativeTracking*',
   # 'MC_*DeepJet*',
   # 'HLT_PFJet*_v*',
   # 'HLT_AK4PFJet*_v*',
@@ -306,6 +336,7 @@ keepPaths = [
   # 'HLT_PFMET*_PFMHT*_v*',
 
   # 'HLT_*DeepCSV*_v*',
+  'HLT_*_v*',
 ]
 # list of paths that are kept
 listOfPaths = []
@@ -358,6 +389,7 @@ if options.reco == 'HLT_Run3TRKMod2':
 
 if "HLT_Run3TRKPixelOnly" in options.reco:
     process = customizeMinHitsAndPt(process)
+    process = customizePt(process, options.ptMinThreshold)
 
 if options.reco == 'HLT_BTagROI':
     if options.runPuppiJetVariables:

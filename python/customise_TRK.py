@@ -119,6 +119,11 @@ def customiseRun3BTagRegionalTracks(process, clean=False, vertex="hltTrimmedPixe
         process.HLTIterativeTrackingIteration0
     )
 
+    # process.hltParticleFlowClusterECALForMuonsMF.skipPS = cms.bool(True)
+    # process.hltParticleFlowClusterECALForMuonsMFScoutingNoVtx.skipPS = cms.bool(True)
+    # process.hltParticleFlowClusterECALL1Seeded.skipPS = cms.bool(True)
+    # process.hltParticleFlowClusterECALUnseeded.skipPS = cms.bool(True)
+
     return process
 
 def customisePFForPixelTracks(process, tracksToUse = "hltPixelTracks"):
@@ -380,8 +385,8 @@ def customizeVertices2(process):
 
 def customizeMinHitsAndPt(process, doForPat=False):
     # ptValue = 0.8
-    # ptValue = 0.9
-    ptValue = 0.3
+    ptValue = 0.9
+    # ptValue = 0.3
 
     if hasattr(process, "hltPixelTracksCleanForBTag"):
         process.hltPixelTracksCleanForBTag.ptMin = cms.double(ptValue)
@@ -418,6 +423,24 @@ def customizeMinHitsAndPt(process, doForPat=False):
         process.hltCombinedSecondaryVertex.trackSelection.qualityClass = cms.string('loose')
         process.hltCombinedSecondaryVertexV2.trackPseudoSelection.qualityClass = cms.string('loose')
         process.hltCombinedSecondaryVertexV2.trackSelection.qualityClass = cms.string('loose')
+
+    return process
+
+def customizePt(process, ptMinThreshold=0.9, doForPat=False):
+    # ptValue = 0.8
+    # ptValue = 0.9
+    ptValue = ptMinThreshold
+    # ptValue = 0.3
+
+    if hasattr(process, "hltPixelTracksCleanForBTag"):
+        process.hltPixelTracksCleanForBTag.ptMin = cms.double(ptValue)
+
+    process.hltVerticesPF.TkFilterParameters.minPt = cms.double(ptValue)
+    process.hltDeepInclusiveVertexFinderPF.minPt = cms.double(ptValue)
+    process.hltDeepTrackVertexArbitratorPF.trackMinPt = cms.double(ptValue)
+    process.hltDeepCombinedSecondaryVertexBJetTagsInfos.computer.trackSelection.ptMin = cms.double(ptValue)
+    if doForPat:
+        process.hltDeepCombinedSecondaryVertexBJetPatTagInfos.computer.trackSelection.ptMin = cms.double(ptValue)
 
     return process
 
