@@ -28,8 +28,8 @@ hltGetConfiguration /dev/CMSSW_12_0_0/GRun --full --offline --no-output --data -
 edmConfigDump .tmp.py > "${OUTCFG}"
 rm -f .tmp.py
 
-cat >> "${OUTCFG}" <<@EOF
+# cat >> "${OUTCFG}" <<@EOF
 
 # from HLTrigger.Configuration.customizeHLTforCMSSW import customiseFor2018Input
 # customiseFor2018Input(process)
-@EOF
+# @EOF

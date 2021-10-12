@@ -79,20 +79,66 @@ def fixForGRunConfig(process):
   return process
 
 if opts.reco == 'HLT_GRun_oldJECs':
-  from JMETriggerAnalysis.Common.configs.HLT_dev_CMSSW_11_2_0_GRun_V19_Data_NoOutput_configDump import cms, process
+  from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_Data_NoOutput_configDump import cms, process
   process = fixForGRunConfig(process)
   update_jmeCalibs = False
 
 elif opts.reco == 'HLT_GRun':
-  from JMETriggerAnalysis.Common.configs.HLT_dev_CMSSW_11_2_0_GRun_V19_Data_NoOutput_configDump import cms, process
+  from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_Data_NoOutput_configDump import cms, process
   process = fixForGRunConfig(process)
   update_jmeCalibs = True
 
+elif opts.reco == 'HLT_GRun_PatatrackQuadruplets':
+    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_Data_NoOutput_configDump import cms, process
+    process = fixForGRunConfig(process)
+    from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
+    process = customizeHLTforPatatrack(process)
+    update_jmeCalibs = True
+
+    if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
+        process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
+
+    if hasattr(process, 'hltIter1ClustersRefRemoval'):
+        process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
+
+    for _tmpPathName in [
+        'AlCa_LumiPixelsCounts_ZeroBias_v1',
+        'AlCa_LumiPixelsCounts_Random_v1',
+    ]:
+        if hasattr(process, _tmpPathName):
+            _tmpPath = getattr(process, _tmpPathName)
+            _tmpPath.remove(process.hltSiPixelDigis)
+            _tmpPath.remove(process.hltSiPixelClusters)
+            _tmpPath.associate(process.HLTDoLocalPixelTask)
+
+elif opts.reco == 'HLT_GRun_PatatrackTriplets':
+    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_Data_NoOutput_configDump import cms, process
+    process = fixForGRunConfig(process)
+    from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
+    process = customizeHLTforPatatrackTriplets(process)
+    update_jmeCalibs = True
+
+    if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
+        process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
+
+    if hasattr(process, 'hltIter1ClustersRefRemoval'):
+        process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
+
+    for _tmpPathName in [
+        'AlCa_LumiPixelsCounts_ZeroBias_v1',
+        'AlCa_LumiPixelsCounts_Random_v1',
+    ]:
+        if hasattr(process, _tmpPathName):
+            _tmpPath = getattr(process, _tmpPathName)
+            _tmpPath.remove(process.hltSiPixelDigis)
+            _tmpPath.remove(process.hltSiPixelClusters)
+            _tmpPath.associate(process.HLTDoLocalPixelTask)
+
 elif opts.reco == 'HLT_Run3TRK':
   # (a) Run-3 tracking: standard
-  from JMETriggerAnalysis.Common.configs.HLT_dev_CMSSW_11_2_0_GRun_V19_Data_NoOutput_configDump import cms, process
-  from HLTrigger.Configuration.customizeHLTRun3Tracking import customizeHLTRun3Tracking
-  process = customizeHLTRun3Tracking(process)
+  from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_Data_NoOutput_configDump import cms, process
+  from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+  process = customizeHLTforRun3Tracking(process)
   update_jmeCalibs = True
 
   if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
@@ -100,6 +146,12 @@ elif opts.reco == 'HLT_Run3TRK':
 
   if hasattr(process, 'hltIter1ClustersRefRemoval'):
     process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
+
+  def prescale_path(path,ps_service):
+    for pset in ps_service.prescaleTable:
+        if pset.pathName.value() == path.label():
+            pset.prescales = [0]*len(pset.prescales)
+  prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16,process.PrescaleService)
 
   for _tmpPathName in [
     'AlCa_LumiPixelsCounts_ZeroBias_v1',
@@ -113,7 +165,7 @@ elif opts.reco == 'HLT_Run3TRK':
 
 elif opts.reco == 'HLT_Run3TRKWithPU':
   # (b) Run-3 tracking: all pixel vertices
-  from JMETriggerAnalysis.Common.configs.HLT_dev_CMSSW_11_2_0_GRun_V19_Data_NoOutput_configDump import cms, process
+  from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_Data_NoOutput_configDump import cms, process
   from HLTrigger.Configuration.customizeHLTRun3Tracking import customizeHLTRun3TrackingAllPixelVertices
   process = customizeHLTRun3TrackingAllPixelVertices(process)
   update_jmeCalibs = True
@@ -292,15 +344,15 @@ if opts.dumpPython is not None:
 
 # printouts
 if opts.verbosity > 0:
-  print '--- hltResults_cfg.py ---------'
-  print ''
-  print 'option: output =', opts.output
-  print 'option: reco =', opts.reco
-  print 'option: dumpPython =', opts.dumpPython
-  print ''
-  print 'process.name_() =', process.name_()
-  print 'process.GlobalTag =', process.GlobalTag.dumpPython()
-  print 'process.source =', process.source.dumpPython()
-  print 'process.maxEvents =', process.maxEvents.dumpPython()
-  print 'process.options =', process.options.dumpPython()
-  print '-------------------------------'
+  print ('--- hltResults_cfg.py ---------')
+  print ('')
+  print ('option: output =', opts.output)
+  print ('option: reco =', opts.reco)
+  print ('option: dumpPython =', opts.dumpPython)
+  print ('')
+  print ('process.name_() =', process.name_())
+  print ('process.GlobalTag =', process.GlobalTag.dumpPython())
+  print ('process.source =', process.source.dumpPython())
+  print ('process.maxEvents =', process.maxEvents.dumpPython())
+  print ('process.options =', process.options.dumpPython())
+  print ('-------------------------------')

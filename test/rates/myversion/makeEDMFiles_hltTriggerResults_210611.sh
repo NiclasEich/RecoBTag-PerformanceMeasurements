@@ -21,9 +21,11 @@ declare -A samplesMap
 samplesMap["Run2018D_EphemeralHLTPhysics1_RAW_run323775_ls52to151"]="${CMSSW_BASE}"/src/RecoBTag/PerformanceMeasurements/test/rates/data/tmp.json
 
 recoKeys=(
-  HLT_GRun_oldJECs
+  # HLT_GRun_oldJECs
   HLT_GRun
-  HLT_Run3TRK
+  HLT_GRun_PatatrackTriplets
+  HLT_GRun_PatatrackQuadruplets
+  # HLT_Run3TRK
   # HLT_Run3TRKWithPU
 )
 
@@ -37,8 +39,8 @@ for recoKey in "${recoKeys[@]}"; do
     echo ${sampleName}
 
     # bdriver -c .tmp_${recoKey}_cfg.py --customize-cfg -m ${NEVT} -n 500 --cpus 1 --mem 2G --time 02:00:00 \
-    bdriver -c .tmp_${recoKey}_cfg.py --customize-cfg -m ${NEVT} -n 500 --JobFlavour longlunch \
-      -d ${sampleName} -p 0 -o ${ODIR}/${recoKey}/${sampleKey} \
+    bdriver -c .tmp_${recoKey}_cfg.py --customize-cfg -m ${NEVT} -n 500 --export-LD-LIBRARY-PATH -b htc \
+      -d ${sampleName} -p 0 -o ${ODIR}/${recoKey}/${sampleKey} --cpus 1 --mem 1999 --time 03:00:00\
       --customise-commands \
        '# output' \
        "if hasattr(process, 'hltOutput'):" \
