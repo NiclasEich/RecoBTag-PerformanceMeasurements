@@ -74,8 +74,10 @@ options.register(
   VarParsing.varType.float,
   'pt min for tracks - to study'
 )
-options.setDefault('maxEvents', -1)
 options.setDefault('ptMinThreshold', 0.9)
+## 'maxEvents' is already registered by the Framework, changing default value
+options.setDefault('maxEvents', -1)
+
 options.parseArguments()
 globalTag = options.globalTag
 
@@ -99,13 +101,53 @@ def fixForGRunConfig(process):
       producer.rhoVtxSig = cms.double(999.0)
   return process
 
+def fixAlca(process):
+	#  see https://github.com/cms-sw/cmssw/pull/35567
+	if 'AlCa_LumiPixelsCounts_Random_v1' in process.__dict__:
+		# redefine the path to use the HLTDoLocalPixelSequence
+		process.AlCa_LumiPixelsCounts_Random_v1 = cms.Path(
+			process.HLTBeginSequenceRandom +
+			process.hltScalersRawToDigi +
+			process.hltPreAlCaLumiPixelsCountsRandom +
+			process.hltPixelTrackerHVOn +
+			process.HLTDoLocalPixelSequence +
+			process.hltAlcaPixelClusterCounts +
+			process.HLTEndSequence )
+	if 'AlCa_LumiPixelsCounts_ZeroBias_v1' in process.__dict__:
+		# redefine the path to use the HLTDoLocalPixelSequence
+		process.AlCa_LumiPixelsCounts_ZeroBias_v1 = cms.Path(
+			process.HLTBeginSequence +
+			process.hltScalersRawToDigi +
+			process.hltL1sZeroBias +
+			process.hltPreAlCaLumiPixelsCountsZeroBias +
+			process.hltPixelTrackerHVOn +
+			process.HLTDoLocalPixelSequence +
+			process.hltAlcaPixelClusterCounts +
+			process.HLTEndSequence )
+
+	#  process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")
+	#  find ../../../../HLTrigger/Configuration/python/customizeHLTforPatatrack.py -type f -exec sed -i 's/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone()/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")/g' {} \;
+
+	return process
+
+def prescale_path(path,ps_service):
+  for pset in ps_service.prescaleTable:
+      if pset.pathName.value() == path.label():
+          pset.prescales = [0]*len(pset.prescales)
+
+
 ###
 ### HLT configuration
 ###
 if options.runOnData:
-    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_Data import cms, process
+    # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_Data import cms, process
+    if options.runTiming:
+        from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_configDump_Data_timing import cms, process
+    else:
+        from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_configDump_Data import cms, process
 else:
-    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_MC import cms, process
+    # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_MC import cms, process
+    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_configDump_MC import cms, process
 
 if options.reco == 'HLT_GRun_oldJECs':
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
@@ -123,6 +165,8 @@ elif options.reco == 'HLT_GRun_PatatrackQuadruplets':
     from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
     process = customizeHLTforPatatrack(process)
     update_jmeCalibs = True
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif options.reco == 'HLT_GRun_PatatrackTriplets':
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_MC import cms, process
@@ -130,45 +174,49 @@ elif options.reco == 'HLT_GRun_PatatrackTriplets':
     from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
     process = customizeHLTforPatatrackTriplets(process)
     update_jmeCalibs = True
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif options.reco == 'HLT_Run3TRK' or options.reco == 'HLT_Run3TRK_Pt':
     # (a) Run-3 tracking: standard
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     if options.reco == 'HLT_Run3TRK_Pt': process = customizePt(process, options.ptMinThreshold)
     update_jmeCalibs = True
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
     if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
       process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
 
     if hasattr(process, 'hltIter1ClustersRefRemoval'):
       process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
-
-    for _tmpPathName in [
-      'AlCa_LumiPixelsCounts_ZeroBias_v1',
-      'AlCa_LumiPixelsCounts_Random_v1',
-    ]:
-      if hasattr(process, _tmpPathName):
-        _tmpPath = getattr(process, _tmpPathName)
-        _tmpPath.remove(process.hltSiPixelDigis)
-        _tmpPath.remove(process.hltSiPixelClusters)
-        _tmpPath.associate(process.HLTDoLocalPixelTask)
+    #
+    # for _tmpPathName in [
+    #   'AlCa_LumiPixelsCounts_ZeroBias_v1',
+    #   'AlCa_LumiPixelsCounts_Random_v1',
+    # ]:
+    #   if hasattr(process, _tmpPathName):
+    #     _tmpPath = getattr(process, _tmpPathName)
+    #     _tmpPath.remove(process.hltSiPixelDigis)
+    #     _tmpPath.remove(process.hltSiPixelClusters)
+    #     _tmpPath.associate(process.HLTDoLocalPixelTask)
 
 elif options.reco == 'HLT_Run3TRKMod':
     # (a) Run-3 tracking: standard
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
 elif options.reco == 'HLT_Run3TRKMod2':
     # (a) Run-3 tracking: standard
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
 elif options.reco == 'HLT_Run3TRKWithPU':
     # (b) Run-3 tracking: all pixel vertices
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3TrackingAllPixelVertices
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3TrackingAllPixelVertices
     process = customizeHLTforRun3TrackingAllPixelVertices(process)
     update_jmeCalibs = True
 
@@ -177,74 +225,88 @@ elif options.reco == 'HLT_Run3TRKWithPU':
 
     if hasattr(process, 'hltIter1ClustersRefRemoval'):
       process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
-
-    for _tmpPathName in [
-      'AlCa_LumiPixelsCounts_ZeroBias_v1',
-      'AlCa_LumiPixelsCounts_Random_v1',
-    ]:
-      if hasattr(process, _tmpPathName):
-        _tmpPath = getattr(process, _tmpPathName)
-        _tmpPath.remove(process.hltSiPixelDigis)
-        _tmpPath.remove(process.hltSiPixelClusters)
-        _tmpPath.associate(process.HLTDoLocalPixelTask)
+    #
+    # for _tmpPathName in [
+    #   'AlCa_LumiPixelsCounts_ZeroBias_v1',
+    #   'AlCa_LumiPixelsCounts_Random_v1',
+    # ]:
+    #   if hasattr(process, _tmpPathName):
+    #     _tmpPath = getattr(process, _tmpPathName)
+    #     _tmpPath.remove(process.hltSiPixelDigis)
+    #     _tmpPath.remove(process.hltSiPixelClusters)
+    #     _tmpPath.associate(process.HLTDoLocalPixelTask)
 elif options.reco == 'HLT_Run3TRKPixelOnly':
     # (c) Run-3 tracking: pixel only tracks
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
     process = customizeHLTforRun3Tracking(process)
     process = customisePFForPixelTracks(process)
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned':
     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
     process = customizeHLTforRun3Tracking(process)
     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag")
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned2':
     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
     process = customizeHLTforRun3Tracking(process)
     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltTrimmedPixelVertices", nVertices = 2)
     update_jmeCalibs = True
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
     if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
       process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
 
     if hasattr(process, 'hltIter1ClustersRefRemoval'):
       process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
-
-    for _tmpPathName in [
-      'AlCa_LumiPixelsCounts_ZeroBias_v1',
-      'AlCa_LumiPixelsCounts_Random_v1',
-    ]:
-      if hasattr(process, _tmpPathName):
-        _tmpPath = getattr(process, _tmpPathName)
-        _tmpPath.remove(process.hltSiPixelDigis)
-        _tmpPath.remove(process.hltSiPixelClusters)
-        _tmpPath.associate(process.HLTDoLocalPixelTask)
+    #
+    # for _tmpPathName in [
+    #   'AlCa_LumiPixelsCounts_ZeroBias_v1',
+    #   'AlCa_LumiPixelsCounts_Random_v1',
+    # ]:
+    #   if hasattr(process, _tmpPathName):
+    #     _tmpPath = getattr(process, _tmpPathName)
+    #     _tmpPath.remove(process.hltSiPixelDigis)
+    #     _tmpPath.remove(process.hltSiPixelClusters)
+    #     _tmpPath.associate(process.HLTDoLocalPixelTask)
 
 elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned3':
     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
     process = customizeHLTforRun3Tracking(process)
     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltPixelVertices", nVertices = 4)
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned4':
     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
     process = customizeHLTforRun3Tracking(process)
     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltPixelVertices", nVertices = 2)
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 elif options.reco == 'HLT_BTagROI':
     # (e) Run-3 tracking: ROI PF approach
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
     from RecoBTag.PerformanceMeasurements.customise_hlt import *
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = addPaths_PFJetsForBtag(process)
     pvSource                 = "hltVerticesPFFilterForBTag"
@@ -269,31 +331,43 @@ elif options.reco == 'HLT_Run3TRKForBTag':
     # (a) Run-3 tracking: standard
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks(process, clean=False, vertex="hltTrimmedPixelVertices", nVertices = 2)
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 elif options.reco == 'HLT_Run3TRKForBTag_2':
     # (a) Run-3 tracking: standard
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltTrimmedPixelVertices", nVertices = 2)
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 elif options.reco == 'HLT_Run3TRKForBTag_3':
     # (a) Run-3 tracking: standard
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_MC import cms, process
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltPixelVertices", nVertices = 2)
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 elif options.reco == 'HLT_Run3TRKForBTag_Pt':
     # (a) Run-3 tracking: standard
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_MC import cms, process
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks(process, clean=False, vertex="hltTrimmedPixelVertices", nVertices = 2)
     process = customizePt(process, options.ptMinThreshold)
+    process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 else:
   raise RuntimeError('keyword "reco = '+options.reco+'" not recognised')
 

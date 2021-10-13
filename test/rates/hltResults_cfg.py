@@ -101,21 +101,28 @@ def fixAlca(process):
 			process.HLTDoLocalPixelSequence +
 			process.hltAlcaPixelClusterCounts +
 			process.HLTEndSequence )
-	
+
 	#  process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")
 	#  find ../../../../HLTrigger/Configuration/python/customizeHLTforPatatrack.py -type f -exec sed -i 's/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone()/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")/g' {} \;
-			
+
 	return process
+
+def prescale_path(path,ps_service):
+    for pset in ps_service.prescaleTable:
+        if pset.pathName.value() == path.label():
+            pset.prescales = [0]*len(pset.prescales)
 
 if opts.reco == 'HLT_GRun_oldJECs':
   from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_Data_NoOutput_configDump import cms, process
   process = fixForGRunConfig(process)
   update_jmeCalibs = False
+  prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif opts.reco == 'HLT_GRun':
   from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_Data_NoOutput_configDump import cms, process
   process = fixForGRunConfig(process)
   update_jmeCalibs = True
+  prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif opts.reco == 'HLT_GRun_PatatrackQuadruplets':
     from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_Data_NoOutput_configDump import cms, process
@@ -124,12 +131,13 @@ elif opts.reco == 'HLT_GRun_PatatrackQuadruplets':
     process = customizeHLTforPatatrack(process)
     update_jmeCalibs = True
     process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
-    #  if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
-        #  process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
+    if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
+        process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
 
-    #  if hasattr(process, 'hltIter1ClustersRefRemoval'):
-        #  process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
+    if hasattr(process, 'hltIter1ClustersRefRemoval'):
+        process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
 
     #  for _tmpPathName in [
         #  'AlCa_LumiPixelsCounts_ZeroBias_v1',
@@ -148,12 +156,13 @@ elif opts.reco == 'HLT_GRun_PatatrackTriplets':
     process = customizeHLTforPatatrackTriplets(process)
     update_jmeCalibs = True
     process = fixAlca(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
-    #  if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
-        #  process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
+    if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
+        process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
 
-    #  if hasattr(process, 'hltIter1ClustersRefRemoval'):
-        #  process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
+    if hasattr(process, 'hltIter1ClustersRefRemoval'):
+        process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
 
     #  for _tmpPathName in [
         #  'AlCa_LumiPixelsCounts_ZeroBias_v1',
@@ -168,22 +177,18 @@ elif opts.reco == 'HLT_GRun_PatatrackTriplets':
 elif opts.reco == 'HLT_Run3TRK':
   # (a) Run-3 tracking: standard
   from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_Data_NoOutput_configDump import cms, process
-  from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+  # from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+  from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
   process = customizeHLTforRun3Tracking(process)
   update_jmeCalibs = True
   process = fixAlca(process)
+  prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
-  #  if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
-    #  process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
+  if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
+      process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
 
-  #  if hasattr(process, 'hltIter1ClustersRefRemoval'):
-    #  process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
-
-  #  def prescale_path(path,ps_service):
-    #  for pset in ps_service.prescaleTable:
-        #  if pset.pathName.value() == path.label():
-            #  pset.prescales = [0]*len(pset.prescales)
-  #  prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16,process.PrescaleService)
+  if hasattr(process, 'hltIter1ClustersRefRemoval'):
+      process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
 
   #  for _tmpPathName in [
     #  'AlCa_LumiPixelsCounts_ZeroBias_v1',

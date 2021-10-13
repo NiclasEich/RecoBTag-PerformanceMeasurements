@@ -6,8 +6,8 @@ from Configuration.ProcessModifiers.pixelNtupletFit_cff import pixelNtupletFit
 from Configuration.ProcessModifiers.gpu_cff import gpu
 
 ### Default
-def customizeHLTforRun3Tracking(process):
-    
+def customizeHLTforRun3Tracking(process, quadrupletOnly = False):
+
     process.extend(pixelNtupletFit)
     process.extend(gpu)
 
@@ -24,17 +24,19 @@ def customizeHLTforRun3Tracking(process):
             producer.zetaVtxSig = cms.double(999.0)
         if not hasattr(producer,'rhoVtxSig'):
             producer.rhoVtxSig = cms.double(999.0)
-            
-    process = customizeHLTforPatatrack(process)    
+
+    process = customizeHLTforPatatrack(process)
     if hasattr(process,'hltPixelTracksCUDA'):
-        process.hltPixelTracksCUDA.includeJumpingForwardDoublets = cms.bool(True)
-        process.hltPixelTracksCUDA.minHitsPerNtuplet             = cms.uint32(3)
+        if quadrupletOnly==False:
+            process.hltPixelTracksCUDA.includeJumpingForwardDoublets = cms.bool(True)
+            process.hltPixelTracksCUDA.minHitsPerNtuplet             = cms.uint32(3)
         process.hltPixelTracksCUDA.idealConditions               = cms.bool(False)
         process.hltPixelTracksCUDA.fillStatistics                = cms.bool(True)
         process.hltPixelTracksCUDA.useSimpleTripletCleaner       = cms.bool(False)
     if hasattr(process,'hltPixelTracksSoA'):
-        process.hltPixelTracksSoA.cpu.includeJumpingForwardDoublets = cms.bool(True)
-        process.hltPixelTracksSoA.cpu.minHitsPerNtuplet             = cms.uint32(3)
+        if quadrupletOnly==False:
+            process.hltPixelTracksSoA.cpu.includeJumpingForwardDoublets = cms.bool(True)
+            process.hltPixelTracksSoA.cpu.minHitsPerNtuplet             = cms.uint32(3)
         process.hltPixelTracksSoA.cpu.idealConditions               = cms.bool(False)
         process.hltPixelTracksSoA.cpu.fillStatistics                = cms.bool(True)
         process.hltPixelTracksSoA.cpu.useSimpleTripletCleaner       = cms.bool(False)
@@ -87,7 +89,7 @@ def customizeHLTforRun3Tracking(process):
             ),
             ignoreVertices = cms.bool(False)
         )
-    
+
     if hasattr(process,'hltMergedTracks'):
         #delattr(process,'hltMergedTracks')
         process.hltMergedTracks = process.hltIter0PFlowTrackSelectionHighPurity.clone()
@@ -109,14 +111,14 @@ def customizeHLTforRun3Tracking(process):
 			+process.hltIter0PFlowTrackCutClassifier
 			+process.hltMergedTracks
         )
-    
+
     if hasattr(process,'HLTIterativeTrackingIter02'):
         #delattr(process,'HLTIterativeTrackingIter02')
         process.HLTIterativeTrackingIter02 = cms.Sequence( process.HLTIterativeTrackingIteration0 )
-    
+
     if hasattr(process,'MC_ReducedIterativeTracking_v12'):
         #delattr(process,'MC_ReducedIterativeTracking_v12')
-        process.MC_ReducedIterativeTracking_v12 = cms.Path( 
+        process.MC_ReducedIterativeTracking_v12 = cms.Path(
             process.HLTBeginSequence +
             process.hltPreMCReducedIterativeTracking +
             process.HLTDoLocalPixelSequence +
@@ -148,8 +150,8 @@ def customizeHLTforRun3TrackingAllPixelVertices(process):
             producer.zetaVtxSig = cms.double(999.0)
         if not hasattr(producer,'rhoVtxSig'):
             producer.rhoVtxSig = cms.double(999.0)
-    
-    process = customizeHLTforPatatrack(process)    
+
+    process = customizeHLTforPatatrack(process)
     if hasattr(process,'hltPixelTracksCUDA'):
         process.hltPixelTracksCUDA.includeJumpingForwardDoublets = cms.bool(True)
         process.hltPixelTracksCUDA.minHitsPerNtuplet             = cms.uint32(3)
@@ -197,7 +199,7 @@ def customizeHLTforRun3TrackingAllPixelVertices(process):
         zetaVtx = cms.double(0.3),
         rhoVtx = cms.double(0.1),
         zetaVtxScale = cms.double(5.0),
-        rhoVtxScale = cms.double(2.5), 
+        rhoVtxScale = cms.double(2.5),
         zetaVtxSig = cms.double(2.0),
         rhoVtxSig = cms.double(2.0),
         nSigmaDtVertex = cms.double(0),
@@ -209,7 +211,7 @@ def customizeHLTforRun3TrackingAllPixelVertices(process):
         process.hltIter0PFLowPixelSeedsFromPixelTracks.includeFourthHit = cms.bool(True)
         process.hltIter0PFLowPixelSeedsFromPixelTracks.InputVertexCollection = cms.InputTag( "hltPixelVertices" )
         process.hltIter0PFLowPixelSeedsFromPixelTracks.InputCollection = cms.InputTag("hltPixelTracksClean")
-    
+
     if hasattr(process,'hltIter0PFlowTrackCutClassifier'):
         #delattr(process,'hltIter0PFlowTrackCutClassifier')
         process.hltIter0PFlowTrackCutClassifier = cms.EDProducer("TrackCutClassifier",
@@ -244,7 +246,7 @@ def customizeHLTforRun3TrackingAllPixelVertices(process):
             ),
             ignoreVertices = cms.bool(False)
         )
-    
+
     if hasattr(process,'hltMergedTracks'):
         #delattr(process,'hltMergedTracks')
         process.hltMergedTracks = process.hltIter0PFlowTrackSelectionHighPurity.clone()
@@ -268,14 +270,14 @@ def customizeHLTforRun3TrackingAllPixelVertices(process):
         +process.hltIter0PFlowTrackCutClassifier
         +process.hltMergedTracks
     )
-    
+
     if hasattr(process,'HLTIterativeTrackingIter02'):
         #delattr(process,'HLTIterativeTrackingIter02')
         process.HLTIterativeTrackingIter02 = cms.Sequence( process.HLTIterativeTrackingIteration0 )
-    
+
     if hasattr(process,'MC_ReducedIterativeTracking_v12'):
         #delattr(process,'MC_ReducedIterativeTracking_v12')
-        process.MC_ReducedIterativeTracking_v12 = cms.Path( 
+        process.MC_ReducedIterativeTracking_v12 = cms.Path(
             process.HLTBeginSequence +
             process.hltPreMCReducedIterativeTracking +
             process.HLTDoLocalPixelSequence +
