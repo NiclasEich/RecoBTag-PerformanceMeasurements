@@ -11,7 +11,8 @@ common = {
 	'eras' : ['Run3'],
     'runCaloJetVariables' : False,
     'runPuppiJetVariables' : False,
-	'globalTag' : '120X_mcRun3_2021_realistic_v4', # mc
+	# 'globalTag' : '120X_mcRun3_2021_realistic_v4', # mc
+	'globalTag' : '120X_mcRun3_2021_realistic_v9', # mc
 	# 'globalTag' : '113X_dataRun3_HLT_v3', # data
 	'maxJetEta' : 2.5,
 	'usePrivateJEC' : False,

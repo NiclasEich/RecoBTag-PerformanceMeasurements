@@ -11,7 +11,8 @@ common = {
 	'usePuppiForFatJets' : True,
 	'usePuppiForBTagging' : False,
 	# 'dataGlobalTag' : '113X_dataRun3_HLT_v3', #for data
-	'mcGlobalTag' : '120X_mcRun3_2021_realistic_v4', #for MC
+	# 'mcGlobalTag' : '120X_mcRun3_2021_realistic_v4', #for MC
+	'mcGlobalTag' : '120X_mcRun3_2021_realistic_v9', #for MC
 	'remakeAllDiscr' : True,
 	'maxJetEta' : 2.5,
 	'usePrivateJEC' : False,
