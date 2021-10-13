@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OUTCFG="${CMSSW_BASE}"/src/RecoBTag/PerformanceMeasurements/python/Configs/HLT_dev_CMSSW_12_0_0_GRun_V3_Data_NoOutput_configDump.py
+OUTCFG="${CMSSW_BASE}"/src/RecoBTag/PerformanceMeasurements/python/Configs/HLT_dev_CMSSW_12_0_2_GRun_V6_Data_NoOutput_configDump.py
 
 inputFiles=(
   # run=323775, ls=[53,62]
@@ -21,12 +21,31 @@ printf -v inputFilesStr '%s,' "${inputFiles[@]}"
 # hltGetConfiguration /dev/CMSSW_11_2_0/GRun/V19 --full --offline --no-output --data --process MYHLT --type GRun \
 #  --prescale 2.0e34+ZB+HLTPhysics --globaltag 112X_dataRun3_HLT_v4 --input "${inputFilesStr%,}" --max-events -1 \
 #  > .tmp.py
-hltGetConfiguration /dev/CMSSW_12_0_0/GRun --full --offline --no-output --data --process MYHLT --type GRun \
- --prescale 2.0e34+ZB+HLTPhysics --globaltag 112X_dataRun3_HLT_v4 --input "${inputFilesStr%,}" --max-events -1 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+hltGetConfiguration /dev/CMSSW_12_0_0/GRun/V6 --full --no-output --data --process MYHLT --type GRun \
+ --prescale 2.0e34+ZB+HLTPhysics --globaltag auto:run3_hlt_GRun --input "${inputFilesStr%,}" --max-events -1 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
  > .tmp.py
 
-edmConfigDump .tmp.py > "${OUTCFG}"
-rm -f .tmp.py
+ # a. comment out the following lines:
+
+# _customInfo = {}
+# _customInfo['menuType'  ]= "GRun"
+# _customInfo['globalTags']= {}
+# _customInfo['globalTags'][True ] = "auto:run2_hlt_GRun"
+# _customInfo['globalTags'][False] = "auto:run2_mc_GRun"
+# _customInfo['inputFiles']={}
+# _customInfo['inputFiles'][True]  = "file:RelVal_Raw_GRun_DATA.root"
+# _customInfo['inputFiles'][False] = "file:RelVal_Raw_GRun_MC.root"
+# _customInfo['maxEvents' ]=  100
+# _customInfo['globalTag' ]= "auto:run2_hlt_GRun"
+# _customInfo['inputFile' ]=  ['file:RelVal_Raw_GRun_DATA.root']
+# _customInfo['realData'  ]=  True
+# from HLTrigger.Configuration.customizeHLTforALL import customizeHLTforAll
+# process = customizeHLTforAll(process,"GRun",_customInfo)
+
+# then call
+
+# edmConfigDump .tmp.py > "${OUTCFG}"
+# rm -f .tmp.py
 
 # cat >> "${OUTCFG}" <<@EOF
 
