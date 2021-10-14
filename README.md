@@ -15,6 +15,9 @@ git cms-addpkg HLTrigger/Configuration
 git cms-addpkg CommonTools/RecoAlgos
 git cms-addpkg RecoBTag/FeatureTools
 
+git cms-remote add SWuchterl
+git fetch SWuchterl
+
 git cherry-pick 89bfe7ede75fd673a1dfc906d91f351d69c6d822
 git cherry-pick cf180d9be688925a29c7684db1fd88d9d5e6b7e7
 git cherry-pick e682e2bda7cead0dc9394d8c992545d85c3c2c4c
@@ -35,7 +38,7 @@ cp /afs/cern.ch/work/m/missirol/public/run3/JESC/Run3Winter20_V2_MC/Run3Winter20
 
 git clone -b cleanup-devel --recursive https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
 
-find ../../../../HLTrigger/Configuration/python/customizeHLTforPatatrack.py -type f -exec sed -i 's/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone()/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")/g' {} \;
+find HLTrigger/Configuration/python/customizeHLTforPatatrack.py -type f -exec sed -i 's/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone()/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")/g' {} \;
 
 scram b -j12
 
