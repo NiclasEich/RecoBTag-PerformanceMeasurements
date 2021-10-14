@@ -408,7 +408,7 @@ elif options.reco == 'HLT_Run3TRK_Quadruplets':
     # (a) Run-3 tracking: standard
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_MC import cms, process
     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    process = customizeHLTforRun3Tracking(process, quadrupletOnly==True)
+    process = customizeHLTforRun3Tracking(process, quadrupletOnly=True)
     update_jmeCalibs = True
 
     if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
