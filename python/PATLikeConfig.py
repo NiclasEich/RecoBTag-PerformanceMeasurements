@@ -1,10 +1,10 @@
 import FWCore.ParameterSet.Config as cms
 
-def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True):
+def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roiReplace=False):
     # set some default collection variables
-    pfjets =                "hltAK4PFJets"                                  #original ak4PFJetsCHS
+    pfjets =                "hltAK4PFJets" if roiReplace==False else "hltAK4PFJetsROIForBTag"                                #original ak4PFJetsCHS
     puppijets =             "hltAK4PFPuppiJets"                                  #original ak4PFJetsCHS
-    pfjetsCorrected =       "hltAK4PFJetsCorrected"                         #original ak4PFJetsCHS
+    pfjetsCorrected =       "hltAK4PFJetsCorrected" if roiReplace==False else "hltAK4PFJetsCorrectedROIForBTag"                         #original ak4PFJetsCHS
     calojets =              "hltAK4CaloJets"                                #original ak4CaloJets
     calojetsCutted =        "hltSelectorCentralJets30L1FastJeta2p5"
     PFDeepCSVTags =         "hltDeepCombinedSecondaryVertexBPFPatJetTags"   #original pfDeepCSVJetTags
@@ -12,8 +12,8 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True):
     CaloDeepCSVTags =       "hltDeepCombinedSecondaryVertexCaloPatBJetTags"
     PFDeepFlavourTags =     "hltPFDeepFlavourPatJetTags"                       #original pfDeepFlavourJetTagsSlimmedDeepFlavour
     PFPuppiDeepFlavourTags ="hltPFPuppiDeepFlavourJetTags"                       #original pfDeepFlavourJetTagsSlimmedDeepFlavour
-    rho =                   "hltFixedGridRhoFastjetAll"                     #original fixedGridRhoFastjetAll
-    hltVertices =           "hltVerticesPFFilter"                           #original offlinePrimaryVertices
+    rho =                   "hltFixedGridRhoFastjetAll" if roiReplace==False else "hltFixedGridRhoFastjetAllROIForBTag"                     #original fixedGridRhoFastjetAll
+    hltVertices =           "hltVerticesPFFilter" if roiReplace==False else "hltVerticesPFFilterROIForBTag"                           #original offlinePrimaryVertices
     siPixelClusters =       "hltSiPixelClusters"                            #original siPixelClusters
     ecalRecHit =            "hltEcalRecHit"                                 #original ecalRecHit
     hbhereco =              "hltHbhereco"                                   #original hbhereco
@@ -21,11 +21,11 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True):
     horeco =                "hltHoreco"                                     #original horeco
     rpcRecHits =            "hltRpcRecHits"                                 #original rpcRecHits
     # tracks =                "hltMergedTracks"                               #original generalTracks
-    tracks =                "hltPFMuonMerging"                               #original generalTracks
+    tracks =                "hltPFMuonMerging" if roiReplace==False else "hltPFMuonMergingROIForBTag"                               #original generalTracks
     # tracks =                "hltPixelTracks"                               #original generalTracks
     payload =               "AK4PFHLT"                                      #original AK4PFchs
     payloadPuppi =          "AK4PFPuppiHLT"                                      #original AK4PFchs
-    particleFlow =          "hltParticleFlow"                               #original particleFlow
+    particleFlow =          "hltParticleFlow" if roiReplace==False else "hltParticleFlowROIForBTag"                               #original particleFlow
     puppi =                 "hltPFPuppi"                                    #original puppi
     puppiNoLep =            "hltPFPuppiNoLep"                               #original puppiNoLep
     beamSpot =              "hltOnlineBeamSpot"                             #original offlineBeamSpot
@@ -44,19 +44,34 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True):
     process.hltDeepBLifetimePFPatTagInfos = process.hltDeepBLifetimeTagInfosPF.clone(
         jets = cms.InputTag( pfjets )
     )
-    process.HLTBtagDeepCSVSequencePFPat = cms.Sequence(
-        process.hltVerticesPF
-        + process.hltVerticesPFSelector
-        + process.hltVerticesPFFilter
-        + process.hltDeepBLifetimePFPatTagInfos
-        + process.hltDeepInclusiveVertexFinderPF
-        + process.hltDeepInclusiveSecondaryVerticesPF
-        + process.hltDeepTrackVertexArbitratorPF
-        + process.hltDeepInclusiveMergedVerticesPF
-        + process.hltDeepSecondaryVertexPFPatTagInfos
-        + process.hltDeepCombinedSecondaryVertexBJetPatTagInfos
-        + process.hltDeepCombinedSecondaryVertexBPFPatJetTags
-    )
+    if roiReplace==False:
+        process.HLTBtagDeepCSVSequencePFPat = cms.Sequence(
+            process.hltVerticesPF
+            + process.hltVerticesPFSelector
+            + process.hltVerticesPFFilter
+            + process.hltDeepBLifetimePFPatTagInfos
+            + process.hltDeepInclusiveVertexFinderPF
+            + process.hltDeepInclusiveSecondaryVerticesPF
+            + process.hltDeepTrackVertexArbitratorPF
+            + process.hltDeepInclusiveMergedVerticesPF
+            + process.hltDeepSecondaryVertexPFPatTagInfos
+            + process.hltDeepCombinedSecondaryVertexBJetPatTagInfos
+            + process.hltDeepCombinedSecondaryVertexBPFPatJetTags
+        )
+    else:
+        process.HLTBtagDeepCSVSequencePFPat = cms.Sequence(
+            process.hltVerticesPFROIForBTag
+            + process.hltVerticesPFSelectorROIForBTag
+            + process.hltVerticesPFFilterROIForBTag
+            + process.hltDeepBLifetimePFPatTagInfos
+            + process.hltDeepInclusiveVertexFinderPF
+            + process.hltDeepInclusiveSecondaryVerticesPF
+            + process.hltDeepTrackVertexArbitratorPF
+            + process.hltDeepInclusiveMergedVerticesPF
+            + process.hltDeepSecondaryVertexPFPatTagInfos
+            + process.hltDeepCombinedSecondaryVertexBJetPatTagInfos
+            + process.hltDeepCombinedSecondaryVertexBPFPatJetTags
+        )
 
     # do the same for PuppiJets
 

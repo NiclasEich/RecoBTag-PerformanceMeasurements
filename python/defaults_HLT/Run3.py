@@ -6,10 +6,10 @@ common = {
                 'PuppiJetTagVar','PuppiJetTrack',
                 # 'PuppiJetInfo','PuppiJetSV','PuppiJetCSVTagVar','PuppiJetDeepCSV','PuppiJetDeepFlavour','PuppiJetCSVTagTrackVar','PuppiJetDeepFlavourFeat',
                 # 'PuppiJetTrack','PuppiJetTagVar',
-                'CaloJetInfo','CaloJetSV','CaloJetTrack','CaloJetCSVTagVar','CaloJetDeepCSV','CaloJetTagVar','CaloJetCSVTagTrackVar',
+                # 'CaloJetInfo','CaloJetSV','CaloJetTrack','CaloJetCSVTagVar','CaloJetDeepCSV','CaloJetTagVar','CaloJetCSVTagTrackVar',
                 ],
 	'eras' : ['Run3'],
-    'runCaloJetVariables' : True,
+    'runCaloJetVariables' : False,
     'runPuppiJetVariables' : False,
 	# 'globalTag' : '120X_mcRun3_2021_realistic_v4', # mc
 	'globalTag' : '120X_mcRun3_2021_realistic_v9', # mc

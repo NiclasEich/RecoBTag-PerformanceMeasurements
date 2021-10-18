@@ -444,7 +444,7 @@ def customizePt(process, ptMinThreshold=0.9, doForPat=False):
 
     return process
 
-def addDeepJet(process, doPF=True, doPuppi=False):
+def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
     from PhysicsTools.PatAlgos.slimming.primaryVertexAssociation_cfi import primaryVertexAssociation
     from RecoBTag.FeatureTools.pfDeepFlavourTagInfos_cfi import pfDeepFlavourTagInfos
     from RecoBTag.ONNXRuntime.pfDeepFlavourJetTags_cfi import pfDeepFlavourJetTags
@@ -452,11 +452,11 @@ def addDeepJet(process, doPF=True, doPuppi=False):
     if doPF:
         process.hltPrimaryVertexAssociation = primaryVertexAssociation.clone(
             jets = cms.InputTag("hltPFJetForBtag"),
-            particles = cms.InputTag("hltParticleFlow" ),
-            vertices = cms.InputTag("hltVerticesPFFilter"),
+            particles = cms.InputTag("hltParticleFlow" if roiReplace==False else "hltParticleFlowROIForBTag"),
+            vertices = cms.InputTag("hltVerticesPFFilter" if roiReplace==False else "hltVerticesPFFilterROIForBTag"),
         )
         process.hltPFDeepFlavourTagInfos = pfDeepFlavourTagInfos.clone(
-            candidates = cms.InputTag("hltParticleFlow" ),
+            candidates = cms.InputTag("hltParticleFlow" if roiReplace==False else "hltParticleFlowROIForBTag"),
             jets = cms.InputTag("hltPFJetForBtag"),
             fallback_puppi_weight = cms.bool(True),
             puppi_value_map = cms.InputTag(""),
@@ -464,29 +464,48 @@ def addDeepJet(process, doPF=True, doPuppi=False):
             # shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetPatTagInfos"),
             shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfos"),
             vertex_associator = cms.InputTag("hltPrimaryVertexAssociation","original"),
-            vertices = cms.InputTag("hltVerticesPFFilter")
+            vertices = cms.InputTag("hltVerticesPFFilter" if roiReplace==False else "hltVerticesPFFilterROIForBTag")
         )
         process.hltPFDeepFlavourJetTags = pfDeepFlavourJetTags.clone(
             src = cms.InputTag("hltPFDeepFlavourTagInfos")
         )
 
-        process.HLTBtagDeepJetSequencePF = cms.Sequence(
-            process.hltVerticesPF
-            +process.hltVerticesPFSelector
-            +process.hltVerticesPFFilter
-            +process.hltPFJetForBtagSelector
-            +process.hltPFJetForBtag
-            +process.hltDeepBLifetimeTagInfosPF
-            +process.hltDeepInclusiveVertexFinderPF
-            +process.hltDeepInclusiveSecondaryVerticesPF
-            +process.hltDeepTrackVertexArbitratorPF
-            +process.hltDeepInclusiveMergedVerticesPF
-            +process.hltDeepSecondaryVertexTagInfosPF
-            +process.hltDeepCombinedSecondaryVertexBJetTagsInfos
-            +process.hltPrimaryVertexAssociation
-            +process.hltPFDeepFlavourTagInfos
-            +process.hltPFDeepFlavourJetTags
-        )
+        if roiReplace==False:
+            process.HLTBtagDeepJetSequencePF = cms.Sequence(
+                process.hltVerticesPF
+                +process.hltVerticesPFSelector
+                +process.hltVerticesPFFilter
+                +process.hltPFJetForBtagSelector
+                +process.hltPFJetForBtag
+                +process.hltDeepBLifetimeTagInfosPF
+                +process.hltDeepInclusiveVertexFinderPF
+                +process.hltDeepInclusiveSecondaryVerticesPF
+                +process.hltDeepTrackVertexArbitratorPF
+                +process.hltDeepInclusiveMergedVerticesPF
+                +process.hltDeepSecondaryVertexTagInfosPF
+                +process.hltDeepCombinedSecondaryVertexBJetTagsInfos
+                +process.hltPrimaryVertexAssociation
+                +process.hltPFDeepFlavourTagInfos
+                +process.hltPFDeepFlavourJetTags
+            )
+        else:
+            process.HLTBtagDeepJetSequencePF = cms.Sequence(
+                process.hltVerticesPFROIForBTag
+                +process.hltVerticesPFSelectorROIForBTag
+                +process.hltVerticesPFFilterROIForBTag
+                +process.hltPFJetForBtagSelector
+                +process.hltPFJetForBtag
+                +process.hltDeepBLifetimeTagInfosPF
+                +process.hltDeepInclusiveVertexFinderPF
+                +process.hltDeepInclusiveSecondaryVerticesPF
+                +process.hltDeepTrackVertexArbitratorPF
+                +process.hltDeepInclusiveMergedVerticesPF
+                +process.hltDeepSecondaryVertexTagInfosPF
+                +process.hltDeepCombinedSecondaryVertexBJetTagsInfos
+                +process.hltPrimaryVertexAssociation
+                +process.hltPFDeepFlavourTagInfos
+                +process.hltPFDeepFlavourJetTags
+            )
 
         process.hltPreMCPFBTagDeepJet = process.hltPreMCPFBTagDeepCSV.clone()
 
@@ -500,14 +519,24 @@ def addDeepJet(process, doPF=True, doPuppi=False):
             saveTags = cms.bool(True)
         )
 
-        process.MC_PFBTagDeepJet = cms.Path(
-            process.HLTBeginSequence
-            +process.hltPreMCPFBTagDeepCSV
-            +process.HLTAK4PFJetsSequence
-            +process.HLTBtagDeepJetSequencePF
-            +process.hltBTagPFDeepJet4p06Single
-            +process.HLTEndSequence
-        )
+        if roiReplace==False:
+            process.MC_PFBTagDeepJet = cms.Path(
+                process.HLTBeginSequence
+                +process.hltPreMCPFBTagDeepCSV
+                +process.HLTAK4PFJetsSequence
+                +process.HLTBtagDeepJetSequencePF
+                +process.hltBTagPFDeepJet4p06Single
+                +process.HLTEndSequence
+            )
+        else:
+            process.MC_PFBTagDeepJet = cms.Path(
+                process.HLTBeginSequence
+                +process.hltPreMCPFBTagDeepCSV
+                +process.HLTAK4PFJetsSequenceROIForBTag
+                +process.HLTBtagDeepJetSequencePF
+                +process.hltBTagPFDeepJet4p06Single
+                +process.HLTEndSequence
+            )
 
     if doPuppi:
         process.hltPFPuppiDeepFlavourJetTags = pfDeepFlavourJetTags.clone(
