@@ -66,19 +66,21 @@ HLT_recos = [
             "HLT_GRun",
             "HLT_GRun_PatatrackQuadruplets",
             "HLT_GRun_PatatrackTriplets",
-            # "HLT_Run3TRK",
+            "HLT_Run3TRK",
+            "HLT_Run3TRK_Quadruplets",
             # "HLT_Run3TRKPixelOnly",
             # "HLT_Run3TRKPixelOnlyCleaned",
-            # "HLT_Run3TRKPixelOnlyCleaned2",
+            "HLT_Run3TRKPixelOnlyCleaned2",
             # "HLT_Run3TRKPixelOnlyCleaned3",
             # "HLT_Run3TRKPixelOnlyCleaned4",
-            # "HLT_Run3TRKForBTag",
+            "HLT_Run3TRKForBTag",
+            "HLT_Run3TRKForBTag_Replacement",
             # "HLT_Run3TRKForBTag_2",
             # "HLT_Run3TRKForBTag_3",
             # "HLT_Run3TRKForBTag_Pt"
             ]
 
-executableHLT = "cmsRun runHLTBTagAnalyzer_cfg.py defaults=Run3 reco=RECOKEY runOnData=False outFilename=OUTNAME globalTag=120X_mcRun3_2021_realistic_v4"
+executableHLT = "cmsRun runHLTBTagAnalyzer_cfg.py defaults=Run3 reco=RECOKEY runOnData=False outFilename=OUTNAME globalTag=120X_mcRun3_2021_realistic_v9"
 executable = "cmsRun runBTagAnalyzer_cfg.py defaults=Run3 runOnData=False outFilename=OUTNAME"
 
 
@@ -123,15 +125,18 @@ for i,file in enumerate(MINIAODInputFiles):
 commandList = commandListHLT+commandListOff
 # commandList = commandListHLT
 # commandList = commandListOff
-# print (commandList)
+print (commandList)
 print len(commandList)
 
-# p = multiprocessing.Pool(20)
-# p.map(subprocessWrapper, commandList)
+p = multiprocessing.Pool(20)
+p.map(subprocessWrapper, commandList)
 
 
 # haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/11_08_21_First12X/"
-haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/11_10_21_12X/"
+haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/13_10_21_12X/"
+
+if not os.path.exists(haddPath):
+    os.makedirs(haddPath)
 
 for reco in HLT_recos:
     infolderHLT = "OutputOnline_"+reco+"/"

@@ -450,25 +450,48 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
     from RecoBTag.ONNXRuntime.pfDeepFlavourJetTags_cfi import pfDeepFlavourJetTags
 
     if doPF:
-        process.hltPrimaryVertexAssociation = primaryVertexAssociation.clone(
-            jets = cms.InputTag("hltPFJetForBtag"),
-            particles = cms.InputTag("hltParticleFlow" if roiReplace==False else "hltParticleFlowROIForBTag"),
-            vertices = cms.InputTag("hltVerticesPFFilter" if roiReplace==False else "hltVerticesPFFilterROIForBTag"),
-        )
-        process.hltPFDeepFlavourTagInfos = pfDeepFlavourTagInfos.clone(
-            candidates = cms.InputTag("hltParticleFlow" if roiReplace==False else "hltParticleFlowROIForBTag"),
-            jets = cms.InputTag("hltPFJetForBtag"),
-            fallback_puppi_weight = cms.bool(True),
-            puppi_value_map = cms.InputTag(""),
-            secondary_vertices = cms.InputTag("hltDeepInclusiveSecondaryVerticesPF"),
-            # shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetPatTagInfos"),
-            shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfos"),
-            vertex_associator = cms.InputTag("hltPrimaryVertexAssociation","original"),
-            vertices = cms.InputTag("hltVerticesPFFilter" if roiReplace==False else "hltVerticesPFFilterROIForBTag")
-        )
-        process.hltPFDeepFlavourJetTags = pfDeepFlavourJetTags.clone(
-            src = cms.InputTag("hltPFDeepFlavourTagInfos")
-        )
+        if roiReplace==False:
+            process.hltPrimaryVertexAssociation = primaryVertexAssociation.clone(
+                jets = cms.InputTag("hltPFJetForBtag"),
+                particles = cms.InputTag("hltParticleFlow"),
+                vertices = cms.InputTag("hltVerticesPFFilter"),
+            )
+        else:
+            process.hltPrimaryVertexAssociationROIForBTag = primaryVertexAssociation.clone(
+                jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+                particles = cms.InputTag("hltParticleFlowROIForBTag"),
+                vertices = cms.InputTag("hltVerticesPFFilterROIForBTag"),
+            )
+        if roiReplace==False:
+            process.hltPFDeepFlavourTagInfos = pfDeepFlavourTagInfos.clone(
+                candidates = cms.InputTag("hltParticleFlow"),
+                jets = cms.InputTag("hltPFJetForBtag"),
+                fallback_puppi_weight = cms.bool(True),
+                puppi_value_map = cms.InputTag(""),
+                secondary_vertices = cms.InputTag("hltDeepInclusiveSecondaryVerticesPF"),
+                # shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetPatTagInfos"),
+                shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfos"),
+                vertex_associator = cms.InputTag("hltPrimaryVertexAssociation","original"),
+                vertices = cms.InputTag("hltVerticesPFFilter")
+            )
+            process.hltPFDeepFlavourJetTags = pfDeepFlavourJetTags.clone(
+                src = cms.InputTag("hltPFDeepFlavourTagInfos")
+            )
+        else:
+            process.hltPFDeepFlavourTagInfosROIForBTag = pfDeepFlavourTagInfos.clone(
+                candidates = cms.InputTag("hltParticleFlowROIForBTag"),
+                jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+                fallback_puppi_weight = cms.bool(True),
+                puppi_value_map = cms.InputTag(""),
+                secondary_vertices = cms.InputTag("hltDeepInclusiveSecondaryVerticesPFROIForBTag"),
+                # shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetPatTagInfos"),
+                shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfosROIForBTag"),
+                vertex_associator = cms.InputTag("hltPrimaryVertexAssociationROIForBTag","original"),
+                vertices = cms.InputTag("hltVerticesPFFilterROIForBTag")
+            )
+            process.hltPFDeepFlavourJetTagsROIForBTag = pfDeepFlavourJetTags.clone(
+                src = cms.InputTag("hltPFDeepFlavourTagInfosROIForBTag")
+            )
 
         if roiReplace==False:
             process.HLTBtagDeepJetSequencePF = cms.Sequence(
@@ -489,35 +512,46 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
                 +process.hltPFDeepFlavourJetTags
             )
         else:
-            process.HLTBtagDeepJetSequencePF = cms.Sequence(
+            process.HLTBtagDeepJetSequencePFROIForBTag = cms.Sequence(
                 process.hltVerticesPFROIForBTag
                 +process.hltVerticesPFSelectorROIForBTag
                 +process.hltVerticesPFFilterROIForBTag
-                +process.hltPFJetForBtagSelector
-                +process.hltPFJetForBtag
-                +process.hltDeepBLifetimeTagInfosPF
-                +process.hltDeepInclusiveVertexFinderPF
-                +process.hltDeepInclusiveSecondaryVerticesPF
-                +process.hltDeepTrackVertexArbitratorPF
-                +process.hltDeepInclusiveMergedVerticesPF
-                +process.hltDeepSecondaryVertexTagInfosPF
+                +process.hltPFJetForBtagSelectorROIForBTag
+                +process.hltPFJetForBtagROIForBTag
+                +process.hltDeepBLifetimeTagInfosPFROIForBTag
+                +process.hltDeepInclusiveVertexFinderPFROIForBTag
+                +process.hltDeepInclusiveSecondaryVerticesPFROIForBTag
+                +process.hltDeepTrackVertexArbitratorPFROIForBTag
+                +process.hltDeepInclusiveMergedVerticesPFROIForBTag
+                +process.hltDeepSecondaryVertexTagInfosPFROIForBTag
                 +process.hltDeepCombinedSecondaryVertexBJetTagsInfos
-                +process.hltPrimaryVertexAssociation
-                +process.hltPFDeepFlavourTagInfos
-                +process.hltPFDeepFlavourJetTags
+                +process.hltPrimaryVertexAssociationROIForBTag
+                +process.hltPFDeepFlavourTagInfosROIForBTag
+                +process.hltPFDeepFlavourJetTagsROIForBTag
             )
 
         process.hltPreMCPFBTagDeepJet = process.hltPreMCPFBTagDeepCSV.clone()
 
-        process.hltBTagPFDeepJet4p06Single = process.hltBTagPFDeepCSV4p06Single.clone(
-            JetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
-            Jets = cms.InputTag("hltPFJetForBtag"),
-            MaxTag = cms.double(999999.0),
-            MinJets = cms.int32(1),
-            MinTag = cms.double(0.25),
-            TriggerType = cms.int32(86),
-            saveTags = cms.bool(True)
-        )
+        if roiReplace==False:
+            process.hltBTagPFDeepJet4p06Single = process.hltBTagPFDeepCSV4p06Single.clone(
+                JetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
+                Jets = cms.InputTag("hltPFJetForBtag"),
+                MaxTag = cms.double(999999.0),
+                MinJets = cms.int32(1),
+                MinTag = cms.double(0.25),
+                TriggerType = cms.int32(86),
+                saveTags = cms.bool(True)
+            )
+        else:
+            process.hltBTagPFDeepJet4p06SingleROIForBTag = process.hltBTagPFDeepCSV4p06Single.clone(
+                JetTags = cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag","probb"),
+                Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+                MaxTag = cms.double(999999.0),
+                MinJets = cms.int32(1),
+                MinTag = cms.double(0.25),
+                TriggerType = cms.int32(86),
+                saveTags = cms.bool(True)
+            )
 
         if roiReplace==False:
             process.MC_PFBTagDeepJet = cms.Path(
@@ -529,12 +563,12 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
                 +process.HLTEndSequence
             )
         else:
-            process.MC_PFBTagDeepJet = cms.Path(
+            process.MC_PFBTagDeepJetROIForBTag = cms.Path(
                 process.HLTBeginSequence
-                +process.hltPreMCPFBTagDeepCSV
+                +process.hltPreMCPFBTagDeepCSVROIForBTag
                 +process.HLTAK4PFJetsSequenceROIForBTag
-                +process.HLTBtagDeepJetSequencePF
-                +process.hltBTagPFDeepJet4p06Single
+                +process.HLTBtagDeepJetSequencePFROIForBTag
+                +process.hltBTagPFDeepJet4p06SingleROIForBTag
                 +process.HLTEndSequence
             )
 
@@ -557,6 +591,10 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
             vertices = cms.InputTag("hltVerticesPFFilter"),
         )
     if process.schedule_():
-        if doPF: process.schedule.extend([process.MC_PFBTagDeepJet])
+        if doPF:
+            if roiReplace==False:
+                process.schedule.extend([process.MC_PFBTagDeepJet])
+            else:
+                process.schedule.extend([process.MC_PFBTagDeepJetROIForBTag])
         # if doPuppi: process.schedule.extend([process.MC_PuppiJetsMatchingPath])
     return process
