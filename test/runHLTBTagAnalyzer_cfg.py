@@ -566,6 +566,8 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement':
     # IPTagInfos               = 'hltDeepBLifetimePFPat'
     # SVPuppiTagInfos          = 'hltDeepSecondaryVertexPFPuppiPat'
     # SVTagInfos               = 'hltDeepSecondaryVertexPFPat'
+    muSource = 'hltMuonsROIForBTag'
+    elSource = 'hltEgammaGsfElectrons'
 elif options.reco == 'HLT_Run3TRKForBTag':
     # (a) Run-3 tracking: standard
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_configDump_MC import cms, process
@@ -617,13 +619,49 @@ for _modname in process.endpaths_():
        #    print '> removed cms.EndPath:', _modname
 
 
+###
+### customizations
+###
+from JMETriggerAnalysis.Common.customise_hlt import *
+if options.runCaloJetVariables:
+    process = addPaths_MC_JMECalo(process)
+# process = addPaths_MC_JMEPF(process)
+# process = addPaths_MC_JMEPFCluster(process)
+if options.runPuppiJetVariables:
+    process = addPaths_MC_JMEPFPuppi(process)
+from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
+process = addDeepJet(process, doPF = True, doPuppi = options.runPuppiJetVariables, roiReplace=options.reco=="HLT_Run3TRKForBTag_Replacement")
+from RecoBTag.PerformanceMeasurements.PATLikeConfig import customizePFPatLikeJets
+process = customizePFPatLikeJets(process, runPF=True, runCalo=options.runCaloJetVariables, runPuppi=options.runPuppiJetVariables, roiReplace=options.reco=="HLT_Run3TRKForBTag_Replacement")
+
+
+if options.reco == 'HLT_Run3TRKMod':
+    process = customizeVertices(process)
+
+if options.reco == 'HLT_Run3TRKMod2':
+    process = customizeVertices2(process)
+
+if "HLT_Run3TRKPixelOnly" in options.reco:
+    process = customizeMinHitsAndPt(process, doForPat=True)
+
+if options.reco == 'HLT_BTagROI':
+    from RecoBTag.PerformanceMeasurements.customise_hlt import *
+    process = addPaths_MC_JMEPFPuppiROI(process)
+
+    from RecoBTag.PerformanceMeasurements.ROIPATLikeConfig import customizePFPatLikeJetsROI
+    process = customizePFPatLikeJetsROI(process)
+
+
 # list of patterns to determine paths to keep
 keepPaths = [
   # 'MC_*Jets*',
   # 'MC_*MET*',
   # 'MC_*AK8Calo*',
-  'MC_*DeepCSV*',
-  'MC_*DeepJet*',
+  # 'MC_*DeepCSV*',
+  # 'MC_*DeepJet*',
+  'MC_*DeepCSV*ROI*',
+  'MC_*DeepJet*ROI*',
+  'MC_*Matching*',
   # 'DST_Run3_PFScoutingPixelTracking_v*',
 
   # 'HLT_PFJet*_v*',
@@ -662,37 +700,6 @@ if hasattr(process, 'FastTimerService'):
 if hasattr(process, 'MessageLogger'):
   del process.MessageLogger
 
-###
-### customizations
-###
-from JMETriggerAnalysis.Common.customise_hlt import *
-if options.runCaloJetVariables:
-    process = addPaths_MC_JMECalo(process)
-# process = addPaths_MC_JMEPF(process)
-# process = addPaths_MC_JMEPFCluster(process)
-if options.runPuppiJetVariables:
-    process = addPaths_MC_JMEPFPuppi(process)
-from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
-process = addDeepJet(process, doPF = True, doPuppi = options.runPuppiJetVariables, roiReplace=options.reco=="HLT_Run3TRKForBTag_Replacement")
-from RecoBTag.PerformanceMeasurements.PATLikeConfig import customizePFPatLikeJets
-process = customizePFPatLikeJets(process, runPF=True, runCalo=options.runCaloJetVariables, runPuppi=options.runPuppiJetVariables, roiReplace=options.reco=="HLT_Run3TRKForBTag_Replacement")
-
-
-if options.reco == 'HLT_Run3TRKMod':
-    process = customizeVertices(process)
-
-if options.reco == 'HLT_Run3TRKMod2':
-    process = customizeVertices2(process)
-
-if "HLT_Run3TRKPixelOnly" in options.reco:
-    process = customizeMinHitsAndPt(process, doForPat=True)
-
-if options.reco == 'HLT_BTagROI':
-    from RecoBTag.PerformanceMeasurements.customise_hlt import *
-    process = addPaths_MC_JMEPFPuppiROI(process)
-
-    from RecoBTag.PerformanceMeasurements.ROIPATLikeConfig import customizePFPatLikeJetsROI
-    process = customizePFPatLikeJetsROI(process)
 
 
 if update_jmeCalibs:

@@ -419,12 +419,20 @@ keepPaths = [
   # 'HLT_PFMET*_PFMHT*_v*',
 
   # 'HLT_*DeepCSV*_v*',
-  # 'HLT_*_v*',
+  'HLT_*_v*',
   # 'HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v3',
   # 'HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5_v8',
-  'HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v3ROIForBTag',
-  'HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5_v8ROIForBTag',
+  # 'HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v3ROIForBTag',
+  # 'HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5_v8ROIForBTag',
 ]
+
+removePaths = [
+  'HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v3',
+  'HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5_v8',
+  # 'HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v3ROIForBTag',
+  # 'HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5_v8ROIForBTag',
+]
+
 # list of paths that are kept
 listOfPaths = []
 # remove selected cms.Path objects from HLT config-dump
@@ -432,9 +440,13 @@ print ("Keep paths:")
 print ('-'*108)
 for _modname in sorted(process.paths_()):
     _keepPath = False
+    _removePath = False
     for _tmpPatt in keepPaths:
         _keepPath = fnmatch.fnmatch(_modname, _tmpPatt)
-        if _keepPath: break
+        for _tmpPatt_r in removePaths:
+            _removePath = fnmatch.fnmatch(_modname, _tmpPatt_r)
+        # if _keepPath: break
+        if _keepPath and not _removePath: break
     if _keepPath:
         print ('{:<99} | {:<4} |'.format(_modname, '+'))
         listOfPaths.append(_modname)
