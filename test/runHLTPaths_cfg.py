@@ -247,35 +247,68 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
     if hasattr(process, 'hltIter1ClustersRefRemoval'):
         process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
 
-    deleteCaloProcesses = ["HLT_DoublePFJets100_CaloBTagDeepCSV_p71_v2",
-            "HLT_DoublePFJets116MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v2",
-            "HLT_DoublePFJets128MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v2",
-            "HLT_DoublePFJets200_CaloBTagDeepCSV_p71_v2",
-            "HLT_DoublePFJets350_CaloBTagDeepCSV_p71_v2",
-            "HLT_Mu12_DoublePFJets100_CaloBTagDeepCSV_p71_v2",
-            "HLT_Mu12_DoublePFJets200_CaloBTagDeepCSV_p71_v2",
-            "HLT_Mu12_DoublePFJets350_CaloBTagDeepCSV_p71_v2",
-            "HLT_Mu12_DoublePFJets40MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v2",
-            "HLT_Mu12_DoublePFJets40_CaloBTagDeepCSV_p71_v2",
-            "HLT_Mu12_DoublePFJets54MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v2",
-            "HLT_Mu12_DoublePFJets62MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v2",
-            "HLT_PFMET110_PFMHT110_IDTight_CaloBTagDeepCSV_3p1_v2",
-            "HLT_PFMET120_PFMHT120_IDTight_CaloBTagDeepCSV_3p1_v2",
-            "HLT_PFMET130_PFMHT130_IDTight_CaloBTagDeepCSV_3p1_v2",
-            "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_CaloDiJet30_CaloBtagDeepCSV_1p5_v2",
-            "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepCSV_1p5_v2",
-            "HLT_Mu15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5_v2"
+    deleteCaloProcesses = ["HLT_DoublePFJets100_CaloBTagDeepCSV_p71_v",
+            "HLT_DoublePFJets116MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
+            "HLT_DoublePFJets128MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
+            "HLT_DoublePFJets200_CaloBTagDeepCSV_p71_v",
+            "HLT_DoublePFJets350_CaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets100_CaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets200_CaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets350_CaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets40MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets40_CaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets54MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets62MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
+            "HLT_PFMET110_PFMHT110_IDTight_CaloBTagDeepCSV_3p1_v",
+            "HLT_PFMET120_PFMHT120_IDTight_CaloBTagDeepCSV_3p1_v",
+            "HLT_PFMET130_PFMHT130_IDTight_CaloBTagDeepCSV_3p1_v",
+            "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_CaloDiJet30_CaloBtagDeepCSV_1p5_v",
+            "HLT_Mu15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5_v"
+            ]
+
+    deleteDeepCSVpreselection = [
+            "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepCSV_1p5_v",
             ]
     """
 
     delete Calo-Loop
     """
-    print("before loop!")
+    print("Deleting CaloOnly paths")
     for _tmpPathName in deleteCaloProcesses:
-        if hasattr(process, _tmpPathName):
-            _tmpPath = getattr(process, _tmpPathName)
-            _tmpPath.remove(process.HLTBtagDeepCSVSequenceL3)
-            _tmpPath.remove(process.hltBTagCaloDeepCSVp17Double)
+        attributes = dir(process)
+        for attribute in attributes:
+            if _tmpPathName in attribute:
+                hit_attr = attribute
+                print("Deleting {}".format(hit_attr))
+                process.__delattr__(hit_attr)
+   
+    print("Deleteing deepCSV prestage")
+    for _tmpPathName in deleteDeepCSVpreselection:
+        attributes = dir(process)
+        # have to do a comparison since we do not have the
+        # exact version number like DeepCSV_p71_vX
+        hit = False
+        deepCSVmodules = []
+        for attribute in attributes:
+            if _tmpPathName in attribute:
+                hit_attr = attribute
+                hit = True
+            try:
+                if getattr(process, attribute).parameters_()["JetTags"].value() == 'hltDeepCombinedSecondaryVertexBJetTagsCalo:probb':
+                    print("found {}".format(attribute))
+                    deepCSVmodules.append( attribute )
+            except KeyError:
+                pass
+            except AttributeError:
+                pass
+        if hit is True:
+            print("Chaning path {}".format(_tmpPathName))
+            _tmpPath = getattr(process, hit_attr)
+            _tmpPath.remove(getattr(process, "HLTBtagDeepCSVSequenceL3"))
+            for deepCSVmodule in deepCSVmodules:
+                print("Deleting {}".format(deepCSVmodule))
+                _tmpPath.remove(getattr(process, deepCSVmodule))
+
 
 elif options.reco == 'HLT_Run3TRKPixelOnly':
     # (c) Run-3 tracking: pixel only tracks
