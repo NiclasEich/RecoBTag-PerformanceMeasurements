@@ -235,7 +235,7 @@ elif options.reco == 'HLT_Run3TRKWithPU':
     #     _tmpPath.remove(process.hltSiPixelDigis)
     #     _tmpPath.remove(process.hltSiPixelClusters)
     #     _tmpPath.associate(process.HLTDoLocalPixelTask)
-elif options.reco == 'HLT_Run3TRKNoCaloJets':
+elif options.reco == 'HLT_Run3TRKNoCaloJetsWithSubstitutions':
     # (test) Run-3 tracking: no Calo Jets
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking 
@@ -314,7 +314,6 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
                 hit = True
             try:
                 if getattr(process, attribute).parameters_()["JetTags"].value() == 'hltDeepCombinedSecondaryVertexBJetTagsCalo:probb':
-                    print("found {}".format(attribute))
                     deepCSVmodules.append( attribute )
             except KeyError:
                 pass
@@ -325,9 +324,56 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
             _tmpPath = getattr(process, hit_attr)
             _tmpPath.remove(getattr(process, "HLTBtagDeepCSVSequenceL3"))
             for deepCSVmodule in deepCSVmodules:
-                print("Deleting {}".format(deepCSVmodule))
                 _tmpPath.remove(getattr(process, deepCSVmodule))
+elif options.reco == 'HLT_Run3TRKNoCaloJets':
+    # (test) Run-3 tracking: no Calo Jets
+    # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking 
 
+    process = customizeHLTforRun3Tracking(process)
+    if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
+        process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
+
+    if hasattr(process, 'hltIter1ClustersRefRemoval'):
+        process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
+
+    deleteCaloProcesses = [
+            "HLT_Ele15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5_v",  
+            "HLT_DoublePFJets100_CaloBTagDeepCSV_p71_v",
+            "HLT_DoublePFJets116MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
+            "HLT_DoublePFJets128MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
+            "HLT_DoublePFJets200_CaloBTagDeepCSV_p71_v",
+            "HLT_DoublePFJets350_CaloBTagDeepCSV_p71_v",
+            "HLT_DoublePFJets40_CaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets100_CaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets200_CaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets350_CaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets40MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets40_CaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets54MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
+            "HLT_Mu12_DoublePFJets62MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
+            "HLT_PFMET110_PFMHT110_IDTight_CaloBTagDeepCSV_3p1_v",
+            "HLT_PFMET120_PFMHT120_IDTight_CaloBTagDeepCSV_3p1_v",
+            "HLT_PFMET130_PFMHT130_IDTight_CaloBTagDeepCSV_3p1_v",
+            "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_CaloDiJet30_CaloBtagDeepCSV_1p5_v",
+            "HLT_Mu15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5_v"
+            "HLT_PFMET100_PFMHT100_IDTight_CaloBTagDeepCSV_3p1_v",
+            "HLT_PFMET140_PFMHT140_IDTight_CaloBTagDeepCSV_3p1_v",
+            "HLT_DoublePFJets40_CaloBTagDeepCSV_p71_v"
+            ]
+
+    """
+
+    delete Calo-Loop
+    """
+    print("Deleting CaloOnly paths")
+    for _tmpPathName in deleteCaloProcesses:
+        attributes = dir(process)
+        for attribute in attributes:
+            if _tmpPathName in attribute:
+                hit_attr = attribute
+                print("Deleting {}".format(hit_attr))
+                process.__delattr__(hit_attr)
 
 elif options.reco == 'HLT_Run3TRKPixelOnly':
     # (c) Run-3 tracking: pixel only tracks
