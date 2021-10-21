@@ -247,11 +247,14 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
     if hasattr(process, 'hltIter1ClustersRefRemoval'):
         process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
 
-    deleteCaloProcesses = ["HLT_DoublePFJets100_CaloBTagDeepCSV_p71_v",
+    deleteCaloProcesses = [
+            "HLT_Ele15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5_v",  
+            "HLT_DoublePFJets100_CaloBTagDeepCSV_p71_v",
             "HLT_DoublePFJets116MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
             "HLT_DoublePFJets128MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v",
             "HLT_DoublePFJets200_CaloBTagDeepCSV_p71_v",
             "HLT_DoublePFJets350_CaloBTagDeepCSV_p71_v",
+            "HLT_DoublePFJets40_CaloBTagDeepCSV_p71_v",
             "HLT_Mu12_DoublePFJets100_CaloBTagDeepCSV_p71_v",
             "HLT_Mu12_DoublePFJets200_CaloBTagDeepCSV_p71_v",
             "HLT_Mu12_DoublePFJets350_CaloBTagDeepCSV_p71_v",
@@ -264,10 +267,26 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
             "HLT_PFMET130_PFMHT130_IDTight_CaloBTagDeepCSV_3p1_v",
             "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_CaloDiJet30_CaloBtagDeepCSV_1p5_v",
             "HLT_Mu15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5_v"
+            "HLT_PFMET100_PFMHT100_IDTight_CaloBTagDeepCSV_3p1_v",
+            "HLT_PFMET140_PFMHT140_IDTight_CaloBTagDeepCSV_3p1_v",
+            "HLT_DoublePFJets40_CaloBTagDeepCSV_p71_v"
             ]
 
     deleteDeepCSVpreselection = [
-            "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepCSV_1p5_v",
+            "HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v",
+            "PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5_v",
+            "HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepCSV_4p5_v",
+            "HLT_PFHT400_SixPFJet32_DoublePFBTagDeepCSV_2p94_v",
+            "HLT_PFHT450_SixPFJet36_PFBTagDeepCSV_1p59_v",
+            "HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v",
+            "HLT_QuadPFJet103_88_75_15_PFBTagDeepCSV_1p3_VBF2_v",
+            "HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v",
+            "HLT_QuadPFJet105_88_76_15_PFBTagDeepCSV_1p3_VBF2_v",
+            "HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v",
+            "HLT_QuadPFJet111_90_80_15_PFBTagDeepCSV_1p3_VBF2_v",
+            "HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v",
+            "HLT_QuadPFJet98_83_71_15_PFBTagDeepCSV_1p3_VBF2_v",
+            "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepCSV_1p5_v"
             ]
     """
 
@@ -302,7 +321,7 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
             except AttributeError:
                 pass
         if hit is True:
-            print("Chaning path {}".format(_tmpPathName))
+            print("Changing path {}".format(_tmpPathName))
             _tmpPath = getattr(process, hit_attr)
             _tmpPath.remove(getattr(process, "HLTBtagDeepCSVSequenceL3"))
             for deepCSVmodule in deepCSVmodules:
