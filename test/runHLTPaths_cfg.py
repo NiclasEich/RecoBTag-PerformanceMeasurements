@@ -323,6 +323,7 @@ elif options.reco == 'HLT_Run3TRKNoCaloJetsWithSubstitutions':
             print("Changing path {}".format(_tmpPathName))
             _tmpPath = getattr(process, hit_attr)
             _tmpPath.remove(getattr(process, "HLTBtagDeepCSVSequenceL3"))
+            _tmpPath.remove(getattr(process, "HLTFastPrimaryVertexSequence"))
             for deepCSVmodule in deepCSVmodules:
                 _tmpPath.remove(getattr(process, deepCSVmodule))
 elif options.reco == 'HLT_Run3TRKNoCaloJets':
