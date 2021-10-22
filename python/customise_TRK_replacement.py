@@ -12,50 +12,6 @@ def customiseRun3BTagRegionalTracks_Replacement(process):
 
 
 
-
-
-
-
-
-
-
-    # process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v3 = cms.Path(
-    #     process.HLTBeginSequence+
-    #
-    #     process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+
-    #     process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV4p5+
-    #
-    #     process.HLTAK4CaloJetsSequence+
-    #
-    #     process.hltQuadCentralJet30+
-    #     process.hltCaloJetsQuad30ForHt+
-    #     process.hltHtMhtCaloJetsQuadC30+
-    #     process.hltCaloQuadJet30HT320+
-    #
-    #     #  process.HLTBtagDeepCSVSequenceL3+
-    #     #  process.hltBTagCaloDeepCSVp17Double+
-    #
-    #     process.HLTAK4PFJetsSequenceROIForBTag+
-    #
-    #     process.hltPFCentralJetLooseIDQuad30+
-    #     process.hlt1PFCentralJetLooseID75+
-    #     process.hlt2PFCentralJetLooseID60+
-    #     process.hlt3PFCentralJetLooseID45+
-    #     process.hlt4PFCentralJetLooseID40+
-    #     process.hltPFCentralJetLooseIDQuad30forHt+
-    #     process.hltHtMhtPFCentralJetsLooseIDQuadC30+
-    #     process.hltPFCentralJetsLooseIDQuad30HT330+
-    #
-    #     process.HLTBtagDeepCSVSequencePF+
-    #
-    #     process.hltBTagPFDeepCSV4p5Triple+
-    #
-    #     process.HLTEndSequence
-    # )
-
-
-
-
     process.hltBTaggingRegion = cms.EDProducer("CandidateSeededTrackingRegionsEDProducer",
     RegionPSet = cms.PSet(
         beamSpot = cms.InputTag("hltOnlineBeamSpot"),
@@ -1154,100 +1110,7 @@ def customiseRun3BTagRegionalTracks_Replacement(process):
 
 
 
-    #  for one path to test:
-    process.hltPFCentralJetLooseIDQuad30ROIForBTag = cms.EDFilter("HLT1PFJet",
-        MaxEta = cms.double(2.5),
-        MaxMass = cms.double(-1.0),
-        MinE = cms.double(-1.0),
-        MinEta = cms.double(-1.0),
-        MinMass = cms.double(-1.0),
-        MinN = cms.int32(4),
-        MinPt = cms.double(30.0),
-        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
-        saveTags = cms.bool(True),
-        triggerType = cms.int32(86)
-    )
 
-    process.hlt1PFCentralJetLooseID75ROIForBTag = cms.EDFilter("HLT1PFJet",
-        MaxEta = cms.double(2.5),
-        MaxMass = cms.double(-1.0),
-        MinE = cms.double(-1.0),
-        MinEta = cms.double(-1.0),
-        MinMass = cms.double(-1.0),
-        MinN = cms.int32(1),
-        MinPt = cms.double(75.0),
-        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
-        saveTags = cms.bool(True),
-        triggerType = cms.int32(0)
-    )
-
-    process.hlt2PFCentralJetLooseID60ROIForBTag = cms.EDFilter("HLT1PFJet",
-        MaxEta = cms.double(2.5),
-        MaxMass = cms.double(-1.0),
-        MinE = cms.double(-1.0),
-        MinEta = cms.double(-1.0),
-        MinMass = cms.double(-1.0),
-        MinN = cms.int32(2),
-        MinPt = cms.double(60.0),
-        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
-        saveTags = cms.bool(True),
-        triggerType = cms.int32(0)
-    )
-
-    process.hlt3PFCentralJetLooseID45ROIForBTag = cms.EDFilter("HLT1PFJet",
-        MaxEta = cms.double(2.5),
-        MaxMass = cms.double(-1.0),
-        MinE = cms.double(-1.0),
-        MinEta = cms.double(-1.0),
-        MinMass = cms.double(-1.0),
-        MinN = cms.int32(3),
-        MinPt = cms.double(45.0),
-        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
-        saveTags = cms.bool(True),
-        triggerType = cms.int32(0)
-    )
-
-    process.hlt4PFCentralJetLooseID40ROIForBTag = cms.EDFilter("HLT1PFJet",
-        MaxEta = cms.double(2.5),
-        MaxMass = cms.double(-1.0),
-        MinE = cms.double(-1.0),
-        MinEta = cms.double(-1.0),
-        MinMass = cms.double(-1.0),
-        MinN = cms.int32(4),
-        MinPt = cms.double(40.0),
-        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
-        saveTags = cms.bool(True),
-        triggerType = cms.int32(0)
-    )
-
-    process.hltPFCentralJetLooseIDQuad30forHtROIForBTag = cms.EDProducer("HLTPFJetCollectionProducer",
-        HLTObject = cms.InputTag("hltPFCentralJetLooseIDQuad30ROIForBTag"),
-        TriggerTypes = cms.vint32(86)
-    )
-
-    process.hltHtMhtPFCentralJetsLooseIDQuadC30ROIForBTag = cms.EDProducer("HLTHtMhtProducer",
-        excludePFMuons = cms.bool(False),
-        jetsLabel = cms.InputTag("hltPFCentralJetLooseIDQuad30forHtROIForBTag"),
-        maxEtaJetHt = cms.double(2.5),
-        maxEtaJetMht = cms.double(999.0),
-        minNJetHt = cms.int32(4),
-        minNJetMht = cms.int32(0),
-        minPtJetHt = cms.double(30.0),
-        minPtJetMht = cms.double(0.0),
-        pfCandidatesLabel = cms.InputTag("hltParticleFlowROIForBTag"),
-        usePt = cms.bool(True)
-    )
-
-
-    process.hltPFCentralJetsLooseIDQuad30HT330ROIForBTag = cms.EDFilter("HLTHtMhtFilter",
-        htLabels = cms.VInputTag("hltHtMhtPFCentralJetsLooseIDQuadC30ROIForBTag"),
-        meffSlope = cms.vdouble(1.0),
-        mhtLabels = cms.VInputTag("hltHtMhtPFCentralJetsLooseIDQuadC30ROIForBTag"),
-        minHt = cms.vdouble(330.0),
-        minMeff = cms.vdouble(0.0),
-        minMht = cms.vdouble(0.0),
-        saveTags = cms.bool(True)
-    )
 
 
     process.HLTParticleFlowSequenceROIForBTag = cms.Sequence(
@@ -1408,6 +1271,12 @@ def customiseRun3BTagRegionalTracks_Replacement(process):
         process.hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag
     )
 
+
+    ############################################################################
+    ####                    MC_PFBTagDeepCSV_v10ROIForBTag                   ###
+    ############################################################################
+
+
     process.hltBTagPFDeepCSV4p06SingleROIForBTag = cms.EDFilter("HLTPFJetTag",
         JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag","probb"),
         Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
@@ -1423,7 +1292,7 @@ def customiseRun3BTagRegionalTracks_Replacement(process):
         offset = cms.uint32(0)
     )
 
-    process.MC_PFBTagDeepCSV_v10ROIForBTag = cms.Path(
+    process.MC_PFBTagDeepCSVROIForBTag_v10 = cms.Path(
         process.HLTBeginSequence+
         process.hltPreMCPFBTagDeepCSVROIForBTag+
 
@@ -1433,6 +1302,108 @@ def customiseRun3BTagRegionalTracks_Replacement(process):
         process.hltBTagPFDeepCSV4p06SingleROIForBTag+
         process.HLTEndSequence
     )
+
+
+    ############################################################################
+    #### HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v3ROIForBTag
+    ############################################################################
+
+
+    process.hltPFCentralJetLooseIDQuad30ROIForBTag = cms.EDFilter("HLT1PFJet",
+        MaxEta = cms.double(2.5),
+        MaxMass = cms.double(-1.0),
+        MinE = cms.double(-1.0),
+        MinEta = cms.double(-1.0),
+        MinMass = cms.double(-1.0),
+        MinN = cms.int32(4),
+        MinPt = cms.double(30.0),
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+        saveTags = cms.bool(True),
+        triggerType = cms.int32(86)
+    )
+
+    process.hlt1PFCentralJetLooseID75ROIForBTag = cms.EDFilter("HLT1PFJet",
+        MaxEta = cms.double(2.5),
+        MaxMass = cms.double(-1.0),
+        MinE = cms.double(-1.0),
+        MinEta = cms.double(-1.0),
+        MinMass = cms.double(-1.0),
+        MinN = cms.int32(1),
+        MinPt = cms.double(75.0),
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+        saveTags = cms.bool(True),
+        triggerType = cms.int32(0)
+    )
+
+    process.hlt2PFCentralJetLooseID60ROIForBTag = cms.EDFilter("HLT1PFJet",
+        MaxEta = cms.double(2.5),
+        MaxMass = cms.double(-1.0),
+        MinE = cms.double(-1.0),
+        MinEta = cms.double(-1.0),
+        MinMass = cms.double(-1.0),
+        MinN = cms.int32(2),
+        MinPt = cms.double(60.0),
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+        saveTags = cms.bool(True),
+        triggerType = cms.int32(0)
+    )
+
+    process.hlt3PFCentralJetLooseID45ROIForBTag = cms.EDFilter("HLT1PFJet",
+        MaxEta = cms.double(2.5),
+        MaxMass = cms.double(-1.0),
+        MinE = cms.double(-1.0),
+        MinEta = cms.double(-1.0),
+        MinMass = cms.double(-1.0),
+        MinN = cms.int32(3),
+        MinPt = cms.double(45.0),
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+        saveTags = cms.bool(True),
+        triggerType = cms.int32(0)
+    )
+
+    process.hlt4PFCentralJetLooseID40ROIForBTag = cms.EDFilter("HLT1PFJet",
+        MaxEta = cms.double(2.5),
+        MaxMass = cms.double(-1.0),
+        MinE = cms.double(-1.0),
+        MinEta = cms.double(-1.0),
+        MinMass = cms.double(-1.0),
+        MinN = cms.int32(4),
+        MinPt = cms.double(40.0),
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+        saveTags = cms.bool(True),
+        triggerType = cms.int32(0)
+    )
+
+    process.hltPFCentralJetLooseIDQuad30forHtROIForBTag = cms.EDProducer("HLTPFJetCollectionProducer",
+        HLTObject = cms.InputTag("hltPFCentralJetLooseIDQuad30ROIForBTag"),
+        TriggerTypes = cms.vint32(86)
+    )
+
+    process.hltHtMhtPFCentralJetsLooseIDQuadC30ROIForBTag = cms.EDProducer("HLTHtMhtProducer",
+        excludePFMuons = cms.bool(False),
+        jetsLabel = cms.InputTag("hltPFCentralJetLooseIDQuad30forHtROIForBTag"),
+        maxEtaJetHt = cms.double(2.5),
+        maxEtaJetMht = cms.double(999.0),
+        minNJetHt = cms.int32(4),
+        minNJetMht = cms.int32(0),
+        minPtJetHt = cms.double(30.0),
+        minPtJetMht = cms.double(0.0),
+        pfCandidatesLabel = cms.InputTag("hltParticleFlowROIForBTag"),
+        usePt = cms.bool(True)
+    )
+
+
+    process.hltPFCentralJetsLooseIDQuad30HT330ROIForBTag = cms.EDFilter("HLTHtMhtFilter",
+        htLabels = cms.VInputTag("hltHtMhtPFCentralJetsLooseIDQuadC30ROIForBTag"),
+        meffSlope = cms.vdouble(1.0),
+        mhtLabels = cms.VInputTag("hltHtMhtPFCentralJetsLooseIDQuadC30ROIForBTag"),
+        minHt = cms.vdouble(330.0),
+        minMeff = cms.vdouble(0.0),
+        minMht = cms.vdouble(0.0),
+        saveTags = cms.bool(True)
+    )
+
+
 
     process.hltBTagPFDeepCSV4p5TripleROIForBTag = cms.EDFilter("HLTPFJetTag",
         JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag","probb"),
@@ -1446,8 +1417,7 @@ def customiseRun3BTagRegionalTracks_Replacement(process):
 
 
 
-
-    process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v3ROIForBTag = cms.Path(
+    process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5ROIForBTag_v3 = cms.Path(
         process.HLTBeginSequence+
 
         process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+
@@ -1482,7 +1452,9 @@ def customiseRun3BTagRegionalTracks_Replacement(process):
     )
 
 
-
+    ############################################################################
+    #### HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5_v8ROIForBTag
+    ############################################################################
 
 
 
@@ -1513,7 +1485,7 @@ def customiseRun3BTagRegionalTracks_Replacement(process):
         Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
     )
 
-    process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5_v8ROIForBTag = cms.Path(
+    process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5ROIForBTag_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sHTT280to500erIorHTT250to340erQuadJetTripleJet+
         process.hltPrePFHT400FivePFJet100100603030DoublePFBTagDeepCSV4p5+
@@ -1540,5 +1512,496 @@ def customiseRun3BTagRegionalTracks_Replacement(process):
     )
 
 
+    ############################################################################
+    #### HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepCSV_4p5_v
+    ############################################################################
+
+    process.hltPFJetFilterTwo120er3p0ROIForBTag = process.hltPFJetFilterTwo120er3p0.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsCorrectedROIForBTag"),
+    )
+
+    process.HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepCSV_4p5ROIForBTag_v8 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sHTT280to500erIorHTT250to340erQuadJetTripleJet+
+        process.hltPrePFHT400FivePFJet120120603030DoublePFBTagDeepCSV4p5+
+        process.HLTAK4CaloJetsSequence+
+        process.hltCaloJetFilterFiveC25+
+        process.hltCaloJetsFive25ForHt+
+        process.hltHtMhtCaloJetsFiveC25+
+        process.hltCaloFiveJet25HT300+
+
+        # process.HLTBtagDeepCSVSequenceL3+
+        # process.hltBTagCaloDeepCSV10p01Single+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFJetFilterTwo120er3p0ROIForBTag+
+        process.hltPFJetFilterThree60er3p0ROIForBTag+
+        process.hltPFJetFilterFive30er3p0ROIForBTag+
+        process.hltPFJetsFive30ForHtROIForBTag+
+        process.hltHtMhtPFJetsFive30er3p0ROIForBTag+
+        process.hltPFFiveJet30HT400ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltBTagPFDeepCSV4p5DoubleROIForBTag+
+
+        process.HLTEndSequence
+    )
+
+    ############################################################################
+    #### HLT_PFHT400_SixPFJet32_DoublePFBTagDeepCSV_2p94_v
+    ############################################################################
+
+    process.hltPFJetFilterSix30er2p5ROIForBTag = process.hltPFJetFilterSix30er2p5.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsCorrectedROIForBTag"),
+    )
+
+    process.hltPFJetFilterSix32er2p5ROIForBTag = process.hltPFJetFilterSix32er2p5.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsCorrectedROIForBTag"),
+    )
+
+    process.hltPFJetsSix30ForHtROIForBTag = cms.EDProducer("HLTPFJetCollectionProducer",
+        HLTObject = cms.InputTag("hltPFJetFilterSix30er2p5ROIForBTag"),
+        TriggerTypes = cms.vint32(86)
+    )
+
+    process.hltHtMhtPFJetsSix30er2p5ROIForBTag = process.hltHtMhtPFJetsSix30er2p5.clone(
+        jetsLabel = cms.InputTag("hltPFJetsSix30ForHtROIForBTag"),
+        pfCandidatesLabel = cms.InputTag("hltParticleFlowROIForBTag"),
+    )
+
+    process.hltPFSixJet30HT400ROIForBTag = process.hltPFSixJet30HT400.clone(
+        htLabels = cms.VInputTag("hltHtMhtPFJetsSix30er2p5ROIForBTag"),
+        mhtLabels = cms.VInputTag("hltHtMhtPFJetsSix30er2p5ROIForBTag"),
+    )
+
+    process.hltBTagPFDeepCSV2p94DoubleROIForBTag = process.hltBTagPFDeepCSV2p94Double.clone(
+        JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag","probb"),
+        Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+    )
+
+    process.HLT_PFHT400_SixPFJet32_DoublePFBTagDeepCSV_2p94ROIForBTag_v8 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sHTT280to500erIorHTT250to340erQuadJet+
+        process.hltPrePFHT400SixPFJet32DoublePFBTagDeepCSV2p94+
+        process.HLTAK4CaloJetsSequence+
+        process.hltCaloJetFilterSixC25+
+        process.hltCaloJetsSix25ForHt+
+        process.hltHtMhtCaloJetsSixC25+
+        process.hltCaloSixJet25HT300+
+
+        # process.HLTBtagDeepCSVSequenceL3+
+        # process.hltBTagCaloDeepCSV10p01Single+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFJetFilterSix30er2p5ROIForBTag+
+        process.hltPFJetFilterSix32er2p5ROIForBTag+
+        process.hltPFJetsSix30ForHtROIForBTag+
+        process.hltHtMhtPFJetsSix30er2p5ROIForBTag+
+        process.hltPFSixJet30HT400ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltBTagPFDeepCSV2p94DoubleROIForBTag+
+
+        process.HLTEndSequence
+    )
+
+    ############################################################################
+    #### HLT_PFHT450_SixPFJet36_PFBTagDeepCSV_1p59_v
+    ############################################################################
+
+    process.hltPFJetFilterSix36er2p5ROIForBTag = process.hltPFJetFilterSix36er2p5.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsCorrectedROIForBTag"),
+    )
+
+    process.hltPFSixJet30HT450ROIForBTag =process.hltPFSixJet30HT450.clone(
+        htLabels = cms.VInputTag("hltHtMhtPFJetsSix30er2p5ROIForBTag"),
+        mhtLabels = cms.VInputTag("hltHtMhtPFJetsSix30er2p5ROIForBTag"),
+    )
+
+    process.hltBTagPFDeepCSV1p59SingleROIForBTag = process.hltBTagPFDeepCSV1p59Single.clone(
+        JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag","probb"),
+        Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+    )
+
+    process.HLT_PFHT450_SixPFJet36_PFBTagDeepCSV_1p59ROIForBTag_v7 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sHTT280to500erIorHTT250to340erQuadJet+
+        process.hltPrePFHT450SixPFJet36PFBTagDeepCSV1p59+
+        process.HLTAK4CaloJetsSequence+
+        process.hltCaloJetFilterSixC30+
+        process.hltCaloJetsSix30ForHt+
+        process.hltHtMhtCaloJetsSixC30+
+        process.hltCaloSixJet30HT350+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFJetFilterSix30er2p5ROIForBTag+
+        process.hltPFJetFilterSix36er2p5ROIForBTag+
+        process.hltPFJetsSix30ForHtROIForBTag+
+        process.hltHtMhtPFJetsSix30er2p5ROIForBTag+
+        process.hltPFSixJet30HT450ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltBTagPFDeepCSV1p59SingleROIForBTag+
+
+        process.HLTEndSequence
+    )
+
+    ############################################################################
+    #### HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v
+    ############################################################################
+
+    process.hltPFQuadJetLooseID15ROIForBTag = process.hltPFQuadJetLooseID15.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.hltPFTripleJetLooseID75ROIForBTag = process.hltPFTripleJetLooseID75.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.hltPFDoubleJetLooseID88ROIForBTag = process.hltPFDoubleJetLooseID88.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrected"),
+    )
+
+    process.hltPFSingleJetLooseID103ROIForBTag = process.hltPFSingleJetLooseID103.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.hltSelector6PFJetsROIForBTag = process.hltSelector6PFJets.clone(
+        src = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag")
+    )
+
+    process.hltBTagPFDeepCSV7p68Double6JetsROIForBTag = process.hltBTagPFDeepCSV7p68Double6Jets.clone(
+        JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag","probb"),
+        Jets = cms.InputTag("hltSelector6PFJetsROIForBTag"),
+    )
+
+    process.hltBTagPFDeepCSV1p28Single6JetsROIForBTag = process.hltBTagPFDeepCSV1p28Single6Jets.clone(
+        JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag","probb"),
+        Jets = cms.InputTag("hltSelector6PFJetsROIForBTag"),
+    )
+
+    process.hltVBFPFJetCSVSortedMqq200Detaqq1p5ROIForBTag = process.hltVBFPFJetCSVSortedMqq200Detaqq1p5.clone(
+        inputJetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag","probb"),
+        inputJets = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1ROIForBTag_v8 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sTripleJetVBFIorHTTIorSingleJet+
+        process.hltPreQuadPFJet103887515DoublePFBTagDeepCSV1p37p7VBF1+
+        process.HLTAK4CaloJetsSequence+
+        process.hltQuadJet15+
+        process.hltTripleJet50+
+        process.hltDoubleJet65+
+        process.hltSingleJet80+
+        process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+        # process.HLTFastPrimaryVertexSequence+
+        # process.HLTBtagDeepCSVSequenceL3+
+        # process.hltBTagCaloDeepCSV1p56Single+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFQuadJetLooseID15ROIForBTag+
+        process.hltPFTripleJetLooseID75ROIForBTag+
+        process.hltPFDoubleJetLooseID88ROIForBTag+
+        process.hltPFSingleJetLooseID103ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltSelector6PFJetsROIForBTag+
+        process.hltBTagPFDeepCSV7p68Double6JetsROIForBTag+
+        process.hltBTagPFDeepCSV1p28Single6JetsROIForBTag+
+        process.hltVBFPFJetCSVSortedMqq200Detaqq1p5ROIForBTag+
+
+        process.HLTEndSequence
+    )
+
+
+    ############################################################################
+    #### HLT_QuadPFJet103_88_75_15_PFBTagDeepCSV_1p3_VBF2_v
+    ############################################################################
+
+    process.hltVBFPFJetCSVSortedMqq460Detaqq3p5ROIForBTag = process.hltVBFPFJetCSVSortedMqq460Detaqq3p5.clone(
+        inputJetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag","probb"),
+        inputJets = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.HLT_QuadPFJet103_88_75_15_PFBTagDeepCSV_1p3_VBF2ROIForBTag_v8 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sTripleJetVBFIorHTTIorSingleJet+
+        process.hltPreQuadPFJet103887515PFBTagDeepCSV1p3VBF2+
+        process.HLTAK4CaloJetsSequence+
+        process.hltQuadJet15+
+        process.hltTripleJet50+
+        process.hltDoubleJet65+
+        process.hltSingleJet80+
+        process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+        # process.HLTFastPrimaryVertexSequence+
+        # process.HLTBtagDeepCSVSequenceL3+
+        # process.hltBTagCaloDeepCSV1p56Single+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFQuadJetLooseID15ROIForBTag+
+        process.hltPFTripleJetLooseID75ROIForBTag+
+        process.hltPFDoubleJetLooseID88ROIForBTag+
+        process.hltPFSingleJetLooseID103ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltSelector6PFJetsROIForBTag+
+        process.hltBTagPFDeepCSV1p28Single6JetsROIForBTag+
+        process.hltVBFPFJetCSVSortedMqq460Detaqq3p5ROIForBTag+
+        process.HLTEndSequence
+    )
+
+    ############################################################################
+    #### HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v
+    ############################################################################
+
+    process.hltPFTripleJetLooseID76ROIForBTag = process.hltPFTripleJetLooseID76.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.hltPFSingleJetLooseID105ROIForBTag = process.hltPFSingleJetLooseID105.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1ROIForBTag_v8 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sTripleJet1008572VBFIorHTTIorDoubleJetCIorSingleJet+
+        process.hltPreQuadPFJet105887615DoublePFBTagDeepCSV1p37p7VBF1+
+        process.HLTAK4CaloJetsSequence+
+        process.hltQuadJet15+
+        process.hltTripleJet50+
+        process.hltDoubleJet65+
+        process.hltSingleJet80+
+        process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+        # process.HLTFastPrimaryVertexSequence+
+        # process.HLTBtagDeepCSVSequenceL3+
+        # process.hltBTagCaloDeepCSV1p56Single+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFQuadJetLooseID15ROIForBTag+
+        process.hltPFTripleJetLooseID76ROIForBTag+
+        process.hltPFDoubleJetLooseID88ROIForBTag+
+        process.hltPFSingleJetLooseID105ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltSelector6PFJetsROIForBTag+
+        process.hltBTagPFDeepCSV7p68Double6JetsROIForBTag+
+        process.hltBTagPFDeepCSV1p28Single6JetsROIForBTag+
+        process.hltVBFPFJetCSVSortedMqq200Detaqq1p5ROIForBTag+
+        process.HLTEndSequence
+    )
+
+    ############################################################################
+    #### HLT_QuadPFJet105_88_76_15_PFBTagDeepCSV_1p3_VBF2_v
+    ############################################################################
+
+
+
+    process.HLT_QuadPFJet105_88_76_15_PFBTagDeepCSV_1p3_VBF2ROIForBTag_v8 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sTripleJet1008572VBFIorHTTIorDoubleJetCIorSingleJet+
+        process.hltPreQuadPFJet105887615PFBTagDeepCSV1p3VBF2+
+        process.HLTAK4CaloJetsSequence+
+        process.hltQuadJet15+
+        process.hltTripleJet50+
+        process.hltDoubleJet65+
+        process.hltSingleJet80+
+        process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+        # process.HLTFastPrimaryVertexSequence+
+        # process.HLTBtagDeepCSVSequenceL3+
+        # process.hltBTagCaloDeepCSV1p56Single+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFQuadJetLooseID15ROIForBTag+
+        process.hltPFTripleJetLooseID76ROIForBTag+
+        process.hltPFDoubleJetLooseID88ROIForBTag+
+        process.hltPFSingleJetLooseID105ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltSelector6PFJetsROIForBTag+
+        process.hltBTagPFDeepCSV1p28Single6JetsROIForBTag+
+        process.hltVBFPFJetCSVSortedMqq460Detaqq3p5ROIForBTag+
+        process.HLTEndSequence
+    )
+
+    ############################################################################
+    #### HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v
+    ############################################################################
+
+    process.hltPFTripleJetLooseID80ROIForBTag = process.hltPFTripleJetLooseID80.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.hltPFDoubleJetLooseID90ROIForBTag = process.hltPFDoubleJetLooseID90.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.hltPFSingleJetLooseID111ROIForBTag = process.hltPFSingleJetLooseID111.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrected"),
+    )
+
+    process.HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1ROIForBTag_v8 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sTripleJet1058576VBFIorHTTIorDoubleJetCIorSingleJet+
+        process.hltPreQuadPFJet111908015DoublePFBTagDeepCSV1p37p7VBF1+
+        process.HLTAK4CaloJetsSequence+
+        process.hltQuadJet15+
+        process.hltTripleJet50+
+        process.hltDoubleJet65+
+        process.hltSingleJet80+
+        process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+        # process.HLTFastPrimaryVertexSequence+
+        # process.HLTBtagDeepCSVSequenceL3+
+        # process.hltBTagCaloDeepCSV1p56Single+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFQuadJetLooseID15ROIForBTag+
+        process.hltPFTripleJetLooseID80ROIForBTag+
+        process.hltPFDoubleJetLooseID90ROIForBTag+
+        process.hltPFSingleJetLooseID111ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltSelector6PFJetsROIForBTag+
+        process.hltBTagPFDeepCSV7p68Double6JetsROIForBTag+
+        process.hltBTagPFDeepCSV1p28Single6JetsROIForBTag+
+        process.hltVBFPFJetCSVSortedMqq200Detaqq1p5ROIForBTag+
+
+        process.HLTEndSequence
+    )
+
+
+    ############################################################################
+    #### HLT_QuadPFJet111_90_80_15_PFBTagDeepCSV_1p3_VBF2_v
+    ############################################################################
+
+    process.HLT_QuadPFJet111_90_80_15_PFBTagDeepCSV_1p3_VBF2ROIForBTag_v8 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sTripleJet1058576VBFIorHTTIorDoubleJetCIorSingleJet+
+        process.hltPreQuadPFJet111908015PFBTagDeepCSV1p3VBF2+
+        process.HLTAK4CaloJetsSequence+
+        process.hltQuadJet15+
+        process.hltTripleJet50+
+        process.hltDoubleJet65+
+        process.hltSingleJet80+
+        process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+        # process.HLTFastPrimaryVertexSequence+
+        # process.HLTBtagDeepCSVSequenceL3+
+        # process.hltBTagCaloDeepCSV1p56Single+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFQuadJetLooseID15ROIForBTag+
+        process.hltPFTripleJetLooseID80ROIForBTag+
+        process.hltPFDoubleJetLooseID90ROIForBTag+
+        process.hltPFSingleJetLooseID111ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltSelector6PFJetsROIForBTag+
+        process.hltBTagPFDeepCSV1p28Single6JetsROIForBTag+
+        process.hltVBFPFJetCSVSortedMqq460Detaqq3p5ROIForBTag+
+
+        process.HLTEndSequence
+    )
+
+    ############################################################################
+    #### HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v
+    ############################################################################
+
+    process.hltPFTripleJetLooseID71ROIForBTag = process.hltPFTripleJetLooseID71.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.hltPFDoubleJetLooseID83ROIForBTag = process.hltPFDoubleJetLooseID83.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.hltPFSingleJetLooseID98ROIForBTag = process.hltPFSingleJetLooseID98.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+    )
+
+    process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1ROIForBTag_v8 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sTripleJet927664VBFIorHTTIorDoubleJetCIorSingleJet+
+        process.hltPreQuadPFJet98837115DoublePFBTagDeepCSV1p37p7VBF1+
+        process.HLTAK4CaloJetsSequence+
+        process.hltQuadJet15+
+        process.hltTripleJet50+
+        process.hltDoubleJet65+
+        process.hltSingleJet80+
+        process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+        # process.HLTFastPrimaryVertexSequence+
+        # process.HLTBtagDeepCSVSequenceL3+
+        # process.hltBTagCaloDeepCSV1p56Single+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFQuadJetLooseID15ROIForBTag+
+        process.hltPFTripleJetLooseID71ROIForBTag+
+        process.hltPFDoubleJetLooseID83ROIForBTag+
+        process.hltPFSingleJetLooseID98ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltSelector6PFJetsROIForBTag+
+        process.hltBTagPFDeepCSV7p68Double6JetsROIForBTag+
+        process.hltBTagPFDeepCSV1p28Single6JetsROIForBTag+
+        process.hltVBFPFJetCSVSortedMqq200Detaqq1p5ROIForBTag+
+        process.HLTEndSequence
+    )
+
+    ############################################################################
+    #### HLT_QuadPFJet98_83_71_15_PFBTagDeepCSV_1p3_VBF2_v
+    ############################################################################
+
+    process.HLT_QuadPFJet98_83_71_15_PFBTagDeepCSV_1p3_VBF2ROIForBTag_v8 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sTripleJet927664VBFIorHTTIorDoubleJetCIorSingleJet+
+        process.hltPreQuadPFJet98837115PFBTagDeepCSV1p3VBF2+
+        process.HLTAK4CaloJetsSequence+
+        process.hltQuadJet15+
+        process.hltTripleJet50+
+        process.hltDoubleJet65+
+        process.hltSingleJet80+
+        process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+        # process.HLTFastPrimaryVertexSequence+
+        # process.HLTBtagDeepCSVSequenceL3+
+        # process.hltBTagCaloDeepCSV1p56Single+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFQuadJetLooseID15ROIForBTag+
+        process.hltPFTripleJetLooseID71ROIForBTag+
+        process.hltPFDoubleJetLooseID83ROIForBTag+
+        process.hltPFSingleJetLooseID98ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltSelector6PFJetsROIForBTag+
+        process.hltBTagPFDeepCSV1p28Single6JetsROIForBTag+
+        process.hltVBFPFJetCSVSortedMqq460Detaqq3p5ROIForBTag+
+        process.HLTEndSequence
+    )
+
+
+    ############################################################################
+    #### HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepCSV_1p5_v
+    ############################################################################
+
+    process.hltPFJetFilterTwoC30ROIForBTag = process.hltPFJetFilterTwoC30.clone(
+        inputTag = cms.InputTag("hltAK4PFJetsCorrectedROIForBTag"),
+    )
+
+    process.hltBTagPFDeepCSV1p5SingleROIForBTag = process.hltBTagPFDeepCSV1p5Single.clone(
+        JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag","probb"),
+        Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+    )
+
+    process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepCSV_1p5ROIForBTag_v1 = cms.Path(
+        process.HLTBeginSequence+
+        process.hltL1sMu5EG23IorMu5IsoEG20IorMu7EG23IorMu7IsoEG20IorMuIso7EG23+
+        process.hltPreMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZPFDiJet30PFBtagDeepCSV1p5+
+
+        process.HLTMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegSequence+
+        process.HLTMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegSequence+
+        process.hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZFilter+
+
+        process.HLTAK4PFJetsSequenceROIForBTag+
+        process.hltPFJetFilterTwoC30ROIForBTag+
+        process.HLTBtagDeepCSVSequencePFROIForBTag+
+        process.hltBTagPFDeepCSV1p5SingleROIForBTag+
+        process.HLTEndSequence
+    )
 
     return process
