@@ -117,50 +117,97 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
     )
 
     # do the same for caloJets
-    process.hltDeepCombinedSecondaryVertexCaloPatBJetTags = process.hltDeepCombinedSecondaryVertexBJetTagsCalo.clone(
-        src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos"),
-    )
+    if roiReplace==False:
+        process.hltDeepCombinedSecondaryVertexCaloPatBJetTags = process.hltDeepCombinedSecondaryVertexBJetTagsCalo.clone(
+            src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos"),
+        )
 
-    process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos = process.hltDeepCombinedSecondaryVertexBJetTagsInfosCalo.clone(
-        svTagInfos = cms.InputTag("hltInclusiveSecondaryVertexFinderPatTagInfos")
-    )
-    process.hltInclusiveSecondaryVertexFinderPatTagInfos = process.hltInclusiveSecondaryVertexFinderTagInfos.clone(
-        trackIPTagInfos = cms.InputTag("hltImpactParameterPatTagInfos"),
-    )
+        process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos = process.hltDeepCombinedSecondaryVertexBJetTagsInfosCalo.clone(
+            svTagInfos = cms.InputTag("hltInclusiveSecondaryVertexFinderPatTagInfos")
+        )
+        process.hltInclusiveSecondaryVertexFinderPatTagInfos = process.hltInclusiveSecondaryVertexFinderTagInfos.clone(
+            trackIPTagInfos = cms.InputTag("hltImpactParameterPatTagInfos"),
+        )
 
-    process.hltImpactParameterPatTagInfos = process.hltImpactParameterTagInfos.clone(
-        jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorPat"),
-    )
+        process.hltImpactParameterPatTagInfos = process.hltImpactParameterTagInfos.clone(
+            jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorPat"),
+        )
 
-    process.hltSelectorCentralJets30L1FastJeta2p5 = process.hltSelectorCentralJets30L1FastJeta.clone(
-        etaMax = cms.double(2.5),
-        etaMin = cms.double(-2.5),
-        src = cms.InputTag("hltSelectorJets20L1FastJet")
-    )
+        process.hltSelectorCentralJets30L1FastJeta2p5 = process.hltSelectorCentralJets30L1FastJeta.clone(
+            etaMax = cms.double(2.5),
+            etaMin = cms.double(-2.5),
+            src = cms.InputTag("hltSelectorJets20L1FastJet")
+        )
 
-    process.hltSelectorJets20L1FastJet = process.hltSelectorJets30L1FastJet.clone(
-        etMin = cms.double(20.0),
-    )
+        process.hltSelectorJets20L1FastJet = process.hltSelectorJets30L1FastJet.clone(
+            etMin = cms.double(20.0),
+        )
 
-    process.hltFastPixelBLifetimeL3AssociatorPat = process.hltFastPixelBLifetimeL3Associator.clone(
-        jets = cms.InputTag(calojetsCutted),
-    )
+        process.hltFastPixelBLifetimeL3AssociatorPat = process.hltFastPixelBLifetimeL3Associator.clone(
+            jets = cms.InputTag(calojetsCutted),
+        )
 
-    process.HLTBtagDeepCSVSequenceCaloPat = cms.Sequence(
-        process.hltSelectorJets20L1FastJet
-        +process.hltSelectorCentralJets30L1FastJeta2p5
-        +process.HLTTrackReconstructionForBTag
-        +process.hltVerticesL3
-        +process.hltFastPixelBLifetimeL3AssociatorPat
-        +process.hltImpactParameterPatTagInfos
-        +process.hltInclusiveVertexFinder
-        +process.hltInclusiveSecondaryVertices
-        +process.hltTrackVertexArbitrator
-        +process.hltInclusiveMergedVertices
-        +process.hltInclusiveSecondaryVertexFinderPatTagInfos
-        +process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos
-        +process.hltDeepCombinedSecondaryVertexCaloPatBJetTags
-    )
+        process.HLTBtagDeepCSVSequenceCaloPat = cms.Sequence(
+            process.hltSelectorJets20L1FastJet
+            +process.hltSelectorCentralJets30L1FastJeta2p5
+            +process.HLTTrackReconstructionForBTag
+            +process.hltVerticesL3
+            +process.hltFastPixelBLifetimeL3AssociatorPat
+            +process.hltImpactParameterPatTagInfos
+            +process.hltInclusiveVertexFinder
+            +process.hltInclusiveSecondaryVertices
+            +process.hltTrackVertexArbitrator
+            +process.hltInclusiveMergedVertices
+            +process.hltInclusiveSecondaryVertexFinderPatTagInfos
+            +process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos
+            +process.hltDeepCombinedSecondaryVertexCaloPatBJetTags
+        )
+    else:
+        process.hltDeepCombinedSecondaryVertexCaloPatBJetTags = process.hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag.clone(
+            src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos"),
+        )
+
+        process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos = process.hltDeepCombinedSecondaryVertexBJetTagsInfosCaloROIForBTag.clone(
+            svTagInfos = cms.InputTag("hltInclusiveSecondaryVertexFinderPatTagInfos")
+        )
+        process.hltInclusiveSecondaryVertexFinderPatTagInfos = process.hltInclusiveSecondaryVertexFinderTagInfosROIForBTag.clone(
+            trackIPTagInfos = cms.InputTag("hltImpactParameterPatTagInfos"),
+        )
+
+        process.hltImpactParameterPatTagInfos = process.hltImpactParameterTagInfosROIForBTag.clone(
+            jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorPat"),
+        )
+
+        process.hltSelectorCentralJets30L1FastJeta2p5 = process.hltSelectorCentralJets30L1FastJeta.clone(
+            etaMax = cms.double(2.5),
+            etaMin = cms.double(-2.5),
+            src = cms.InputTag("hltSelectorJets20L1FastJet")
+        )
+
+        process.hltSelectorJets20L1FastJet = process.hltSelectorJets30L1FastJet.clone(
+            etMin = cms.double(20.0),
+        )
+
+        process.hltFastPixelBLifetimeL3AssociatorPat = process.hltFastPixelBLifetimeL3AssociatorROIForBTag.clone(
+            jets = cms.InputTag(calojetsCutted),
+            tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplace==False else "hltMergedTracksROIForBTag"),
+        )
+
+        process.HLTBtagDeepCSVSequenceCaloPat = cms.Sequence(
+            process.hltSelectorJets20L1FastJet
+            +process.hltSelectorCentralJets30L1FastJeta2p5
+            +process.HLTTrackReconstructionForBTag
+            +process.hltVerticesL3ROIForBTag
+            +process.hltFastPixelBLifetimeL3AssociatorPat
+            +process.hltImpactParameterPatTagInfos
+            +process.hltInclusiveVertexFinderROIForBTag
+            +process.hltInclusiveSecondaryVerticesROIForBTag
+            +process.hltTrackVertexArbitratorROIForBTag
+            +process.hltInclusiveMergedVerticesROIForBTag
+            +process.hltInclusiveSecondaryVertexFinderPatTagInfos
+            +process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos
+            +process.hltDeepCombinedSecondaryVertexCaloPatBJetTags
+        )
 
 
     # create patJets  for ak4pfchs and all necessary missing inputs
@@ -382,9 +429,9 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
     process.hltAk4JetTracksAssociatorAtVertexCalo = ak4JetTracksAssociatorAtVertexPF.clone(
         jets = cms.InputTag(calojetsCutted),
         # pvSrc = cms.InputTag(hltVertices),
-        pvSrc = cms.InputTag("hltVerticesL3"),
+        pvSrc = cms.InputTag("hltVerticesL3" if roiReplace==False else "hltVerticesL3ROIForBTag"),
         # tracks = cms.InputTag(tracks),
-        tracks = cms.InputTag("hltMergedTracksForBTag"),
+        tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplace==False else "hltMergedTracksROIForBTag"),
     )
 
     from PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi  import patJetCorrFactors

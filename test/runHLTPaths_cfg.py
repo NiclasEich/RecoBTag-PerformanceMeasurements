@@ -506,6 +506,36 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets':
                 print("Deleting {}".format(hit_attr))
                 process.__delattr__(hit_attr)
 
+elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo':
+    # (a) Run-3 tracking: standard
+    # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process
+    from RecoBTag.PerformanceMeasurements.customise_TRK_replacement_calo import *
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    process = customiseRun3BTagRegionalTracks_Replacement_calo(process)
+    process = fixAlca(process)
+    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
+    if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
+      process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
+
+    if hasattr(process, 'hltIter1ClustersRefRemoval'):
+      process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
+
+    deleteCaloProcesses = pathsWithOnlyCalo
+
+    """
+    delete Calo-Loop
+    """
+    print("Deleting CaloOnly paths")
+    for _tmpPathName in deleteCaloProcesses:
+        attributes = dir(process)
+        for attribute in attributes:
+            if _tmpPathName in attribute:
+                hit_attr = attribute
+                print("Deleting {}".format(hit_attr))
+                process.__delattr__(hit_attr)
+
 elif options.reco == 'HLT_Run3TRKForBTag_2':
     # (a) Run-3 tracking: standard
     # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_11_2_0_GRun_V19_configDump import cms, process

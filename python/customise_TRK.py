@@ -524,7 +524,7 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
                 +process.hltDeepTrackVertexArbitratorPFROIForBTag
                 +process.hltDeepInclusiveMergedVerticesPFROIForBTag
                 +process.hltDeepSecondaryVertexTagInfosPFROIForBTag
-                +process.hltDeepCombinedSecondaryVertexBJetTagsInfos
+                +process.hltDeepCombinedSecondaryVertexBJetTagsInfosROIForBTag
                 +process.hltPrimaryVertexAssociationROIForBTag
                 +process.hltPFDeepFlavourTagInfosROIForBTag
                 +process.hltPFDeepFlavourJetTagsROIForBTag
