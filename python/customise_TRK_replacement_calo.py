@@ -1175,16 +1175,32 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         TrackLabel = cms.InputTag("hltMergedTracksROIForBTag"),
     )
 
+    process.hltVerticesL3SelectorROIForBTag = process.hltVerticesPFSelector.clone(
+        filterParams = cms.PSet(
+            maxRho = cms.double(2.0),
+            maxZ = cms.double(24.0),
+            minNdof = cms.double(4.0),
+            pvSrc = cms.InputTag("hltVerticesL3ROIForBTag")
+        ),
+        src = cms.InputTag("hltVerticesL3ROIForBTag")
+    )
+
+    process.hltVerticesL3FilterROIForBTag = process.hltVerticesPFFilter.clone(
+        src = cms.InputTag("hltVerticesL3SelectorROIForBTag")
+    )
+
     process.hltFastPixelBLifetimeL3AssociatorROIForBTag = process.hltFastPixelBLifetimeL3Associator.clone(
         tracks = cms.InputTag("hltMergedTracksROIForBTag"),
     )
     process.hltImpactParameterTagInfosROIForBTag = process.hltImpactParameterTagInfos.clone(
         jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorROIForBTag"),
-        primaryVertex = cms.InputTag("hltVerticesL3ROIForBTag","WithBS"),
+        # primaryVertex = cms.InputTag("hltVerticesL3ROIForBTag","WithBS"),
+        primaryVertex = cms.InputTag("hltVerticesL3FilterROIForBTag","WithBS"),
     )
 
     process.hltInclusiveVertexFinderROIForBTag = process.hltInclusiveVertexFinder.clone(
-        primaryVertices = cms.InputTag("hltVerticesL3ROIForBTag"),
+        # primaryVertices = cms.InputTag("hltVerticesL3ROIForBTag"),
+        primaryVertices = cms.InputTag("hltVerticesL3FilterROIForBTag"),
         tracks = cms.InputTag("hltMergedTracksROIForBTag"),
     )
 
@@ -1193,7 +1209,8 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     )
 
     process.hltTrackVertexArbitratorROIForBTag = process.hltTrackVertexArbitrator.clone(
-        primaryVertices = cms.InputTag("hltVerticesL3ROIForBTag"),
+        # primaryVertices = cms.InputTag("hltVerticesL3ROIForBTag"),
+        primaryVertices = cms.InputTag("hltVerticesL3FilterROIForBTag"),
         secondaryVertices = cms.InputTag("hltInclusiveSecondaryVerticesROIForBTag"),
         # tracks = cms.InputTag("hltIter2MergedForBTag")
         tracks = cms.InputTag("hltMergedTracksROIForBTag")
@@ -1223,6 +1240,8 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
 
         process.HLTTrackReconstructionForBTag+
         process.hltVerticesL3ROIForBTag+
+        process.hltVerticesL3SelectorROIForBTag+
+        process.hltVerticesL3FilterROIForBTag+
 
         process.hltFastPixelBLifetimeL3AssociatorROIForBTag+
         process.hltImpactParameterTagInfosROIForBTag+

@@ -406,10 +406,10 @@ def fixAlca(process):
 	#  find ../../../../HLTrigger/Configuration/python/customizeHLTforPatatrack.py -type f -exec sed -i 's/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone()/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")/g' {} \;
 
 	if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
-        process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
+		process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
 
 	if hasattr(process, 'hltIter1ClustersRefRemoval'):
-        process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
+		process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
 
 	return process
 
@@ -739,7 +739,7 @@ keepPaths = [
   # 'HLT_*_*_v*',
 ]
 
-if reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets" or reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo":
+if options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo":
     keepPaths+=['MC_*DeepCSV*ROI*', 'MC_*DeepJet*ROI*',]
 else:
     keepPaths+=['MC_*DeepCSV*', 'MC_*DeepJet*',]
@@ -1235,9 +1235,7 @@ print ('option: output =', options.outFilename)
 print ('option: reco =', options.reco)
 print ('option: dumpPython =', options.dumpPython)
 print ('')
-# print 'process.GlobalTag =', process.GlobalTag.dumpPython()
 print ('process.GlobalTag =', process.GlobalTag.globaltag)
 print ('process.source =', process.source.dumpPython())
 print ('process.maxEvents =', process.maxEvents.input)
-# print 'process.options =', process.options.dumpPython()
 print ('-------------------------------')
