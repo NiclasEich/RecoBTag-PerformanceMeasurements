@@ -2989,7 +2989,7 @@ void HLTBTagAnalyzerT<IPTI,VTX>::processCaloJets(const edm::Handle<PatJetCollect
       JetInfo[iJetColl].Jet_jes[JetInfo[iJetColl].nJet]      = ( nJECSets>0 ? jet->pt()/jet->correctedJet("Uncorrected").pt() : 1. );
       JetInfo[iJetColl].Jet_residual[JetInfo[iJetColl].nJet] = ( nJECSets>0 ? jet->pt()/jet->correctedJet("L3Absolute").pt() : 1. );
       JetInfo[iJetColl].Jet_uncorrpt[JetInfo[iJetColl].nJet] = ( nJECSets>0 ? jet->correctedJet("Uncorrected").pt() : jet->pt());
-      //std::cout << "CSV is " << jet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") << std::endl;
+      // std::cout << "CSV is " << jet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") << std::endl;
 
       //
       //  Fill CSV Value
@@ -3042,8 +3042,8 @@ void HLTBTagAnalyzerT<IPTI,VTX>::processCaloJets(const edm::Handle<PatJetCollect
 	  JetInfo[iJetColl].TagVar_jetNTracks[JetInfo[iJetColl].nJet]                  = nTracks;
 	  JetInfo[iJetColl].TagVar_jetNSecondaryVertices[JetInfo[iJetColl].nJet]       = nSVs;
 
-	  //std::cout << "Filling jet-level " << std::endl;
-	  //std::cout << tagVars.getList(reco::btau::trackSumJetEtRatio,false).size() << std::endl;
+	  // std::cout << "Filling jet-level " << std::endl;
+	  // std::cout << tagVars.getList(reco::btau::trackSumJetEtRatio,false).size() << std::endl;
 	  if(tagVars.getList(reco::btau::trackJetPt,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackJetPt[JetInfo[iJetColl].nJet]                  = ( tagVars.getList(reco::btau::trackJetPt,false).at(0));
 	  }else{
@@ -3152,43 +3152,43 @@ void HLTBTagAnalyzerT<IPTI,VTX>::processCaloJets(const edm::Handle<PatJetCollect
 	    JetInfo[iJetColl].TagVarCSV_flightDistance3dSig[JetInfo[iJetColl].nJet]         = -9999;
 	  }
 
-	  if(tagVars.getList(reco::btau::flightDistance3dSig,false).size()){
+	  if(tagVars.getList(reco::btau::trackJetDistVal,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackJetDistVal[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackJetDistVal,false).at(0));
 	  }else{
 	    JetInfo[iJetColl].TagVarCSV_trackJetDistVal[JetInfo[iJetColl].nJet]         = -9999;
 	  }
 
-	  if(tagVars.getList(reco::btau::flightDistance3dSig,false).size()){
+	  if(tagVars.getList(reco::btau::trackPtRel,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackPtRel[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackPtRel,false).at(0));
 	  }else{
 	    JetInfo[iJetColl].TagVarCSV_trackPtRel[JetInfo[iJetColl].nJet]         = -9999;
 	  }
 
-	  if(tagVars.getList(reco::btau::flightDistance3dSig,false).size()){
+	  if(tagVars.getList(reco::btau::trackDeltaR,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackDeltaR[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackDeltaR,false).at(0));
 	  }else{
 	    JetInfo[iJetColl].TagVarCSV_trackDeltaR[JetInfo[iJetColl].nJet]         = -9999;
 	  }
 
-	  if(tagVars.getList(reco::btau::flightDistance3dSig,false).size()){
+	  if(tagVars.getList(reco::btau::trackPtRatio,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackPtRatio[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackPtRatio,false).at(0));
 	  }else{
 	    JetInfo[iJetColl].TagVarCSV_trackPtRatio[JetInfo[iJetColl].nJet]         = -9999;
 	  }
 
-	  if(tagVars.getList(reco::btau::flightDistance3dSig,false).size()){
+	  if(tagVars.getList(reco::btau::trackSip2dSig,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackSip2dSig[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackSip2dSig,false).at(0));
 	  }else{
 	    JetInfo[iJetColl].TagVarCSV_trackSip2dSig[JetInfo[iJetColl].nJet]         = -9999;
 	  }
 
-	  if(tagVars.getList(reco::btau::flightDistance3dSig,false).size()){
+	  if(tagVars.getList(reco::btau::trackSip3dSig,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackSip3dSig[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackSip3dSig,false).at(0));
 	  }else{
 	    JetInfo[iJetColl].TagVarCSV_trackSip3dSig[JetInfo[iJetColl].nJet]         = -9999;
 	  }
 
-	  if(tagVars.getList(reco::btau::flightDistance3dSig,false).size()){
+	  if(tagVars.getList(reco::btau::trackDecayLenVal,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackDecayLenVal[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackDecayLenVal,false).at(0));
 	  }else{
 	    JetInfo[iJetColl].TagVarCSV_trackDecayLenVal[JetInfo[iJetColl].nJet]         = -9999;
