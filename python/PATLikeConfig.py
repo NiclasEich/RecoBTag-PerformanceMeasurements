@@ -198,6 +198,8 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
             +process.hltSelectorCentralJets30L1FastJeta2p5
             +process.HLTTrackReconstructionForBTag
             +process.hltVerticesL3ROIForBTag
+            +process.hltVerticesL3SelectorROIForBTag
+            +process.hltVerticesL3FilterROIForBTag
             +process.hltFastPixelBLifetimeL3AssociatorPat
             +process.hltImpactParameterPatTagInfos
             +process.hltInclusiveVertexFinderROIForBTag
@@ -429,7 +431,8 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
     process.hltAk4JetTracksAssociatorAtVertexCalo = ak4JetTracksAssociatorAtVertexPF.clone(
         jets = cms.InputTag(calojetsCutted),
         # pvSrc = cms.InputTag(hltVertices),
-        pvSrc = cms.InputTag("hltVerticesL3" if roiReplace==False else "hltVerticesL3ROIForBTag"),
+        # pvSrc = cms.InputTag("hltVerticesL3" if roiReplace==False else "hltVerticesL3ROIForBTag"),
+        pvSrc = cms.InputTag("hltVerticesL3" if roiReplace==False else "hltVerticesL3FilterROIForBTag"),
         # tracks = cms.InputTag(tracks),
         tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplace==False else "hltMergedTracksROIForBTag"),
     )

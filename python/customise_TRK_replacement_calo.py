@@ -1195,7 +1195,8 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     process.hltImpactParameterTagInfosROIForBTag = process.hltImpactParameterTagInfos.clone(
         jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorROIForBTag"),
         # primaryVertex = cms.InputTag("hltVerticesL3ROIForBTag","WithBS"),
-        primaryVertex = cms.InputTag("hltVerticesL3FilterROIForBTag","WithBS"),
+        # primaryVertex = cms.InputTag("hltVerticesL3FilterROIForBTag","WithBS"),
+        primaryVertex = cms.InputTag("hltVerticesL3FilterROIForBTag"),
     )
 
     process.hltInclusiveVertexFinderROIForBTag = process.hltInclusiveVertexFinder.clone(
