@@ -376,6 +376,26 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo':
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
     process = deleteCaloOnlyPaths(process)
 
+elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo_Global':
+    # (a) Run-3 tracking: standard
+    from RecoBTag.PerformanceMeasurements.customise_TRK_replacement_global_calo import *
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    process = customiseRun3BTagRegionalTracks_Replacement_global_calo(process)
+    process = fixAlca(process)
+    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+    process = deleteCaloOnlyPaths(process)
+
+elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobalCalo_Global':
+    # (a) Run-3 tracking: standard
+    from RecoBTag.PerformanceMeasurements.customise_TRK_replacement_globalGlobal_calo import *
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    process = customiseRun3BTagRegionalTracks_Replacement_global_globalCalo(process)
+    process = fixAlca(process)
+    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+    process = deleteCaloOnlyPaths(process)
+
 elif options.reco == 'HLT_Run3TRKForBTag_2':
     # (a) Run-3 tracking: standard
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
