@@ -449,32 +449,30 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
     from RecoBTag.FeatureTools.pfDeepFlavourTagInfos_cfi import pfDeepFlavourTagInfos
     from RecoBTag.ONNXRuntime.pfDeepFlavourJetTags_cfi import pfDeepFlavourJetTags
 
-    pfDeepJetDiscriminatorsJetTags = cms.EDProducer(
+    process.hltDeepJetDiscriminatorsJetTags = cms.EDProducer(
         'BTagProbabilityToDiscriminator',
         discriminators = cms.VPSet(
             cms.PSet(
                 name = cms.string('BvsAll'),
                 numerator = cms.VInputTag(
-                    cms.InputTag('pfDeepJetJetTags', 'probb'),
-                    cms.InputTag('pfDeepJetJetTags', 'probbb'),
-                    cms.InputTag('pfDeepJetJetTags', 'problepb'),
+                    cms.InputTag('hltPFDeepFlavourJetTags', 'probb'),
+                    cms.InputTag('hltPFDeepFlavourJetTags', 'probbb'),
+                    cms.InputTag('hltPFDeepFlavourJetTags', 'problepb'),
                     ),
                 denominator=cms.VInputTag(
-                    cms.InputTag('pfDeepJetJetTags', 'probb'),
-                    cms.InputTag('pfDeepJetJetTags', 'probbb'),
-                    cms.InputTag('pfDeepJetJetTags', 'problepb'),
-                    cms.InputTag('pfDeepJetJetTags', 'probc'),
-                    cms.InputTag('pfDeepJetJetTags', 'probcc'),
-                    cms.InputTag('pfDeepJetJetTags', 'probuds'),
-                    cms.InputTag('pfDeepJetJetTags', 'probs'),
-                    cms.InputTag('pfDeepJetJetTags', 'probg'),
+                    cms.InputTag('hltPFDeepFlavourJetTags', 'probb'),
+                    cms.InputTag('hltPFDeepFlavourJetTags', 'probbb'),
+                    cms.InputTag('hltPFDeepFlavourJetTags', 'problepb'),
+                    cms.InputTag('hltPFDeepFlavourJetTags', 'probc'),
+                    cms.InputTag('hltPFDeepFlavourJetTags', 'probuds'),
+                    cms.InputTag('hltPFDeepFlavourJetTags', 'probg'),
                     ),
             ),
         )
     )
 
-    _pfDeepJetDiscriminatorsJetTagsMetaDiscrs = ['pfDeepJetAK4DiscriminatorsJetsTAgs:' + disc.name.value()
-                                                 for disc in pfDeepJetDiscriminatorsJetTags]
+    # _pfDeepJetDiscriminatorsJetTagsMetaDiscrs = ['hltPFDeepJetTagInfos:' + disc.name.value()
+                                                 # for disc in process.hltDeepJetDiscriminatorsJetTags]
 
     if doPF:
         if roiReplace==False:
@@ -537,6 +535,7 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
                 +process.hltPrimaryVertexAssociation
                 +process.hltPFDeepFlavourTagInfos
                 +process.hltPFDeepFlavourJetTags
+                +process.hltDeepJetDiscriminatorsJetTags
             )
         else:
             process.HLTBtagDeepJetSequencePFROIForBTag = cms.Sequence(
@@ -561,7 +560,7 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
 
         if roiReplace==False:
             process.hltBTagPFDeepJet4p06Single = process.hltBTagPFDeepCSV4p06Single.clone(
-                JetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
+                JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTags","BvsAll"),
                 Jets = cms.InputTag("hltPFJetForBtag"),
                 MaxTag = cms.double(999999.0),
                 MinJets = cms.int32(1),
