@@ -637,6 +637,16 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo':
     trackSource              = "hltMergedTracksROIForBTag"
     rho                      = "hltFixedGridRhoFastjetAllROIForBTag"
 
+elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo_Global':
+    # (a) Run-3 tracking: standard
+    from RecoBTag.PerformanceMeasurements.customise_TRK_replacement_global_calo import *
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    process = customiseRun3BTagRegionalTracks_Replacement_global_calo(process)
+    process = fixAlca(process)
+    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+    process = deleteCaloOnlyPaths(process)
+
 elif options.reco == 'HLT_Run3TRKForBTag':
     # (a) Run-3 tracking: standard
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
@@ -698,9 +708,13 @@ if options.runCaloJetVariables:
 if options.runPuppiJetVariables:
     process = addPaths_MC_JMEPFPuppi(process)
 from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
-process = addDeepJet(process, doPF = True, doPuppi = options.runPuppiJetVariables, roiReplace=options.reco=="HLT_Run3TRKForBTag_Replacement" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo")
+process = addDeepJet(process, doPF = True, doPuppi = options.runPuppiJetVariables,
+    roiReplace=options.reco=="HLT_Run3TRKForBTag_Replacement" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo"
+)
 from RecoBTag.PerformanceMeasurements.PATLikeConfig import customizePFPatLikeJets
-process = customizePFPatLikeJets(process, runPF=True, runCalo=options.runCaloJetVariables, runPuppi=options.runPuppiJetVariables, roiReplace=options.reco=="HLT_Run3TRKForBTag_Replacement" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo")
+process = customizePFPatLikeJets(process, runPF=True, runCalo=options.runCaloJetVariables, runPuppi=options.runPuppiJetVariables,
+    roiReplace=options.reco=="HLT_Run3TRKForBTag_Replacement" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo"
+)
 
 
 if options.reco == 'HLT_Run3TRKMod':

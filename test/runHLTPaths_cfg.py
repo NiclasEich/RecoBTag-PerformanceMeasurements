@@ -469,7 +469,7 @@ keepPaths = [
 
 removePaths = []
 removePaths+=pathsWithOnlyCalo
-if options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo":
+if options.reco == "HLT_Run3TRKForBTag_Replacement" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo":
     removePaths+=pathsWithCaloAndPF
 
 print("Deleting removePaths")

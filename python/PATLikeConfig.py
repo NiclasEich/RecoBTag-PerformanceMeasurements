@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roiReplace=False):
+def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roiReplace=False, roiReplaceCalo=False):
     # set some default collection variables
     pfjets =                "hltAK4PFJets" if roiReplace==False else "hltAK4PFJetsROIForBTag"                                #original ak4PFJetsCHS
     puppijets =             "hltAK4PFPuppiJets"                                  #original ak4PFJetsCHS
@@ -117,7 +117,8 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
     )
 
     # do the same for caloJets
-    if roiReplace==False:
+    # if roiReplace==False:
+    if roiReplaceCalo==False:
         process.hltDeepCombinedSecondaryVertexCaloPatBJetTags = process.hltDeepCombinedSecondaryVertexBJetTagsCalo.clone(
             src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos"),
         )
@@ -432,9 +433,9 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
         jets = cms.InputTag(calojetsCutted),
         # pvSrc = cms.InputTag(hltVertices),
         # pvSrc = cms.InputTag("hltVerticesL3" if roiReplace==False else "hltVerticesL3ROIForBTag"),
-        pvSrc = cms.InputTag("hltVerticesL3" if roiReplace==False else "hltVerticesL3FilterROIForBTag"),
+        pvSrc = cms.InputTag("hltVerticesL3" if roiReplaceCalo==False else "hltVerticesL3FilterROIForBTag"),
         # tracks = cms.InputTag(tracks),
-        tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplace==False else "hltMergedTracksROIForBTag"),
+        tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplaceCalo==False else "hltMergedTracksROIForBTag"),
     )
 
     from PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi  import patJetCorrFactors
