@@ -776,4 +776,6 @@ def customiseRun3BTagRegionalTracks_DeepJet(process):
         process.hltBTagPFDeepJet1p5Single+
         process.HLTEndSequence
     )
-	
+
+
+    return process	
