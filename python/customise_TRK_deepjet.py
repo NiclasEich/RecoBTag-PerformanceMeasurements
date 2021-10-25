@@ -116,7 +116,7 @@ def customiseRun3BTagRegionalTracks_DeepJet(process):
     process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepJet4p5 = process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV4p5.clone()
  
     process.hltBTagPFDeepJet4p5Triple = process.hltBTagPFDeepCSV4p5Triple.clone(
-        JetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
+        JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTags","BvsAll"),
         Jets = cms.InputTag("hltPFJetForBtag"),
         MaxTag = cms.double(999999.0),
         MinJets = cms.int32(3),
@@ -195,7 +195,7 @@ def customiseRun3BTagRegionalTracks_DeepJet(process):
 #    )
 
     process.hltBTagPFDeepJet4p5Double = process.hltBTagPFDeepCSV4p5Double.clone(
-        JetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
+        JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTags","BvsAll"),
         Jets = cms.InputTag("hltPFJetForBtag"),
     )
 
@@ -297,7 +297,7 @@ def customiseRun3BTagRegionalTracks_DeepJet(process):
 #    )
 
     process.hltBTagPFDeepJet2p94Double = process.hltBTagPFDeepCSV2p94Double.clone(
-        JetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
+        JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTags","BvsAll"),
         Jets = cms.InputTag("hltPFJetForBtag"),
     )
 
@@ -347,7 +347,7 @@ def customiseRun3BTagRegionalTracks_DeepJet(process):
 #    )
 
     process.hltBTagPFDeepJet1p59Single = process.hltBTagPFDeepCSV1p59Single.clone(
-        JetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
+        JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTags","BvsAll"),
         Jets = cms.InputTag("hltPFJetForBtag"),
     )
 
@@ -417,16 +417,16 @@ def customiseRun3BTagRegionalTracks_DeepJet(process):
     process.hltPreQuadPFJet103887515DoublePFBTagDeepJet1p37p7VBF1 = process.hltPreQuadPFJet103887515DoublePFBTagDeepCSV1p37p7VBF1.clone()
 
     process.hltBTagPFDeepJet7p68Double6Jets = process.hltBTagPFDeepCSV7p68Double6Jets.clone(
-        JetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
+        JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTags","BvsAll"),
         Jets = cms.InputTag("hltSelector6PFJets"),
     )
 
     process.hltBTagPFDeepJet1p28Single6Jets = process.hltBTagPFDeepCSV1p28Single6Jets.clone(
-        JetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
+        JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTags","BvsAll"),
         Jets = cms.InputTag("hltSelector6PFJets"),
     )
     process.hltVBFPFJetDeepJetSortedMqq200Detaqq1p5 = process.hltVBFPFJetCSVSortedMqq200Detaqq1p5.clone(
-        inputJetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
+        inputJetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTags","BvsAll"),
         inputJets = cms.InputTag("hltAK4PFJetsLooseIDCorrected"),
     )
 
@@ -470,7 +470,7 @@ def customiseRun3BTagRegionalTracks_DeepJet(process):
 #    )
 
     process.hltVBFPFJetDeepJetSortedMqq460Detaqq3p5 = process.hltVBFPFJetCSVSortedMqq460Detaqq3p5.clone(
-        inputJetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
+        inputJetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTags","BvsAll"),
         inputJets = cms.InputTag("hltAK4PFJetsLooseIDCorrected"),
     )
 
@@ -754,7 +754,7 @@ def customiseRun3BTagRegionalTracks_DeepJet(process):
 #    )
 
     process.hltBTagPFDeepJet1p5Single = process.hltBTagPFDeepCSV1p5Single.clone(
-        JetTags = cms.InputTag("hltPFDeepFlavourJetTags","probb"),
+        JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTags","BvsAll"),
         Jets = cms.InputTag("hltPFJetForBtag"),
     )
 
