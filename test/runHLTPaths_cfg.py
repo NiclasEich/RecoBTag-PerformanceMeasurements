@@ -227,8 +227,6 @@ else:
     from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_configDump_MC import cms, process
 
 
-from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
-process = addDeepJet(process, doPF = True, doPuppi = False)
 
 if options.reco == 'HLT_GRun_oldJECs':
     process = fixForGRunConfig(process)
@@ -362,6 +360,8 @@ elif options.reco == 'HLT_Run3TRKForBTag_DeepJet':
     # (a) Run-3 tracking: standard
     from RecoBTag.PerformanceMeasurements.customise_TRK_deepjet import *
     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
+    process = addDeepJet(process, doPF = True, doPuppi = False)
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_DeepJet(process)
     process = fixAlca(process)
