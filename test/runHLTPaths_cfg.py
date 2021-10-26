@@ -226,6 +226,8 @@ if options.runOnData:
 else:
     from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_configDump_MC import cms, process
 
+
+
 if options.reco == 'HLT_GRun_oldJECs':
     process = fixForGRunConfig(process)
     update_jmeCalibs = False
@@ -354,7 +356,16 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement':
     process = customiseRun3BTagRegionalTracks_Replacement(process)
     process = fixAlca(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
-
+elif options.reco == 'HLT_Run3TRKForBTag_DeepJet':
+    # (a) Run-3 tracking: standard
+    from RecoBTag.PerformanceMeasurements.customise_TRK_deepjet import *
+    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
+    process = addDeepJet(process, doPF = True, doPuppi = False)
+    process = customizeHLTforRun3Tracking(process)
+    process = customiseRun3BTagRegionalTracks_DeepJet(process)
+    process = fixAlca(process)
+    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets':
     # (a) Run-3 tracking: standard
@@ -730,3 +741,4 @@ print ('process.GlobalTag =', process.GlobalTag.globaltag)
 print ('process.source =', process.source.dumpPython())
 print ('process.maxEvents =', process.maxEvents.input)
 print ('-------------------------------')
+
