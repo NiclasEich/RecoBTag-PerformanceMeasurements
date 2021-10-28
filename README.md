@@ -1,5 +1,12 @@
 # RecoBTag-PerformanceMeasurements
 
+##### Table of Contents  
+[Basics & software setup](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/tree/ROI_customizer#basics--software-setup)  
+[Instructions to run nTuplizers](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/tree/ROI_customizer#instructions-to-run-ntuplizers)  
+[General information](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/tree/ROI_customizer#general-information)  
+[How to get the latest HLT configuration](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/tree/ROI_customizer#how-to-get-the-latest-hlt-configuration-grun--on-lxplus-only)  
+[Where to find the Run 3 reconstruction customization functions](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/tree/ROI_customizer#where-to-find-the-run-3-reconstruction-customization-functions)  
+
 ## Basics & software setup
 
 ```bash
@@ -126,7 +133,7 @@ An example on how to apply it on top of the GRun menu is [here](https://github.c
 For the ROI TRK+PF approach and addition of new ROI calo btagging: [here](python/customise_TRK_replacement_calo.py)
 An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/ROI_customizer/test/runHLTPaths_cfg.py#L391-L401)
 
--newROICalo+global:
+- newROICalo+global:
 For the central/global TRK+PF and addition of new ROI calo btagging: [here](python/customise_TRK_replacement_global_calo.py)
 An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/ROI_customizer/test/runHLTPaths_cfg.py#L403-L414)
 
