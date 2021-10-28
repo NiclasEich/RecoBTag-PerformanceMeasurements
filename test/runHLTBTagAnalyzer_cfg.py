@@ -663,7 +663,7 @@ elif options.reco == 'HLT_Run3TRKForBTag':
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
-    process = customiseRun3BTagRegionalTracks(process, clean=False, vertex="hltTrimmedPixelVertices", nVertices = 2)
+    process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltTrimmedPixelVertices", nVertices = 2)
 
 ############################
 #   old intermediate and temporary testing configurations

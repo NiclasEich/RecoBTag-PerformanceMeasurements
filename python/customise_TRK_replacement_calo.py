@@ -21,7 +21,8 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         deltaEta = cms.double(0.5),
         deltaPhi = cms.double(0.5),
         input = cms.InputTag("hltSelectorCentralJets20L1FastJeta"),
-        maxNRegions = cms.int32(100),
+        # maxNRegions = cms.int32(100),
+        maxNRegions = cms.int32(8),
         maxNVertices = cms.int32(2),
         measurementTrackerName = cms.InputTag(""),
         mode = cms.string('VerticesFixed'),
@@ -38,8 +39,44 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         )
     )
 
+    process.hltPixelTracksCleanForBTag = cms.EDProducer("TrackWithVertexSelector",
+        copyExtras = cms.untracked.bool(False),
+        copyTrajectories = cms.untracked.bool(False),
+        d0Max = cms.double(999.0),
+        dzMax = cms.double(999.0),
+        etaMax = cms.double(5.0),
+        etaMin = cms.double(0.0),
+        nSigmaDtVertex = cms.double(0.0),
+        nVertices = cms.uint32(2),
+        normalizedChi2 = cms.double(999999.0),
+        numberOfLostHits = cms.uint32(999),
+        numberOfValidHits = cms.uint32(0),
+        numberOfValidHitsForGood = cms.uint32(999),
+        numberOfValidPixelHits = cms.uint32(3),
+        numberOfValidPixelHitsForGood = cms.uint32(999),
+        ptErrorCut = cms.double(5.0),
+        ptMax = cms.double(500.0),
+        ptMin = cms.double(0.3),
+        # ptMin = cms.double(0.8),
+        quality = cms.string('loose'),
+        # quality = cms.string('tight'),
+        rhoVtx = cms.double(0.2),
+        rhoVtxScale = cms.double(1.0),
+        rhoVtxSig = cms.double(999.0),
+        src = cms.InputTag("hltPixelTracks"),
+        timeResosTag = cms.InputTag(""),
+        timesTag = cms.InputTag(""),
+        useVtx = cms.bool(True),
+        vertexTag = cms.InputTag("hltTrimmedPixelVertices"),
+        vtxFallback = cms.bool(True),
+        zetaVtx = cms.double(0.3),
+        zetaVtxScale = cms.double(1.0),
+        zetaVtxSig = cms.double(999.0)
+    )
+
     process.hltPixelTracksForBTag = cms.EDProducer('TrackSelectorByRegion',
-          tracks = cms.InputTag('hltPixelTracks'),
+          # tracks = cms.InputTag('hltPixelTracks'),
+          tracks = cms.InputTag('hltPixelTracksCleanForBTag'),
           regions = cms.InputTag('hltBTaggingRegion'),
           produceTrackCollection = cms.bool(True),
           produceMask = cms.bool(True),
@@ -1141,6 +1178,7 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         process.hltSelectorCentralJets20L1FastJeta +
 
         process.hltBTaggingRegion +
+        process.hltPixelTracksCleanForBTag+
         process.hltPixelTracksForBTag +
 
         process.hltIter0PFLowPixelSeedsFromPixelTracksROIForBTag+
