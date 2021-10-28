@@ -401,7 +401,6 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo':
     process = deleteCaloOnlyPaths(process)
 
 elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo_Global':
-elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo_Global':
     # Run-3 global/central TRK+PF reconstruction
     # + removal of all paths with CaloOnlyBtagging (see below)
     # + replacement of Calo Btagging with new ROI tracks
@@ -424,7 +423,7 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobal
     process = fixAlca(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
     process = deleteCaloOnlyPaths(process)
-    
+
 ############################
 #   old intermediate and temporary testing configurations
 ############################
