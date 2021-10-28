@@ -1,6 +1,6 @@
 # RecoBTag-PerformanceMeasurements
 
-##### Table of Contents  
+## Table of Contents  
 [Basics & software setup](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/tree/ROI_customizer#basics--software-setup)  
 [Instructions to run nTuplizers](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/tree/ROI_customizer#instructions-to-run-ntuplizers)  
 [General information](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/tree/ROI_customizer#general-information)  
