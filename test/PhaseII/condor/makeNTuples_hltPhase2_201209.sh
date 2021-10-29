@@ -65,18 +65,20 @@ declare -A samplesMap
 
 # for btv signal
 # samplesMap["Phase2HLTTDR_HH4b_14TeV_PU200"]="/GluGluToHHTo4B_node_SM_TuneCP5_14TeV-madgraph_pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1/FEVT"
+samplesMap["Phase2HLTTDR_HH4b_14TeV_PU140"]="/GluGluToHHTo4B_node_SM_TuneCP5_14TeV-madgraph_pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU140_111X_mcRun4_realistic_T15_v1-v1/FEVT"
 # samplesMap["Phase2HLTTDR_TTbar_14TeV_NoPU"]="/TT_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v2/FEVT"
 # samplesMap["Phase2HLTTDR_TTbar_14TeV_PU200"]="/TT_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v2/FEVT"
-samplesMap["Phase2HLTTDR_TTbar2L_14TeV_PU200"]="/TTTo2L2Nu_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1/FEVT"
-samplesMap["Phase2HLTTDR_TTbar1L_14TeV_PU200"]="/TTToSemiLepton_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1/FEVT"
+# samplesMap["Phase2HLTTDR_TTbar2L_14TeV_PU200"]="/TTTo2L2Nu_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1/FEVT"
+# samplesMap["Phase2HLTTDR_TTbar1L_14TeV_PU200"]="/TTToSemiLepton_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1/FEVT"
 
-samplesMap["Phase2HLTTDR_TTbar2L_14TeV_PU140"]="/TTTo2L2Nu_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU140_111X_mcRun4_realistic_T15_v1-v1/FEVT"
-samplesMap["Phase2HLTTDR_TTbar1L_14TeV_PU140"]="/TTToSemiLepton_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU140_111X_mcRun4_realistic_T15_v1-v1/FEVT"
-samplesMap["Phase2HLTTDR_TTbar_14TeV_PU140"]="/TT_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU140_111X_mcRun4_realistic_T15_v1-v1/FEVT"
+# samplesMap["Phase2HLTTDR_TTbar2L_14TeV_PU140"]="/TTTo2L2Nu_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU140_111X_mcRun4_realistic_T15_v1-v1/FEVT"
+# samplesMap["Phase2HLTTDR_TTbar1L_14TeV_PU140"]="/TTToSemiLepton_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU140_111X_mcRun4_realistic_T15_v1-v1/FEVT"
+# samplesMap["Phase2HLTTDR_TTbar_14TeV_PU140"]="/TT_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU140_111X_mcRun4_realistic_T15_v1-v1/FEVT"
 
 # samplesMap["Phase2HLTTDR_ZZTo4bQ01j_14TeV_PU200"]="/ZZTo4bQ01j_5f_TuneCP5_amcatNLO_FXFX_pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v1/FEVT"
 
 recoKeys=(
+    # HLT_TRKv00
     # HLT_TRKv00_TICL
     HLT_TRKv06p1_TICL
     # HLT_TRKv06p3_TICL
@@ -91,7 +93,8 @@ btvRecoKeys=(
 # options (JobFlavour and AccountingGroup)
 opts=""
 if [[ ${HOSTNAME} == lxplus* ]]; then
-  opts+="--JobFlavour longlunch"
+  # opts+="--JobFlavour longlunch"
+  opts+="--JobFlavour workday"
   if [[ ${USER} == sewuchte ]]; then
     opts+=" --AccountingGroup group_u_CMS.CAF.PHYS"
   fi
@@ -105,9 +108,11 @@ for recoKey in "${recoKeys[@]}"; do
             if [[ ${sampleKey} == *MinBias* ]]; then
                 numEvents=2000000
             fi
-            python ../runHLTBTagAnalyzer_PhaseII_cfg.py dumpPython=/tmp/${USER}/${recoKey}_${btvRecoKey}_cfg.py numThreads=1 reco=${recoKey} BTVreco=${btvRecoKey} globalTag=111X_mcRun4_realistic_T15_v2
+            python ../runHLTBTagAnalyzer_PhaseII_cfg.py dumpPython=/tmp/${USER}/${recoKey}_${btvRecoKey}_cfg.py numThreads=1 reco=${recoKey} BTVreco=${btvRecoKey} globalTag=111X_mcRun4_realistic_T15_v4
 
-            htc_driver -c /tmp/${USER}/${recoKey}_${btvRecoKey}_cfg.py --customize-cfg -m ${numEvents} -n 250 --cpus 1 --memory 2000 --runtime 10800 ${opts} \
+            # htc_driver -c /tmp/${USER}/${recoKey}_${btvRecoKey}_cfg.py --customize-cfg -m ${numEvents} -n 250 --cpus 1 --memory 2000 --runtime 10800 ${opts} \
+            # -d ${sampleName} -p 0 -o ${ODIR}/${recoKey}_${btvRecoKey}/${sampleKey} --cmsRun-output-dir ${ODIR_cmsRun}/${recoKey}_${btvRecoKey}/${sampleKey}
+            htc_driver -c /tmp/${USER}/${recoKey}_${btvRecoKey}_cfg.py --customize-cfg -m ${numEvents} -n 100 --cpus 1 --memory 2000 --runtime 10800 ${opts} \
             -d ${sampleName} -p 0 -o ${ODIR}/${recoKey}_${btvRecoKey}/${sampleKey} --cmsRun-output-dir ${ODIR_cmsRun}/${recoKey}_${btvRecoKey}/${sampleKey}
             # htc_driver -c /tmp/${USER}/${recoKey}_${btvRecoKey}_cfg.py --customize-cfg -m ${numEvents} -n 150 --cpus 1 --memory 2000 --runtime 10800 ${opts} \
             # -d ${sampleName} -p 0 -o ${ODIR}/${recoKey}_${btvRecoKey}/${sampleKey} --cmsRun-output-dir ${ODIR_cmsRun}/${recoKey}_${btvRecoKey}/${sampleKey}

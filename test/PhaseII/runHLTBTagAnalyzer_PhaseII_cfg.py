@@ -213,8 +213,8 @@ if opts.inputFiles:
 else:
    process.source.fileNames = [
      # "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/003ACFBC-23B2-EA45-9A12-BECFF07760FC.root"
-     # "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280001/24F29B43-B3E2-9048-9BFD-9A1FC232B4A6.root"
-     "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/VBF_HHTo4B_CV_0_5_C2V_1_C3_1_TuneCP5_PSWeights_14TeV-madgraph-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/08904C2F-2A34-1C45-86B3-F05541DB0C00.root"
+     "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280001/24F29B43-B3E2-9048-9BFD-9A1FC232B4A6.root"
+     # "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/VBF_HHTo4B_CV_0_5_C2V_1_C3_1_TuneCP5_PSWeights_14TeV-madgraph-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/08904C2F-2A34-1C45-86B3-F05541DB0C00.root"
      # " /store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/GluGluToHHTo4B_node_SM_TuneCP5_14TeV-madgraph_pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v1/130000/45253B8E-D22A-BF43-9BA8-92F4C0391B0A.root"
      # "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TTTo2L2Nu_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/250000/95FB2E3E-1DA2-FC4C-82D6-0BEB5C0195E3.root"
      # "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/QCD_Pt-15to20_EMEnriched_TuneCP5_14TeV_pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_111X_mcRun4_realistic_T15_v1-v1/110000/2CFDBC2B-460F-9C45-9383-2F41381DD9C0.root"

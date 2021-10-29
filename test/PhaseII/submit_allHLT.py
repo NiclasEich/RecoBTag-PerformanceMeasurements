@@ -105,6 +105,10 @@ def main():
         datatier = job.split('/')[3]
         requestname = '_'.join(pdname.split('_')[:3]) + '_' + cond
         if len(requestname) > 100: requestname = '_'.join(pdname.split('_')[:2]) + '_' + cond
+        requestname=requestname.replace("Phase2HLTTDRSummer20ReRECOMiniAOD","Phase2")
+        requestname=requestname.replace("111X_mcRun4_realistic_T15_v1","111X")
+        requestname=requestname.replace("pythia8","P8")
+        requestname=requestname.replace("TuneCP5_14TeV","14TeV")
         config.General.requestName = requestname
         config.Data.inputDataset = job
         if datatier == 'MINIAODSIM':
@@ -122,6 +126,12 @@ def main():
           # config.Data.unitsPerJob = 40
           config.Data.unitsPerJob = 200
           config.Data.totalUnits = -1
+          # config.Site.whitelist = ['T2_DE_*','T1_DE_*']
+        elif datatier == "GEN-SIM-DIGI-RAW-MINIAOD" or datatier=="FEVT":
+          config.Data.splitting = 'FileBased'
+          # config.Data.unitsPerJob = 40
+          config.Data.unitsPerJob = 1
+          # config.Data.totalUnits = -1
           # config.Site.whitelist = ['T2_DE_*','T1_DE_*']
 
         if args.outLFNDirBase and not args.outLFNDirBase.isspace():
