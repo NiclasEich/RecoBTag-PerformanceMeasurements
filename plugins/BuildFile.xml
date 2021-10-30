@@ -21,7 +21,7 @@
   <use name="SimTracker/TrackHistory"/>
   <use name="SimDataFormats/Track"/>
   <use name="SimGeneral/HepPDTRecord"/>
-  <use name="SimTracker/Records"/>
+  <!-- <use name="SimTracker/Records"/> -->
   <use name="DataFormats/Math"/>
   <use name="PhysicsTools/UtilAlgos"/>
   <use name="CommonTools/UtilAlgos"/>

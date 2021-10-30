@@ -50,20 +50,13 @@ def customiseRun3BTagRegionalTracks(process, clean=False, vertex="hltTrimmedPixe
         normalizedChi2 = cms.double(999999.0),
         numberOfLostHits = cms.uint32(999),
         numberOfValidHits = cms.uint32(0),
-        # numberOfValidHitsForGood = cms.uint32(0),
-        # numberOfValidHitsForGood = cms.uint32(999),
         numberOfValidPixelHits = cms.uint32(3),
-        # numberOfValidPixelHitsForGood = cms.uint32(3),
-        # numberOfValidPixelHitsForGood = cms.uint32(999),
         ptErrorCut = cms.double(5.0),
         ptMax = cms.double(500.0),
         ptMin = cms.double(0.3),
         # ptMin = cms.double(0.8),
-        # quality = cms.string('any'),
         quality = cms.string('loose'),
         rhoVtx = cms.double(0.2),
-        # rhoVtxScale = cms.double(1.0),
-        # rhoVtxSig = cms.double(999.0),
         src = cms.InputTag("hltPixelTracks"),
         timeResosTag = cms.InputTag(""),
         timesTag = cms.InputTag(""),
@@ -71,8 +64,6 @@ def customiseRun3BTagRegionalTracks(process, clean=False, vertex="hltTrimmedPixe
         vertexTag = cms.InputTag(vertex),
         vtxFallback = cms.bool(True),
         zetaVtx = cms.double(0.3),
-        # zetaVtxScale = cms.double(1.0),
-        # zetaVtxSig = cms.double(999.0)
     )
 
     process.hltPixelTracksForBTag = cms.EDProducer('TrackSelectorByRegion',
@@ -131,10 +122,6 @@ def customisePFForPixelTracks(process, tracksToUse = "hltPixelTracks"):
      process.hltPFMuonMerging.selectedTrackQuals = cms.VInputTag("hltIterL3MuonTracks", tracksToUse)
      process.hltParticleFlowBlock.elementImporters = cms.VPSet(
              cms.PSet(
-                 # DPtOverPtCuts_byTrackAlgo = cms.vdouble(
-                 #     0.5, 0.5, 0.5, 0.5, 0.5,
-                 #     0.5
-                 # ),
                  DPtOverPtCuts_byTrackAlgo = cms.vdouble(
                      5.0, 5.0, 5.0, 5.0, 5.0,
                      5.0
@@ -214,20 +201,13 @@ def customisePFForPixelTracksCleaned(process, tracksToUse = "hltPixelTracksClean
         normalizedChi2 = cms.double(999999.0),
         numberOfLostHits = cms.uint32(999),
         numberOfValidHits = cms.uint32(0),
-        # numberOfValidHitsForGood = cms.uint32(999),
-        # numberOfValidHitsForGood = cms.uint32(0),
         numberOfValidPixelHits = cms.uint32(3),
-        # numberOfValidPixelHitsForGood = cms.uint32(999),
-        # numberOfValidPixelHitsForGood = cms.uint32(3),
         ptErrorCut = cms.double(5.0),
         ptMax = cms.double(500.0),
         # ptMin = cms.double(0.3),
         ptMin = cms.double(0.8),
-        # quality = cms.string('any'),
         quality = cms.string('loose'),
         rhoVtx = cms.double(0.2),
-        # rhoVtxScale = cms.double(1.0),
-        # rhoVtxSig = cms.double(999.0),
         src = cms.InputTag("hltPixelTracks"),
         timeResosTag = cms.InputTag(""),
         timesTag = cms.InputTag(""),
@@ -235,17 +215,11 @@ def customisePFForPixelTracksCleaned(process, tracksToUse = "hltPixelTracksClean
         vertexTag = cms.InputTag(vertex),
         vtxFallback = cms.bool(True),
         zetaVtx = cms.double(0.3),
-        # zetaVtxScale = cms.double(1.0),
-        # zetaVtxSig = cms.double(999.0)
     )
     process.hltPFMuonMerging.TrackProducers = cms.VInputTag("hltIterL3MuonTracks", tracksToUse)
     process.hltPFMuonMerging.selectedTrackQuals = cms.VInputTag("hltIterL3MuonTracks", tracksToUse)
     process.hltParticleFlowBlock.elementImporters = cms.VPSet(
         cms.PSet(
-             # DPtOverPtCuts_byTrackAlgo = cms.vdouble(
-             #     0.5, 0.5, 0.5, 0.5, 0.5,
-             #     0.5
-             # ),
              DPtOverPtCuts_byTrackAlgo = cms.vdouble(
                  5.0, 5.0, 5.0, 5.0, 5.0,
                  5.0
@@ -254,10 +228,6 @@ def customisePFForPixelTracksCleaned(process, tracksToUse = "hltPixelTracksClean
                  3, 3, 3, 3, 3,
                  3
              ),
-             # NHitCuts_byTrackAlgo = cms.vuint32(
-             #     0, 0, 0, 0, 0,
-             #     0
-             # ),
              cleanBadConvertedBrems = cms.bool(False),
              importerName = cms.string('GeneralTracksImporter'),
              muonMaxDPtOPt = cms.double(1.0),

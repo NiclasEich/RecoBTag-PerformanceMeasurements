@@ -27,7 +27,7 @@ options.register('dumpPython', None,
     VarParsing.varType.string,
     'Dump python config, pass SaveName.py'
 )
-options.register('globalTag', 'auto:run3_hlt',
+options.register('globalTag', 'DEFAULT',
     VarParsing.multiplicity.singleton,
     VarParsing.varType.string,
     "MC global tag, no default value provided"
@@ -134,29 +134,29 @@ def fixForGRunConfig(process):
       producer.rhoVtxSig = cms.double(999.0)
   return process
 
-def fixAlca(process):
+def fixMenu(process):
 	#  see https://github.com/cms-sw/cmssw/pull/35567
-	if 'AlCa_LumiPixelsCounts_Random_v1' in process.__dict__:
-		# redefine the path to use the HLTDoLocalPixelSequence
-		process.AlCa_LumiPixelsCounts_Random_v1 = cms.Path(
-			process.HLTBeginSequenceRandom +
-			process.hltScalersRawToDigi +
-			process.hltPreAlCaLumiPixelsCountsRandom +
-			process.hltPixelTrackerHVOn +
-			process.HLTDoLocalPixelSequence +
-			process.hltAlcaPixelClusterCounts +
-			process.HLTEndSequence )
-	if 'AlCa_LumiPixelsCounts_ZeroBias_v1' in process.__dict__:
-		# redefine the path to use the HLTDoLocalPixelSequence
-		process.AlCa_LumiPixelsCounts_ZeroBias_v1 = cms.Path(
-			process.HLTBeginSequence +
-			process.hltScalersRawToDigi +
-			process.hltL1sZeroBias +
-			process.hltPreAlCaLumiPixelsCountsZeroBias +
-			process.hltPixelTrackerHVOn +
-			process.HLTDoLocalPixelSequence +
-			process.hltAlcaPixelClusterCounts +
-			process.HLTEndSequence )
+	# if 'AlCa_LumiPixelsCounts_Random_v1' in process.__dict__:
+	# 	# redefine the path to use the HLTDoLocalPixelSequence
+	# 	process.AlCa_LumiPixelsCounts_Random_v1 = cms.Path(
+	# 		process.HLTBeginSequenceRandom +
+	# 		process.hltScalersRawToDigi +
+	# 		process.hltPreAlCaLumiPixelsCountsRandom +
+	# 		process.hltPixelTrackerHVOn +
+	# 		process.HLTDoLocalPixelSequence +
+	# 		process.hltAlcaPixelClusterCounts +
+	# 		process.HLTEndSequence )
+	# if 'AlCa_LumiPixelsCounts_ZeroBias_v1' in process.__dict__:
+	# 	# redefine the path to use the HLTDoLocalPixelSequence
+	# 	process.AlCa_LumiPixelsCounts_ZeroBias_v1 = cms.Path(
+	# 		process.HLTBeginSequence +
+	# 		process.hltScalersRawToDigi +
+	# 		process.hltL1sZeroBias +
+	# 		process.hltPreAlCaLumiPixelsCountsZeroBias +
+	# 		process.hltPixelTrackerHVOn +
+	# 		process.HLTDoLocalPixelSequence +
+	# 		process.hltAlcaPixelClusterCounts +
+	# 		process.HLTEndSequence )
 
 	#  process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")
 	#  find ../../../../HLTrigger/Configuration/python/customizeHLTforPatatrack.py -type f -exec sed -i 's/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone()/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")/g' {} \;
@@ -220,11 +220,11 @@ def deleteCaloPrestage(process):
 ###
 if options.runOnData:
     if options.runTiming:
-        from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_configDump_Data_timing import cms, process
+        from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_1_0_GRun_configDump_Data_timing import cms, process
     else:
-        from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_configDump_Data import cms, process
+        from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_1_0_GRun_configDump_Data import cms, process
 else:
-    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_configDump_MC import cms, process
+    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_1_0_GRun_configDump_MC import cms, process
 
 
 
@@ -244,7 +244,7 @@ elif options.reco == 'HLT_GRun_PatatrackQuadruplets':
     from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
     process = customizeHLTforPatatrack(process)
     update_jmeCalibs = True
-    process = fixAlca(process)
+    process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif options.reco == 'HLT_GRun_PatatrackTriplets':
@@ -253,138 +253,138 @@ elif options.reco == 'HLT_GRun_PatatrackTriplets':
     from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
     process = customizeHLTforPatatrackTriplets(process)
     update_jmeCalibs = True
-    process = fixAlca(process)
+    process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif options.reco == 'HLT_Run3TRK' or options.reco == 'HLT_Run3TRK_Pt':
     # Run-3 tracking: standard (Triplets+Quadruplets)
-    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     if options.reco == 'HLT_Run3TRK_Pt': process = customizePt(process, options.ptMinThreshold)
     update_jmeCalibs = True
-    process = fixAlca(process)
+    process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 ############################
 #   old intermediate and temporary testing configurations
 ############################
 # elif options.reco == 'HLT_Run3TRKMod':
 #     # (a) Run-3 tracking: standard
-#     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
 #     process = customizeHLTforRun3Tracking(process)
 # elif options.reco == 'HLT_Run3TRKMod2':
 #     # (a) Run-3 tracking: standard
-#     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
 #     process = customizeHLTforRun3Tracking(process)
 # elif options.reco == 'HLT_Run3TRKWithPU':
 #     # (b) Run-3 tracking: all pixel vertices
-#     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3TrackingAllPixelVertices
+#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3TrackingAllPixelVertices
 #     process = customizeHLTforRun3TrackingAllPixelVertices(process)
 #     update_jmeCalibs = True
-#     process = fixAlca(process)
+#     process = fixMenu(process)
 
 
 elif options.reco == 'HLT_Run3TRKNoCaloJetsWithSubstitutions':
     # Run-3 global/central TRK+PF reconstruction
     # + removal of all paths with CaloOnlyBtagging
     # + removal of Calo Btagging
-    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
-    process = fixAlca(process)
+    process = fixMenu(process)
     process = deleteCaloOnlyPaths(process)
     process = deleteCaloPrestage(process)
 
 elif options.reco == 'HLT_Run3TRKNoCaloJets':
     # Run-3 global/central TRK+PF reconstruction
     # + removal of all paths with CaloOnlyBtagging
-    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
-    process = fixAlca(process)
+    process = fixMenu(process)
     process = deleteCaloOnlyPaths(process)
 ############################
 #   old intermediate and temporary testing configurations
 ############################
 # elif options.reco == 'HLT_Run3TRKPixelOnly':
 #     # (c) Run-3 tracking: pixel only tracks
-#     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
 #     from RecoBTag.PerformanceMeasurements.customise_TRK import *
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customisePFForPixelTracks(process)
-#     process = fixAlca(process)
+#     process = fixMenu(process)
 #     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 #
 # elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned':
 #     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
-#     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
 #     from RecoBTag.PerformanceMeasurements.customise_TRK import *
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag")
-#     process = fixAlca(process)
+#     process = fixMenu(process)
 #     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 #
 # elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned2':
 #     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
-#     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
 #     from RecoBTag.PerformanceMeasurements.customise_TRK import *
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltTrimmedPixelVertices", nVertices = 2)
 #     update_jmeCalibs = True
-#     process = fixAlca(process)
+#     process = fixMenu(process)
 #     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 #
 #
 # elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned3':
 #     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
-#     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
 #     from RecoBTag.PerformanceMeasurements.customise_TRK import *
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltPixelVertices", nVertices = 4)
-#     process = fixAlca(process)
+#     process = fixMenu(process)
 #     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 #
 # elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned4':
 #     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
-#     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
 #     from RecoBTag.PerformanceMeasurements.customise_TRK import *
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltPixelVertices", nVertices = 2)
-#     process = fixAlca(process)
+#     process = fixMenu(process)
 #     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif options.reco == 'HLT_Run3TRKForBTag':
     # Run-3 ROI TRK+PF reconstruction
     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltTrimmedPixelVertices", nVertices = 2)
-    process = fixAlca(process)
+    process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 elif options.reco == 'HLT_Run3TRKForBTag_Replacement':
     # Run-3 ROI TRK+PF reconstruction
     from RecoBTag.PerformanceMeasurements.customise_TRK_replacement import *
-    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement(process)
-    process = fixAlca(process)
+    process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 elif options.reco == 'HLT_Run3TRKForBTag_DeepJet':
     # Run-3 global/central TRK+PF reconstruction + DeepJet in PF btagging paths
     from RecoBTag.PerformanceMeasurements.customise_TRK_deepjet import *
-    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
     process = addDeepJet(process, doPF = True, doPuppi = False)
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_DeepJet(process)
-    process = fixAlca(process)
+    process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets':
     # Run-3 ROI TRK+PF reconstruction
     # + removal of all paths with CaloOnlyBtagging
     from RecoBTag.PerformanceMeasurements.customise_TRK_replacement import *
-    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement(process)
-    process = fixAlca(process)
+    process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
     process = deleteCaloOnlyPaths(process)
 
@@ -393,10 +393,10 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo':
     # + removal of all paths with CaloOnlyBtagging (see below)
     # + replacement of Calo Btagging with new ROI tracks
     from RecoBTag.PerformanceMeasurements.customise_TRK_replacement_calo import *
-    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement_calo(process)
-    process = fixAlca(process)
+    process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
     process = deleteCaloOnlyPaths(process)
 
@@ -405,10 +405,10 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo_G
     # + removal of all paths with CaloOnlyBtagging (see below)
     # + replacement of Calo Btagging with new ROI tracks
     from RecoBTag.PerformanceMeasurements.customise_TRK_replacement_global_calo import *
-    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement_global_calo(process)
-    process = fixAlca(process)
+    process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
     process = deleteCaloOnlyPaths(process)
 
@@ -417,10 +417,10 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobal
     # + removal of all paths with CaloOnlyBtagging (see below)
     # + replacement of Calo Btagging with global/central TRK+PF
     from RecoBTag.PerformanceMeasurements.customise_TRK_replacement_globalGlobal_calo import *
-    from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement_global_globalCalo(process)
-    process = fixAlca(process)
+    process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
     process = deleteCaloOnlyPaths(process)
 
@@ -430,29 +430,29 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobal
 # elif options.reco == 'HLT_Run3TRKForBTag_2':
 #     # (a) Run-3 tracking: standard
 #     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-#     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltTrimmedPixelVertices", nVertices = 2)
-#     process = fixAlca(process)
+#     process = fixMenu(process)
 #     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 #
 # elif options.reco == 'HLT_Run3TRKForBTag_3':
 #     # (a) Run-3 tracking: standard
 #     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-#     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltPixelVertices", nVertices = 2)
-#     process = fixAlca(process)
+#     process = fixMenu(process)
 #     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 #
 # elif options.reco == 'HLT_Run3TRKForBTag_Pt':
 #     # (a) Run-3 tracking: standard
 #     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-#     from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customiseRun3BTagRegionalTracks(process, clean=False, vertex="hltTrimmedPixelVertices", nVertices = 2)
 #     process = customizePt(process, options.ptMinThreshold)
-#     process = fixAlca(process)
+#     process = fixMenu(process)
 #     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 else:
@@ -678,6 +678,10 @@ else:
 #Set GT by hand:
 # process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # from Configuration.AlCa.GlobalTag import GlobalTag
+if globalTag =="DEFAULT":
+    if options.runOnData: globalTag = "121X_dataRun3_HLT_v9"
+    else: globalTag = "121X_mcRun3_2021_realistic_v15"
+
 process.GlobalTag.globaltag = globalTag
 
 

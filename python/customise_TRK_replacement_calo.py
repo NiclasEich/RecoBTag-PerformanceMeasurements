@@ -51,18 +51,13 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         normalizedChi2 = cms.double(999999.0),
         numberOfLostHits = cms.uint32(999),
         numberOfValidHits = cms.uint32(0),
-        # numberOfValidHitsForGood = cms.uint32(999),
         numberOfValidPixelHits = cms.uint32(3),
-        # numberOfValidPixelHitsForGood = cms.uint32(999),
         ptErrorCut = cms.double(5.0),
         ptMax = cms.double(500.0),
         ptMin = cms.double(0.3),
         # ptMin = cms.double(0.8),
         quality = cms.string('loose'),
-        # quality = cms.string('tight'),
         rhoVtx = cms.double(0.2),
-        # rhoVtxScale = cms.double(1.0),
-        # rhoVtxSig = cms.double(999.0),
         src = cms.InputTag("hltPixelTracks"),
         timeResosTag = cms.InputTag(""),
         timesTag = cms.InputTag(""),
@@ -70,8 +65,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         vertexTag = cms.InputTag("hltTrimmedPixelVertices"),
         vtxFallback = cms.bool(True),
         zetaVtx = cms.double(0.3),
-        # zetaVtxScale = cms.double(1.0),
-        # zetaVtxSig = cms.double(999.0)
     )
 
     process.hltPixelTracksForBTag = cms.EDProducer('TrackSelectorByRegion',
