@@ -12,8 +12,8 @@ common = {
     'runCaloJetVariables' : True,
     'runPuppiJetVariables' : False,
 	# 'globalTag' : '120X_mcRun3_2021_realistic_v4', # mc
-	'globalTag' : '120X_mcRun3_2021_realistic_v9', # mc
-	# 'globalTag' : '113X_dataRun3_HLT_v3', # data
+	'globalTag' : '121X_mcRun3_2021_realistic_v15', # mc
+	# 'globalTag' : '121X_dataRun3_HLT_v9', # data
 	'maxJetEta' : 2.5,
 	'usePrivateJEC' : False,
 	# 'jecDBFileMC' : 'PhaseIIFall17_V5b_MC',

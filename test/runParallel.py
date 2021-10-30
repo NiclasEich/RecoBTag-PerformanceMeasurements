@@ -63,18 +63,19 @@ HLTInputFiles = ["file://"+path+f.split("/")[-1] for f in HLTInputFiles]
 MINIAODInputFiles = ["file://"+offpath+f.split("/")[-1] for f in MINIAODInputFiles]
 
 HLT_recos = [
-            "HLT_GRun",
-            "HLT_GRun_PatatrackQuadruplets",
-            "HLT_GRun_PatatrackTriplets",
-            "HLT_Run3TRK",
-            "HLT_Run3TRK_Quadruplets",
-            # "HLT_Run3TRKPixelOnly",
-            # "HLT_Run3TRKPixelOnlyCleaned",
-            "HLT_Run3TRKPixelOnlyCleaned2",
-            # "HLT_Run3TRKPixelOnlyCleaned3",
-            # "HLT_Run3TRKPixelOnlyCleaned4",
-            "HLT_Run3TRKForBTag",
+            # "HLT_GRun",
+            # "HLT_GRun_PatatrackQuadruplets",
+            # "HLT_GRun_PatatrackTriplets",
+            # "HLT_Run3TRK",
+            # "HLT_Run3TRK_Quadruplets",
+            # # "HLT_Run3TRKPixelOnly",
+            # # "HLT_Run3TRKPixelOnlyCleaned",
+            # "HLT_Run3TRKPixelOnlyCleaned2",
+            # # "HLT_Run3TRKPixelOnlyCleaned3",
+            # # "HLT_Run3TRKPixelOnlyCleaned4",
+            # "HLT_Run3TRKForBTag",
             "HLT_Run3TRKForBTag_Replacement",
+            "HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo",
             # "HLT_Run3TRKForBTag_2",
             # "HLT_Run3TRKForBTag_3",
             # "HLT_Run3TRKForBTag_Pt"
@@ -122,8 +123,8 @@ for i,file in enumerate(MINIAODInputFiles):
 # print commandListOff[0]
 # print len(commandListHLT)
 
-commandList = commandListHLT+commandListOff
-# commandList = commandListHLT
+# commandList = commandListHLT+commandListOff
+commandList = commandListHLT
 # commandList = commandListOff
 print (commandList)
 print len(commandList)
@@ -133,7 +134,11 @@ p.map(subprocessWrapper, commandList)
 
 
 # haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/11_08_21_First12X/"
-haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/13_10_21_12X/"
+# haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/13_10_21_12X/"
+# haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/22_10_21_12X/"
+# haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/26_10_21_12X/"
+# haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/26_10_21_12X_8regions/"
+haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/26_10_21_12X_tight/"
 
 if not os.path.exists(haddPath):
     os.makedirs(haddPath)
