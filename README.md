@@ -113,28 +113,28 @@ edmConfigDump tmp_data.py > HLT_dev_CMSSW_12_1_0_GRun_configDump_Data.py
 ## Where to find the Run 3 reconstruction customization functions
 - Run3TRK:
 For the tracking POG single iteration tracking seeded by Patatrack pixeltracks (Triplets+Quadruplets): [here](python/Configs/customizeHLTforRun3Tracking.py)
-An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L259-L266) and [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L286-L302)
+An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L210-L216) and [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L237-L245)
 
 - DeepJet:
 For the application of DeepJet to all pF btagging paths: [here](python/customise_TRK_deepjet.py)
-An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L369-L378)
+An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L320-L328)
 
 - noCalo+ROI:
 For the ROI TRK+PF approach and removal of calo btagging: [here](python/customise_TRK_replacement.py)
-An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L380-L389)
+An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L331-L340)
 
 - noCalo+global:
 For the central/global TRK+PF and removal of calo btagging: [here](python/Configs/customise_TRK.py)
-An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L259-L266)
+An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L237-L245)
 
 - newROICalo+ROI:
 For the ROI TRK+PF approach and addition of new ROI calo btagging: [here](python/customise_TRK_replacement_calo.py)
-An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L391-L401)
+An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L342-L352)
 
 - newROICalo+global:
 For the central/global TRK+PF and addition of new ROI calo btagging: [here](python/customise_TRK_replacement_global_calo.py)
-An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L403-L414)
+An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L354-L364)
 
 - newGlobalCalo+global:
 For the central/global TRK+PF and addition of new central/global TRK calo btagging: [here](python/customise_TRK_replacement_globalGlobal_calo.py)
-An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L416-L426)
+An example on how to apply it on top of the GRun menu is [here](https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements/blob/Run3_ForJIRA/test/runHLTPaths_cfg.py#L366-L376)
