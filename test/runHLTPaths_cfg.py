@@ -117,56 +117,11 @@ pathsWithOnlyCalo = [
     "HLT_DoublePFJets40_CaloBTagDeepCSV_p71_v"
 ]
 
-def fixForGRunConfig(process):
-  from HLTrigger.Configuration.common import producers_by_type
-  for producer in producers_by_type(process, 'TrackWithVertexSelector'):
-    if not hasattr(producer, 'numberOfValidHitsForGood'):
-      producer.numberOfValidHitsForGood = cms.uint32(999)
-    if not hasattr(producer, 'numberOfValidPixelHitsForGood'):
-      producer.numberOfValidPixelHitsForGood = cms.uint32(999)
-    if not hasattr(producer, 'zetaVtxScale'):
-      producer.zetaVtxScale = cms.double(1.0)
-    if not hasattr(producer, 'rhoVtxScale'):
-      producer.rhoVtxScale = cms.double(1.0)
-    if not hasattr(producer, 'zetaVtxSig'):
-      producer.zetaVtxSig = cms.double(999.0)
-    if not hasattr(producer, 'rhoVtxSig'):
-      producer.rhoVtxSig = cms.double(999.0)
-  return process
-
 def fixMenu(process):
-	#  see https://github.com/cms-sw/cmssw/pull/35567
-	# if 'AlCa_LumiPixelsCounts_Random_v1' in process.__dict__:
-	# 	# redefine the path to use the HLTDoLocalPixelSequence
-	# 	process.AlCa_LumiPixelsCounts_Random_v1 = cms.Path(
-	# 		process.HLTBeginSequenceRandom +
-	# 		process.hltScalersRawToDigi +
-	# 		process.hltPreAlCaLumiPixelsCountsRandom +
-	# 		process.hltPixelTrackerHVOn +
-	# 		process.HLTDoLocalPixelSequence +
-	# 		process.hltAlcaPixelClusterCounts +
-	# 		process.HLTEndSequence )
-	# if 'AlCa_LumiPixelsCounts_ZeroBias_v1' in process.__dict__:
-	# 	# redefine the path to use the HLTDoLocalPixelSequence
-	# 	process.AlCa_LumiPixelsCounts_ZeroBias_v1 = cms.Path(
-	# 		process.HLTBeginSequence +
-	# 		process.hltScalersRawToDigi +
-	# 		process.hltL1sZeroBias +
-	# 		process.hltPreAlCaLumiPixelsCountsZeroBias +
-	# 		process.hltPixelTrackerHVOn +
-	# 		process.HLTDoLocalPixelSequence +
-	# 		process.hltAlcaPixelClusterCounts +
-	# 		process.HLTEndSequence )
-
-	#  process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")
-	#  find ../../../../HLTrigger/Configuration/python/customizeHLTforPatatrack.py -type f -exec sed -i 's/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone()/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")/g' {} \;
-
 	if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
 		process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
-
 	if hasattr(process, 'hltIter1ClustersRefRemoval'):
 		process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
-
 	return process
 
 def prescale_path(path,ps_service):
@@ -230,30 +185,26 @@ else:
 
 if options.reco == 'HLT_GRun_oldJECs':
     # default GRun menu (Run 2 configurations)
-    process = fixForGRunConfig(process)
     update_jmeCalibs = False
 
 elif options.reco == 'HLT_GRun':
     # default GRun menu (Run 2 configurations) + new PFHCs and JECs
-    process = fixForGRunConfig(process)
     update_jmeCalibs = True
 
 elif options.reco == 'HLT_GRun_PatatrackQuadruplets':
     # default GRun menu (Run 2 configurations) + Patatrack pixeltracks (Quadruplets only) instead of legacy pixeltracks
-    process = fixForGRunConfig(process)
     from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
     process = customizeHLTforPatatrack(process)
     update_jmeCalibs = True
-    process = fixMenu(process)
+    # process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif options.reco == 'HLT_GRun_PatatrackTriplets':
     # default GRun menu (Run 2 configurations) + Patatrack pixeltracks (Triplets+Quadruplets) instead of legacy pixeltracks
-    process = fixForGRunConfig(process)
     from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
     process = customizeHLTforPatatrackTriplets(process)
     update_jmeCalibs = True
-    process = fixMenu(process)
+    # process = fixMenu(process)
     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif options.reco == 'HLT_Run3TRK' or options.reco == 'HLT_Run3TRK_Pt':
