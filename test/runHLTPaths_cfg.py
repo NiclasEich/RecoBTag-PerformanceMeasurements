@@ -197,7 +197,7 @@ elif options.reco == 'HLT_GRun_PatatrackQuadruplets':
     process = customizeHLTforPatatrack(process)
     update_jmeCalibs = True
     # process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 
 elif options.reco == 'HLT_GRun_PatatrackTriplets':
     # default GRun menu (Run 2 configurations) + Patatrack pixeltracks (Triplets+Quadruplets) instead of legacy pixeltracks
@@ -205,7 +205,7 @@ elif options.reco == 'HLT_GRun_PatatrackTriplets':
     process = customizeHLTforPatatrackTriplets(process)
     update_jmeCalibs = True
     # process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 
 elif options.reco == 'HLT_Run3TRK' or options.reco == 'HLT_Run3TRK_Pt':
     # Run-3 tracking: standard (Triplets+Quadruplets)
@@ -214,7 +214,7 @@ elif options.reco == 'HLT_Run3TRK' or options.reco == 'HLT_Run3TRK_Pt':
     if options.reco == 'HLT_Run3TRK_Pt': process = customizePt(process, options.ptMinThreshold)
     update_jmeCalibs = True
     process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 ############################
 #   old intermediate and temporary testing configurations
 ############################
@@ -261,7 +261,7 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customisePFForPixelTracks(process)
 #     process = fixMenu(process)
-#     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+#
 #
 # elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned':
 #     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
@@ -270,7 +270,7 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag")
 #     process = fixMenu(process)
-#     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+#
 #
 # elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned2':
 #     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
@@ -280,7 +280,7 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
 #     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltTrimmedPixelVertices", nVertices = 2)
 #     update_jmeCalibs = True
 #     process = fixMenu(process)
-#     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+#
 #
 #
 # elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned3':
@@ -290,7 +290,7 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltPixelVertices", nVertices = 4)
 #     process = fixMenu(process)
-#     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+#
 #
 # elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned4':
 #     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
@@ -299,7 +299,7 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltPixelVertices", nVertices = 2)
 #     process = fixMenu(process)
-#     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+#
 
 elif options.reco == 'HLT_Run3TRKForBTag':
     # Run-3 ROI TRK+PF reconstruction
@@ -308,7 +308,7 @@ elif options.reco == 'HLT_Run3TRKForBTag':
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltTrimmedPixelVertices", nVertices = 2)
     process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 elif options.reco == 'HLT_Run3TRKForBTag_Replacement':
     # Run-3 ROI TRK+PF reconstruction
     from RecoBTag.PerformanceMeasurements.customise_TRK_replacement import *
@@ -316,7 +316,7 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement':
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement(process)
     process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 elif options.reco == 'HLT_Run3TRKForBTag_DeepJet':
     # Run-3 global/central TRK+PF reconstruction + DeepJet in PF btagging paths
     from RecoBTag.PerformanceMeasurements.customise_TRK_deepjet import *
@@ -326,7 +326,7 @@ elif options.reco == 'HLT_Run3TRKForBTag_DeepJet':
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_DeepJet(process)
     process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 
 elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets':
     # Run-3 ROI TRK+PF reconstruction
@@ -336,7 +336,7 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets':
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement(process)
     process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
     process = deleteCaloOnlyPaths(process)
 
 elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo':
@@ -348,7 +348,7 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo':
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement_calo(process)
     process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
     process = deleteCaloOnlyPaths(process)
 
 elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo_Global':
@@ -360,7 +360,7 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo_G
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement_global_calo(process)
     process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
     process = deleteCaloOnlyPaths(process)
 
 elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobalCalo_Global':
@@ -372,7 +372,7 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobal
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement_global_globalCalo(process)
     process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
     process = deleteCaloOnlyPaths(process)
 
 ############################
@@ -385,7 +385,7 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobal
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltTrimmedPixelVertices", nVertices = 2)
 #     process = fixMenu(process)
-#     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+#
 #
 # elif options.reco == 'HLT_Run3TRKForBTag_3':
 #     # (a) Run-3 tracking: standard
@@ -394,7 +394,7 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobal
 #     process = customizeHLTforRun3Tracking(process)
 #     process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltPixelVertices", nVertices = 2)
 #     process = fixMenu(process)
-#     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+#
 #
 # elif options.reco == 'HLT_Run3TRKForBTag_Pt':
 #     # (a) Run-3 tracking: standard
@@ -404,7 +404,7 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobal
 #     process = customiseRun3BTagRegionalTracks(process, clean=False, vertex="hltTrimmedPixelVertices", nVertices = 2)
 #     process = customizePt(process, options.ptMinThreshold)
 #     process = fixMenu(process)
-#     # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+#
 
 else:
   raise RuntimeError('keyword "reco = '+options.reco+'" not recognised')

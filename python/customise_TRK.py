@@ -464,7 +464,6 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
                 fallback_puppi_weight = cms.bool(True),
                 puppi_value_map = cms.InputTag(""),
                 secondary_vertices = cms.InputTag("hltDeepInclusiveSecondaryVerticesPF"),
-                # shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetPatTagInfos"),
                 shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfos"),
                 vertex_associator = cms.InputTag("hltPrimaryVertexAssociation","original"),
                 vertices = cms.InputTag("hltVerticesPFFilter")
@@ -479,7 +478,6 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
                 fallback_puppi_weight = cms.bool(True),
                 puppi_value_map = cms.InputTag(""),
                 secondary_vertices = cms.InputTag("hltDeepInclusiveSecondaryVerticesPFROIForBTag"),
-                # shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetPatTagInfos"),
                 shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfosROIForBTag"),
                 vertex_associator = cms.InputTag("hltPrimaryVertexAssociationROIForBTag","original"),
                 vertices = cms.InputTag("hltVerticesPFFilterROIForBTag")
@@ -592,5 +590,4 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
                 process.schedule.extend([process.MC_PFBTagDeepJet])
             else:
                 process.schedule.extend([process.MC_PFBTagDeepJetROIForBTag])
-        # if doPuppi: process.schedule.extend([process.MC_PuppiJetsMatchingPath])
     return process

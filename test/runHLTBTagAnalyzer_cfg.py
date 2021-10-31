@@ -437,14 +437,14 @@ elif options.reco == 'HLT_GRun_PatatrackQuadruplets':
     # default GRun menu (Run 2 configurations) + Patatrack pixeltracks (Quadruplets only) instead of legacy pixeltracks
     from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
     process = customizeHLTforPatatrack(process)
-    process = fixMenu(process)
+    # process = fixMenu(process)
     update_jmeCalibs = True
 
 elif options.reco == 'HLT_GRun_PatatrackTriplets':
     # default GRun menu (Run 2 configurations) + Patatrack pixeltracks (Triplets+Quadruplets) instead of legacy pixeltracks
     from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
     process = customizeHLTforPatatrackTriplets(process)
-    process = fixMenu(process)
+    # process = fixMenu(process)
     update_jmeCalibs = True
 
 elif options.reco == 'HLT_Run3TRK':
@@ -581,7 +581,6 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo':
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement_calo(process)
     process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
     pvSource                 = "hltVerticesPFFilterROIForBTag"
     pfCandidates             = 'hltParticleFlowROIForBTag'
     trackSource              = "hltMergedTracksROIForBTag"
@@ -596,7 +595,6 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo_G
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement_global_calo(process)
     process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
     process = deleteCaloOnlyPaths(process)
 
 elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobalCalo_Global':
@@ -608,7 +606,6 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobal
     process = customizeHLTforRun3Tracking(process)
     process = customiseRun3BTagRegionalTracks_Replacement_global_globalCalo(process)
     process = fixMenu(process)
-    # prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
     process = deleteCaloOnlyPaths(process)
 
 elif options.reco == 'HLT_Run3TRKForBTag':
