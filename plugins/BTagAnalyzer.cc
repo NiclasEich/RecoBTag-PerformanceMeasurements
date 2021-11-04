@@ -23,7 +23,7 @@
 using namespace analyzerBase;
 
 template<typename IPTI,typename VTX>
-class BTagAnalyzerT : public edm::EDAnalyzer
+class BTagAnalyzerT : public edm::one::EDAnalyzer<>
 {
 public:
   explicit BTagAnalyzerT(const edm::ParameterSet&);
@@ -683,7 +683,6 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
     if( genEvtInfoProduct.isValid() ){
       // moduleName = edm::moduleName(prov);
       moduleName = edm::moduleName(prov,iEvent.processHistory());
-      std::cout<<moduleName<<std::endl;
     }
     //
     if( moduleName.find("Pythia8")!=std::string::npos )

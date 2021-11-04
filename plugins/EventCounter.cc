@@ -23,7 +23,7 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -41,7 +41,7 @@
 // class declaration
 //
 
-class EventCounter : public edm::EDAnalyzer {
+class EventCounter : public edm::one::EDAnalyzer<> {
    public:
       explicit EventCounter(const edm::ParameterSet&);
       ~EventCounter();
@@ -118,7 +118,7 @@ EventCounter::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       if(geninfos->weight()<0){
          weightSign=-1;
       }
-      
+
       // pileup
       edm::Handle<std::vector <PileupSummaryInfo> > PupInfo;
       bool checkPUname = iEvent.getByToken(putoken, PupInfo);
@@ -132,7 +132,7 @@ EventCounter::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::vector<PileupSummaryInfo>::const_iterator ipu;
       for (ipu = PupInfo->begin(); ipu != PupInfo->end(); ++ipu) {
           if ( ipu->getBunchCrossing() != 0 ) continue; //only for the active BX
-          nPUtrue = ipu->getTrueNumInteractions();      
+          nPUtrue = ipu->getTrueNumInteractions();
           break;
       }
 
@@ -141,7 +141,7 @@ EventCounter::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
           hPUPlusCount->Fill(nPUtrue);
       } else {
           hPUNegCount->Fill(nPUtrue);
-      }  
+      }
    }
 }
 
