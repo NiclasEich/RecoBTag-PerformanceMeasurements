@@ -6,7 +6,8 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
     puppijets =             "hltAK4PFPuppiJets"                                  #original ak4PFJetsCHS
     pfjetsCorrected =       "hltAK4PFJetsCorrected" if roiReplace==False else "hltAK4PFJetsCorrectedROIForBTag"                         #original ak4PFJetsCHS
     calojets =              "hltAK4CaloJets"                                #original ak4CaloJets
-    calojetsCutted =        "hltSelectorCentralJets30L1FastJeta2p5"
+    # calojetsCutted =        "hltSelectorCentralJets30L1FastJeta2p5"
+    calojetsCutted =        "hltSelectorCentralJets30L1FastJeta"
     PFDeepCSVTags =         "hltDeepCombinedSecondaryVertexBPFPatJetTags"   #original pfDeepCSVJetTags
     PFPuppiDeepCSVTags =    "hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags"   #original pfDeepCSVJetTags
     CaloDeepCSVTags =       "hltDeepCombinedSecondaryVertexCaloPatBJetTags"
@@ -134,23 +135,33 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
             jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorPat"),
         )
 
-        process.hltSelectorCentralJets30L1FastJeta2p5 = process.hltSelectorCentralJets30L1FastJeta.clone(
-            etaMax = cms.double(2.5),
-            etaMin = cms.double(-2.5),
-            src = cms.InputTag("hltSelectorJets20L1FastJet")
-        )
+        # process.hltSelectorCentralJets20L1FastJeta2p5 = process.hltSelectorCentralJets30L1FastJeta.clone(
+        #     etaMax = cms.double(2.5),
+        #     etaMin = cms.double(-2.5),
+        #     src = cms.InputTag("hltSelectorJets20L1FastJet")
+        # )
 
-        process.hltSelectorJets20L1FastJet = process.hltSelectorJets30L1FastJet.clone(
-            etMin = cms.double(20.0),
-        )
+        # process.hltSelectorJets20L1FastJet = process.hltSelectorJets30L1FastJet.clone(
+        #     etMin = cms.double(20.0),
+        # )
+
+        # process.hltSelector8CentralJetsL1FastJet202p5 = cms.EDFilter("LargestEtCaloJetSelector",
+        #     filter = cms.bool(False),
+        #     maxNumber = cms.uint32(8),
+        #     src = cms.InputTag("hltSelectorCentralJets20L1FastJeta2p5")
+        # )
 
         process.hltFastPixelBLifetimeL3AssociatorPat = process.hltFastPixelBLifetimeL3Associator.clone(
             jets = cms.InputTag(calojetsCutted),
         )
 
         process.HLTBtagDeepCSVSequenceCaloPat = cms.Sequence(
-            process.hltSelectorJets20L1FastJet
-            +process.hltSelectorCentralJets30L1FastJeta2p5
+            # process.hltSelectorJets20L1FastJet
+            process.hltSelectorJets30L1FastJet
+            # +process.hltSelectorCentralJets20L1FastJeta2p5
+            +process.hltSelectorCentralJets30L1FastJeta
+            +process.hltSelector8CentralJetsL1FastJet
+            # +process.hltSelector8CentralJetsL1FastJet202p5
             +process.HLTTrackReconstructionForBTag
             +process.hltVerticesL3
             +process.hltFastPixelBLifetimeL3AssociatorPat
@@ -179,15 +190,22 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
             jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorPat"),
         )
 
-        process.hltSelectorCentralJets30L1FastJeta2p5 = process.hltSelectorCentralJets30L1FastJeta.clone(
-            etaMax = cms.double(2.5),
-            etaMin = cms.double(-2.5),
-            src = cms.InputTag("hltSelectorJets20L1FastJet")
-        )
+        # process.hltSelector8CentralJetsL1FastJet202p5 = cms.EDFilter("LargestEtCaloJetSelector",
+        #     filter = cms.bool(False),
+        #     maxNumber = cms.uint32(8),
+        #     src = cms.InputTag("hltSelectorCentralJets20L1FastJeta2p5")
+        # )
 
-        process.hltSelectorJets20L1FastJet = process.hltSelectorJets30L1FastJet.clone(
-            etMin = cms.double(20.0),
-        )
+        # process.hltSelectorCentralJets20L1FastJeta2p5 = process.hltSelectorCentralJets30L1FastJeta.clone(
+        #     etaMax = cms.double(2.5),
+        #     etaMin = cms.double(-2.5),
+        #     src = cms.InputTag("hltSelectorJets20L1FastJet")
+        # )
+
+        # process.hltSelectorJets20L1FastJet = process.hltSelectorJets30L1FastJet.clone(
+        #     etMin = cms.double(20.0),
+        #     src = cms.InputTag("hltAK4CaloJetsCorrectedIDPassed")
+        # )
 
         process.hltFastPixelBLifetimeL3AssociatorPat = process.hltFastPixelBLifetimeL3AssociatorROIForBTag.clone(
             jets = cms.InputTag(calojetsCutted),
@@ -195,8 +213,12 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
         )
 
         process.HLTBtagDeepCSVSequenceCaloPat = cms.Sequence(
-            process.hltSelectorJets20L1FastJet
-            +process.hltSelectorCentralJets30L1FastJeta2p5
+            # process.hltSelectorJets20L1FastJet
+            process.hltSelectorJets30L1FastJet
+            # +process.hltSelectorCentralJets20L1FastJeta2p5
+            +process.hltSelectorCentralJets30L1FastJeta
+            +process.hltSelector8CentralJetsL1FastJet
+            # +process.hltSelector8CentralJetsL1FastJet202p5
             +process.HLTTrackReconstructionForBTag
             +process.hltVerticesL3ROIForBTag
             +process.hltVerticesL3SelectorROIForBTag
@@ -578,104 +600,113 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
     if runPF:
         if roiReplace==False:
             process.MC_JetsMatchingPath = cms.Path(
-                process.HLTAK4PFJetsSequence
-                *process.HLTBtagDeepCSVSequencePFPat
-                *process.hltPrunedGenParticlesWithStatusOne
-                *process.hltPrunedGenParticles
-                *process.hltPackedGenParticles
-                *process.hltPatJetPartonMatch
-                *process.hltSlimmedGenJets
-                *process.hltAk4JetID
-                *process.hltPatJetGenJetMatch
-                *process.hltPatJetPartonsLegacy
-                *process.hltPatJetPartonAssociationLegacy
-                *process.hltPatJetFlavourAssociationLegacy
-                *process.hltPatJetPartons
-                *process.hltPatJetFlavourAssociation
-                *process.hltAk4JetTracksAssociatorAtVertexPF
-                *process.hltPatJetCharge
-                *process.hltPatJetCorrFactors
+                process.HLTBeginSequence
+                +process.HLTAK4PFJetsSequence
+                +process.HLTBtagDeepCSVSequencePFPat
+                +process.hltPrunedGenParticlesWithStatusOne
+                +process.hltPrunedGenParticles
+                +process.hltPackedGenParticles
+                +process.hltPatJetPartonMatch
+                +process.hltSlimmedGenJets
+                +process.hltAk4JetID
+                +process.hltPatJetGenJetMatch
+                +process.hltPatJetPartonsLegacy
+                +process.hltPatJetPartonAssociationLegacy
+                +process.hltPatJetFlavourAssociationLegacy
+                +process.hltPatJetPartons
+                +process.hltPatJetFlavourAssociation
+                +process.hltAk4JetTracksAssociatorAtVertexPF
+                +process.hltPatJetCharge
+                +process.hltPatJetCorrFactors
 
-                # *process.hltPrimaryVertexAssociationPat
-                # *process.hltPFDeepFlavourPatTagInfos
-                # *process.hltPFDeepFlavourPatJetTags
-                * process.HLTBtagDeepJetSequencePFPat
+                # +process.hltPrimaryVertexAssociationPat
+                # +process.hltPFDeepFlavourPatTagInfos
+                # +process.hltPFDeepFlavourPatJetTags
+                + process.HLTBtagDeepJetSequencePFPat
 
-                *process.hltPatJets
+                +process.hltPatJets
+                +process.HLTEndSequence
             )
         else:
             process.MC_JetsMatchingPath = cms.Path(
-                process.HLTAK4PFJetsSequenceROIForBTag
-                *process.HLTBtagDeepCSVSequencePFPat
-                *process.hltPrunedGenParticlesWithStatusOne
-                *process.hltPrunedGenParticles
-                *process.hltPackedGenParticles
-                *process.hltPatJetPartonMatch
-                *process.hltSlimmedGenJets
-                *process.hltAk4JetID
-                *process.hltPatJetGenJetMatch
-                *process.hltPatJetPartonsLegacy
-                *process.hltPatJetPartonAssociationLegacy
-                *process.hltPatJetFlavourAssociationLegacy
-                *process.hltPatJetPartons
-                *process.hltPatJetFlavourAssociation
-                *process.hltAk4JetTracksAssociatorAtVertexPF
-                *process.hltPatJetCharge
-                *process.hltPatJetCorrFactors
+                process.HLTBeginSequence
+                +process.HLTAK4PFJetsSequenceROIForBTag
+                +process.HLTBtagDeepCSVSequencePFPat
+                +process.hltPrunedGenParticlesWithStatusOne
+                +process.hltPrunedGenParticles
+                +process.hltPackedGenParticles
+                +process.hltPatJetPartonMatch
+                +process.hltSlimmedGenJets
+                +process.hltAk4JetID
+                +process.hltPatJetGenJetMatch
+                +process.hltPatJetPartonsLegacy
+                +process.hltPatJetPartonAssociationLegacy
+                +process.hltPatJetFlavourAssociationLegacy
+                +process.hltPatJetPartons
+                +process.hltPatJetFlavourAssociation
+                +process.hltAk4JetTracksAssociatorAtVertexPF
+                +process.hltPatJetCharge
+                +process.hltPatJetCorrFactors
 
-                # *process.hltPrimaryVertexAssociationPat
-                # *process.hltPFDeepFlavourPatTagInfos
-                # *process.hltPFDeepFlavourPatJetTags
-                * process.HLTBtagDeepJetSequencePFPat
+                # +process.hltPrimaryVertexAssociationPat
+                # +process.hltPFDeepFlavourPatTagInfos
+                # +process.hltPFDeepFlavourPatJetTags
+                + process.HLTBtagDeepJetSequencePFPat
 
-                *process.hltPatJets
+                +process.hltPatJets
+                +process.HLTEndSequence
             )
 
     if runPuppi:
         process.MC_PuppiJetsMatchingPath = cms.Path(
-            process.HLTAK4PFPuppiJetsSequence
-            *process.HLTBtagDeepCSVSequencePFPuppiPat
-            *process.hltPrunedGenParticlesWithStatusOne
-            *process.hltPrunedGenParticles
-            *process.hltPackedGenParticles
-            *process.hltPatJetPartonMatchPuppi
-            *process.hltSlimmedGenJets
-            *process.hltAk4JetID
-            *process.hltPatJetGenJetMatchPuppi
-            *process.hltPatJetPartonsLegacy
-            *process.hltPatJetPartonAssociationLegacyPuppi
-            *process.hltPatJetFlavourAssociationLegacyPuppi
-            *process.hltPatJetPartons
-            *process.hltPatJetFlavourAssociationPuppi
-            *process.hltAk4JetTracksAssociatorAtVertexPFPuppi
-            *process.patJetPuppiCharge
-            *process.hltPatJetCorrFactorsPuppi
+            process.HLTBeginSequence
+            +process.HLTAK4PFPuppiJetsSequence
+            +process.HLTBtagDeepCSVSequencePFPuppiPat
+            +process.hltPrunedGenParticlesWithStatusOne
+            +process.hltPrunedGenParticles
+            +process.hltPackedGenParticles
+            +process.hltPatJetPartonMatchPuppi
+            +process.hltSlimmedGenJets
+            +process.hltAk4JetID
+            +process.hltPatJetGenJetMatchPuppi
+            +process.hltPatJetPartonsLegacy
+            +process.hltPatJetPartonAssociationLegacyPuppi
+            +process.hltPatJetFlavourAssociationLegacyPuppi
+            +process.hltPatJetPartons
+            +process.hltPatJetFlavourAssociationPuppi
+            +process.hltAk4JetTracksAssociatorAtVertexPFPuppi
+            +process.patJetPuppiCharge
+            +process.hltPatJetCorrFactorsPuppi
 
-            *process.hltPrimaryVertexAssociationPuppi
-            *process.hltPFPuppiDeepFlavourTagInfos
-            *process.hltPFPuppiDeepFlavourJetTags
+            +process.hltPrimaryVertexAssociationPuppi
+            +process.hltPFPuppiDeepFlavourTagInfos
+            +process.hltPFPuppiDeepFlavourJetTags
 
-            *process.hltPatJetsPuppi
+            +process.hltPatJetsPuppi
+            +process.HLTEndSequence
         )
 
     if runCalo:
         process.MC_CaloJetsMatchingPath = cms.Path(
-            process.HLTAK4CaloJetsCorrectionSequence
-            *process.HLTBtagDeepCSVSequenceCaloPat
-            *process.hltPrunedGenParticlesWithStatusOne
-            *process.hltPrunedGenParticles
-            *process.hltPackedGenParticles
-            *process.hltPatJetPartonMatchCalo
-            *process.hltPatJetGenJetMatchCalo
-            *process.hltPatJetPartonsLegacy
-            *process.hltPatJetPartons
-            *process.hltSlimmedGenJets
-            *process.hltPatJetPartonAssociationLegacyCalo
-            *process.hltPatJetFlavourAssociationLegacyCalo
-            *process.hltPatJetFlavourAssociationCalo
-            *process.hltAk4JetTracksAssociatorAtVertexCalo
+            process.HLTBeginSequence
+            # +process.HLTAK4CaloJetsCorrectionSequence
+            +process.HLTAK4CaloJetsSequence
+            +process.HLTBtagDeepCSVSequenceCaloPat
+            +process.hltPrunedGenParticlesWithStatusOne
+            +process.hltPrunedGenParticles
+            +process.hltPackedGenParticles
+            +process.hltPatJetPartonMatchCalo
+            +process.hltSlimmedGenJets
+            +process.hltPatJetGenJetMatchCalo
+            +process.hltPatJetPartonsLegacy
+            +process.hltPatJetPartons
+            +process.hltPatJetPartonAssociationLegacyCalo
+            +process.hltPatJetFlavourAssociationLegacyCalo
+            +process.hltPatJetFlavourAssociationCalo
+            +process.hltAk4JetTracksAssociatorAtVertexCalo
 
-            *process.hltPatJetsCalo
+            +process.hltPatJetsCalo
+            +process.HLTEndSequence
         )
 
     if process.schedule_():

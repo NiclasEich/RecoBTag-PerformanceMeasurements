@@ -675,13 +675,13 @@ for _modname in process.endpaths_():
 #######
 #                          only relevant for Ntuplizing
 #######
-from JMETriggerAnalysis.Common.customise_hlt import *
-if options.runCaloJetVariables:
-    process = addPaths_MC_JMECalo(process)
+# from JMETriggerAnalysis.Common.customise_hlt import *
+# if options.runCaloJetVariables:
+#     process = addPaths_MC_JMECalo(process)
 # process = addPaths_MC_JMEPF(process)
 # process = addPaths_MC_JMEPFCluster(process)
-if options.runPuppiJetVariables:
-    process = addPaths_MC_JMEPFPuppi(process)
+# if options.runPuppiJetVariables:
+#     process = addPaths_MC_JMEPFPuppi(process)
 from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
 process = addDeepJet(process, doPF = True, doPuppi = options.runPuppiJetVariables,
     roiReplace=options.reco=="HLT_Run3TRKForBTag_Replacement" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo",

@@ -11,7 +11,9 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     # process.hltParticleFlowClusterECALUnseeded.skipPS = cms.bool(True)
 
 
-
+    process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
+        skipPS = cms.bool(True)
+    )
 
 
 
@@ -30,7 +32,8 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         nSigmaZVertex = cms.double(0.0),
         originRadius = cms.double(0.3),
         precise = cms.bool(True),
-        ptMin = cms.double(0.3),
+        # ptMin = cms.double(0.3),
+        ptMin = cms.double(0.8),
         searchOpt = cms.bool(True),
         vertexCollection = cms.InputTag("hltTrimmedPixelVertices"),
         whereToUseMeasurementTracker = cms.string('Never'),
@@ -54,8 +57,8 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         numberOfValidPixelHits = cms.uint32(3),
         ptErrorCut = cms.double(5.0),
         ptMax = cms.double(500.0),
-        ptMin = cms.double(0.3),
-        # ptMin = cms.double(0.8),
+        # ptMin = cms.double(0.3),
+        ptMin = cms.double(0.8),
         quality = cms.string('loose'),
         rhoVtx = cms.double(0.2),
         src = cms.InputTag("hltPixelTracks"),
@@ -813,7 +816,8 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
             cms.PSet(
                 BCtoPFCMap = cms.InputTag(""),
                 importerName = cms.string('ECALClusterImporter'),
-                source = cms.InputTag("hltParticleFlowClusterECALUnseeded")
+                # source = cms.InputTag("hltParticleFlowClusterECALUnseeded")
+                source = cms.InputTag("hltParticleFlowClusterECALUnseededROIForBTag")
             ),
             cms.PSet(
                 importerName = cms.string('GenericClusterImporter'),
@@ -1154,7 +1158,8 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         process.hltParticleFlowRecHitPSUnseeded+
         process.hltParticleFlowClusterECALUncorrectedUnseeded+
         process.hltParticleFlowClusterPSUnseeded+
-        process.hltParticleFlowClusterECALUnseeded+
+        # process.hltParticleFlowClusterECALUnseeded+
+        process.hltParticleFlowClusterECALUnseededROIForBTag+
         process.hltParticleFlowClusterHBHE+
         process.hltParticleFlowClusterHCAL+
         process.hltParticleFlowClusterHF+
