@@ -23,7 +23,7 @@
 using namespace analyzerBase;
 
 template<typename IPTI,typename VTX>
-class HLTBTagAnalyzerT : public edm::EDAnalyzer
+class HLTBTagAnalyzerT : public edm::one::EDAnalyzer<>
 {
 public:
   explicit HLTBTagAnalyzerT(const edm::ParameterSet&);
