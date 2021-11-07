@@ -1,29 +1,18 @@
 import FWCore.ParameterSet.Config as cms
 
 def customiseRun3BTagRegionalTracks_Replacement_calo(process):
-
-
-
-
-    # process.hltParticleFlowClusterECALForMuonsMF.skipPS = cms.bool(True)
-    # process.hltParticleFlowClusterECALForMuonsMFScoutingNoVtx.skipPS = cms.bool(True)
-    # process.hltParticleFlowClusterECALL1Seeded.skipPS = cms.bool(True)
-    # process.hltParticleFlowClusterECALUnseeded.skipPS = cms.bool(True)
-
-
+    #speed up PFPS
     process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
         skipPS = cms.bool(True)
     )
 
-
-
+    #our own tracking region
     process.hltBTaggingRegion = cms.EDProducer("CandidateSeededTrackingRegionsEDProducer",
     RegionPSet = cms.PSet(
         beamSpot = cms.InputTag("hltOnlineBeamSpot"),
         deltaEta = cms.double(0.5),
         deltaPhi = cms.double(0.5),
         input = cms.InputTag("hltSelectorCentralJets20L1FastJeta"),
-        # maxNRegions = cms.int32(100),
         maxNRegions = cms.int32(8),
         maxNVertices = cms.int32(2),
         measurementTrackerName = cms.InputTag(""),
@@ -32,7 +21,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         nSigmaZVertex = cms.double(0.0),
         originRadius = cms.double(0.3),
         precise = cms.bool(True),
-        # ptMin = cms.double(0.3),
         ptMin = cms.double(0.8),
         searchOpt = cms.bool(True),
         vertexCollection = cms.InputTag("hltTrimmedPixelVertices"),
@@ -57,7 +45,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         numberOfValidPixelHits = cms.uint32(3),
         ptErrorCut = cms.double(5.0),
         ptMax = cms.double(500.0),
-        # ptMin = cms.double(0.3),
         ptMin = cms.double(0.8),
         quality = cms.string('loose'),
         rhoVtx = cms.double(0.2),
@@ -71,7 +58,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     )
 
     process.hltPixelTracksForBTag = cms.EDProducer('TrackSelectorByRegion',
-          # tracks = cms.InputTag('hltPixelTracks'),
           tracks = cms.InputTag('hltPixelTracksCleanForBTag'),
           regions = cms.InputTag('hltBTaggingRegion'),
           produceTrackCollection = cms.bool(True),
@@ -123,7 +109,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         ghostTrackPriorDeltaR = cms.double(0.03),
         jetDirectionUsingGhostTrack = cms.bool(False),
         jetDirectionUsingTracks = cms.bool(False),
-        # jets = cms.InputTag("hltPFJetForBtag"),
         jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
         maxDeltaR = cms.double(0.4),
         maximumChiSquared = cms.double(5.0),
@@ -353,12 +338,10 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         svTagInfos = cms.InputTag("hltDeepSecondaryVertexTagInfosPFROIForBTag")
     )
 
-    # process.hltDeepCombinedSecondaryVertexBJetTagsPF = cms.EDProducer("DeepFlavourJetTagsProducer",
     process.hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag = cms.EDProducer("DeepFlavourJetTagsProducer",
         NNConfig = cms.FileInPath('RecoBTag/Combined/data/DeepCSV_PhaseI.json'),
         checkSVForDefaults = cms.bool(True),
         meanPadding = cms.bool(True),
-        # src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfos"),
         src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfosROIForBTag"),
         toAdd = cms.PSet(
             probbb = cms.string('probb')
@@ -816,7 +799,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
             cms.PSet(
                 BCtoPFCMap = cms.InputTag(""),
                 importerName = cms.string('ECALClusterImporter'),
-                # source = cms.InputTag("hltParticleFlowClusterECALUnseeded")
                 source = cms.InputTag("hltParticleFlowClusterECALUnseededROIForBTag")
             ),
             cms.PSet(
