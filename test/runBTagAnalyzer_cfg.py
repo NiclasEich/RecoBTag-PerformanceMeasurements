@@ -25,6 +25,11 @@ options.register('reportEvery', 10,
     VarParsing.varType.int,
     "Report every N events (default is N=1)"
 )
+options.register('dumpPython', None,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.string,
+    'Dump python config, pass SaveName.py'
+)
 options.register('wantSummary', False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
@@ -1727,5 +1732,15 @@ process.p = cms.Path(
 
 # Delete predefined output module (needed for running with CRAB)
 del process.out
+# dump content of cms.Process to python file
+if options.dumpPython is not None:
+   open(options.dumpPython, 'w').write(process.dumpPython())
 
-open('pydump.py','w').write(process.dumpPython())
+print ('')
+print ('option: output =', options.outFilename)
+print ('option: dumpPython =', options.dumpPython)
+print ('')
+print ('process.GlobalTag =', process.GlobalTag.globaltag)
+print ('process.source =', process.source.dumpPython())
+print ('process.maxEvents =', process.maxEvents.input)
+print ('-------------------------------')
