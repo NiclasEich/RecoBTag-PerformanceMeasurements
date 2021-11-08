@@ -12,8 +12,8 @@
 ```bash
 # setting up the latest release
 export SCRAM_ARCH=slc7_amd64_gcc900
-cmsrel CMSSW_12_1_0_pre5
-cd CMSSW_12_1_0_pre5/src
+cmsrel CMSSW_12_1_0
+cd CMSSW_12_1_0/src
 cmsenv
 
 export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily

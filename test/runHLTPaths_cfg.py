@@ -32,11 +32,6 @@ options.register('globalTag', 'DEFAULT',
     VarParsing.varType.string,
     "MC global tag, no default value provided"
 )
-options.register('runCaloJetVariables', False,
-    VarParsing.multiplicity.singleton,
-    VarParsing.varType.bool,
-    'True if you want to run Jet Variables'
-)
 options.register('runTiming', False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
@@ -59,6 +54,12 @@ options.register(
   'keyword to define HLT reconstruction'
 )
 options.register(
+    'addDeepJet', True,
+  VarParsing.multiplicity.singleton,
+  VarParsing.varType.bool,
+  'add DeepJet paths to reconstruction'
+)
+options.register(
     'ptMinThreshold', 0.9,
   VarParsing.multiplicity.singleton,
   VarParsing.varType.float,
@@ -70,7 +71,6 @@ options.setDefault('maxEvents', -1)
 
 options.parseArguments()
 globalTag = options.globalTag
-
 
 update_jmeCalibs = False
 
@@ -182,7 +182,6 @@ else:
     from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_1_0_GRun_configDump_MC import cms, process
 
 
-
 if options.reco == 'HLT_GRun_oldJECs':
     # default GRun menu (Run 2 configurations)
     update_jmeCalibs = False
@@ -198,14 +197,12 @@ elif options.reco == 'HLT_GRun_PatatrackQuadruplets':
     update_jmeCalibs = True
     # process = fixMenu(process)
 
-
 elif options.reco == 'HLT_GRun_PatatrackTriplets':
     # default GRun menu (Run 2 configurations) + Patatrack pixeltracks (Triplets+Quadruplets) instead of legacy pixeltracks
     from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
     process = customizeHLTforPatatrackTriplets(process)
     update_jmeCalibs = True
     # process = fixMenu(process)
-
 
 elif options.reco == 'HLT_Run3TRK' or options.reco == 'HLT_Run3TRK_Pt':
     # Run-3 tracking: standard (Triplets+Quadruplets)
@@ -215,24 +212,23 @@ elif options.reco == 'HLT_Run3TRK' or options.reco == 'HLT_Run3TRK_Pt':
     update_jmeCalibs = True
     process = fixMenu(process)
 
-############################
-#   old intermediate and temporary testing configurations
-############################
-# elif options.reco == 'HLT_Run3TRKMod':
-#     # (a) Run-3 tracking: standard
-#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-#     process = customizeHLTforRun3Tracking(process)
-# elif options.reco == 'HLT_Run3TRKMod2':
-#     # (a) Run-3 tracking: standard
-#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-#     process = customizeHLTforRun3Tracking(process)
-# elif options.reco == 'HLT_Run3TRKWithPU':
-#     # (b) Run-3 tracking: all pixel vertices
-#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3TrackingAllPixelVertices
-#     process = customizeHLTforRun3TrackingAllPixelVertices(process)
-#     update_jmeCalibs = True
-#     process = fixMenu(process)
+elif options.reco == 'HLT_Run3TRK_ROICaloROIPF':
+    # Run-3 tracking: standard (Triplets+Quadruplets)
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_ROIPF import *
+    process = customizeRun3_BTag_ROICalo_ROIPF(process, options.addDeepJet)
+    update_jmeCalibs = True
+    process = fixMenu(process)
 
+elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
+    # Run-3 tracking: standard (Triplets+Quadruplets)
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_GlobalPF import *
+    process = customizeRun3_BTag_ROICalo_GlobalPF(process, options.addDeepJet)
+    update_jmeCalibs = True
+    process = fixMenu(process)
 
 elif options.reco == 'HLT_Run3TRKNoCaloJetsWithSubstitutions':
     # Run-3 global/central TRK+PF reconstruction
@@ -262,16 +258,6 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
 #     process = customisePFForPixelTracks(process)
 #     process = fixMenu(process)
 #
-#
-# elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned':
-#     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
-#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-#     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-#     process = customizeHLTforRun3Tracking(process)
-#     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag")
-#     process = fixMenu(process)
-#
-#
 # elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned2':
 #     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
 #     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
@@ -280,26 +266,6 @@ elif options.reco == 'HLT_Run3TRKNoCaloJets':
 #     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltTrimmedPixelVertices", nVertices = 2)
 #     update_jmeCalibs = True
 #     process = fixMenu(process)
-#
-#
-#
-# elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned3':
-#     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
-#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-#     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-#     process = customizeHLTforRun3Tracking(process)
-#     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltPixelVertices", nVertices = 4)
-#     process = fixMenu(process)
-#
-#
-# elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned4':
-#     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
-#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-#     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-#     process = customizeHLTforRun3Tracking(process)
-#     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltPixelVertices", nVertices = 2)
-#     process = fixMenu(process)
-#
 
 elif options.reco == 'HLT_Run3TRKForBTag':
     # Run-3 ROI TRK+PF reconstruction
@@ -375,40 +341,8 @@ elif options.reco == 'HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewGlobal
 
     process = deleteCaloOnlyPaths(process)
 
-############################
-#   old intermediate and temporary testing configurations
-############################
-# elif options.reco == 'HLT_Run3TRKForBTag_2':
-#     # (a) Run-3 tracking: standard
-#     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-#     process = customizeHLTforRun3Tracking(process)
-#     process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltTrimmedPixelVertices", nVertices = 2)
-#     process = fixMenu(process)
-#
-#
-# elif options.reco == 'HLT_Run3TRKForBTag_3':
-#     # (a) Run-3 tracking: standard
-#     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-#     process = customizeHLTforRun3Tracking(process)
-#     process = customiseRun3BTagRegionalTracks(process, clean=True, vertex="hltPixelVertices", nVertices = 2)
-#     process = fixMenu(process)
-#
-#
-# elif options.reco == 'HLT_Run3TRKForBTag_Pt':
-#     # (a) Run-3 tracking: standard
-#     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-#     process = customizeHLTforRun3Tracking(process)
-#     process = customiseRun3BTagRegionalTracks(process, clean=False, vertex="hltTrimmedPixelVertices", nVertices = 2)
-#     process = customizePt(process, options.ptMinThreshold)
-#     process = fixMenu(process)
-#
-
 else:
   raise RuntimeError('keyword "reco = '+options.reco+'" not recognised')
-
 
 
 # remove cms.OutputModule objects from HLT config-dump
@@ -446,22 +380,23 @@ keepPaths = [
   # 'HLT_PFHT*_v*',
   # 'HLT_PFMET*_PFMHT*_v*',
   # 'HLT_*DeepCSV*_v*',
-  'HLT_*_v*',
+  # 'HLT_*_v*',
+  '*',
 ]
 
 removePaths = []
-removePaths+=pathsWithOnlyCalo
-if options.reco == "HLT_Run3TRKForBTag_Replacement" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo":
-    removePaths+=pathsWithCaloAndPF
-
-print("Deleting removePaths")
-for _tmpPathName in removePaths:
-    attributes = dir(process)
-    for attribute in attributes:
-        if _tmpPathName in attribute:
-            hit_attr = attribute
-            print("Deleting {}".format(hit_attr))
-            process.__delattr__(hit_attr)
+# removePaths+=pathsWithOnlyCalo
+# if options.reco == "HLT_Run3TRKForBTag_Replacement" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets" or options.reco=="HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo":
+#     removePaths+=pathsWithCaloAndPF
+#
+# print("Deleting removePaths")
+# for _tmpPathName in removePaths:
+#     attributes = dir(process)
+#     for attribute in attributes:
+#         if _tmpPathName in attribute:
+#             hit_attr = attribute
+#             print("Deleting {}".format(hit_attr))
+#             process.__delattr__(hit_attr)
 
 # list of paths that are kept
 listOfPaths = []
@@ -496,29 +431,9 @@ if hasattr(process, 'FastTimerService'):
 if hasattr(process, 'MessageLogger'):
   del process.MessageLogger
 
-###
-### customizations
-###
-# from JMETriggerAnalysis.Common.customise_hlt import *
-# process = addPaths_MC_JMECalo(process)
-# process = addPaths_MC_JMEPF(process)
-# process = addPaths_MC_JMEPFCluster(process)
-# from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
-# process = addDeepJet(process, doPF = True, doPuppi = False)
-# from RecoBTag.PerformanceMeasurements.PATLikeConfig import customizePFPatLikeJets
-# process = customizePFPatLikeJets(process, runPF=True, runCalo=options.runCaloJetVariables, runPuppi=False)
-
-
-if options.reco == 'HLT_Run3TRKMod':
-    process = customizeVertices(process)
-
-if options.reco == 'HLT_Run3TRKMod2':
-    process = customizeVertices2(process)
-
 if "HLT_Run3TRKPixelOnly" in options.reco:
     process = customizeMinHitsAndPt(process)
     process = customizePt(process, options.ptMinThreshold)
-
 
 if update_jmeCalibs:
     ## ES modules for PF-Hadron Calibrations
@@ -696,14 +611,6 @@ if options.runTiming:
     # process.dqmOutput.fileName = cms.untracked.string(options.output)
 
 
-
-# process.schedule_().extend([
-#       process.MC_PFBTagDeepCSV_v10,
-#       process.MC_PFBTagDeepJet,
-# ])
-
-
-# del process.out
 # dump content of cms.Process to python file
 if options.dumpPython is not None:
    open(options.dumpPython, 'w').write(process.dumpPython())

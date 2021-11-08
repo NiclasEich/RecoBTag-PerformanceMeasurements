@@ -1,6 +1,38 @@
 import FWCore.ParameterSet.Config as cms
 
-def customiseRun3BTagRegionalTracks_Replacement_calo(process):
+def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True):
+
+    # delete the old legacy sequences, to be sure
+    if hasattr(process, 'HLTDoLocalPixelSequenceRegForBTag'):
+    	del process.HLTDoLocalPixelSequenceRegForBTag
+    if hasattr(process, 'HLTFastRecopixelvertexingSequence'):
+    	del process.HLTFastRecopixelvertexingSequence
+    if hasattr(process, 'HLTDoLocalStripSequenceRegForBTag'):
+    	del process.HLTDoLocalStripSequenceRegForBTag
+    if hasattr(process, 'HLTIterativeTrackingIter02ForBTag'):
+    	del process.HLTIterativeTrackingIter02ForBTag
+    if hasattr(process, 'HLTIterativeTrackingIteration0ForBTag'):
+    	del process.HLTIterativeTrackingIteration0ForBTag
+    if hasattr(process, 'HLTIterativeTrackingIteration1ForBTag'):
+    	del process.HLTIterativeTrackingIteration1ForBTag
+    if hasattr(process, 'HLTIterativeTrackingIteration2ForBTag'):
+    	del process.HLTIterativeTrackingIteration2ForBTag
+    if hasattr(process, 'HLTIterativeTrackingDoubletRecoveryForBTag'):
+    	del process.HLTIterativeTrackingDoubletRecoveryForBTag
+    # delete the remaining unneeded paths
+    if hasattr(process, 'MC_AK4CaloJetsFromPV_v8'):
+    	del process.MC_AK4CaloJetsFromPV_v8
+    if hasattr(process, 'hltPreMCAK4CaloJetsFromPV'):
+    	del process.hltPreMCAK4CaloJetsFromPV
+    if hasattr(process, 'HLTNoPUSequence'):
+    	del process.HLTNoPUSequence
+    if hasattr(process, 'hltCaloJetFromPVCollection20Filter'):
+    	del process.hltCaloJetFromPVCollection20Filter
+    if hasattr(process, 'hltHtMhtFromPVForMC'):
+    	del process.hltHtMhtFromPVForMC
+    if hasattr(process, 'hltCaloHtMhtFromPVOpenFilter'):
+    	del process.hltCaloHtMhtFromPVOpenFilter
+
     #speed up PFPS
     process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
         skipPS = cms.bool(True)
@@ -106,7 +138,7 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         tracks = cms.InputTag("hltParticleFlowROIForBTag"),
     )
 
-    process.hltDeepInclusiveSecondaryVerticesPFROIForBTag = procress.hltDeepInclusiveSecondaryVerticesPF.clone(
+    process.hltDeepInclusiveSecondaryVerticesPFROIForBTag = process.hltDeepInclusiveSecondaryVerticesPF.clone(
         secondaryVertices = cms.InputTag("hltDeepInclusiveVertexFinderPFROIForBTag")
     )
 
@@ -528,23 +560,117 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     )
 
 
+    ####                    DeepJet?
+    if addDeepJetPaths:
+        from CommonTools.RecoAlgos.primaryVertexAssociation_cfi import primaryVertexAssociation
+        from RecoBTag.FeatureTools.pfDeepFlavourTagInfos_cfi import pfDeepFlavourTagInfos
+        from RecoBTag.ONNXRuntime.pfDeepFlavourJetTags_cfi import pfDeepFlavourJetTags
+
+        process.hltDeepJetDiscriminatorsJetTagsROIForBTag = cms.EDProducer(
+            'BTagProbabilityToDiscriminator',
+            discriminators = cms.VPSet(
+                cms.PSet(
+                    name = cms.string('BvsAll'),
+                    numerator = cms.VInputTag(
+                        cms.InputTag('hltPFDeepFlavourJetTagsROIForBTag', 'probb'),
+                        cms.InputTag('hltPFDeepFlavourJetTagsROIForBTag', 'probbb'),
+                        cms.InputTag('hltPFDeepFlavourJetTagsROIForBTag', 'problepb'),
+                        ),
+                    denominator=cms.VInputTag(
+                        cms.InputTag('hltPFDeepFlavourJetTagsROIForBTag', 'probb'),
+                        cms.InputTag('hltPFDeepFlavourJetTagsROIForBTag', 'probbb'),
+                        cms.InputTag('hltPFDeepFlavourJetTagsROIForBTag', 'problepb'),
+                        cms.InputTag('hltPFDeepFlavourJetTagsROIForBTag', 'probc'),
+                        cms.InputTag('hltPFDeepFlavourJetTagsROIForBTag', 'probuds'),
+                        cms.InputTag('hltPFDeepFlavourJetTagsROIForBTag', 'probg'),
+                        ),
+                ),
+            )
+        )
+
+        process.hltPrimaryVertexAssociationROIForBTag = primaryVertexAssociation.clone(
+            jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+            particles = cms.InputTag("hltParticleFlowROIForBTag"),
+            vertices = cms.InputTag("hltVerticesPFFilterROIForBTag"),
+        )
+
+        process.hltPFDeepFlavourTagInfosROIForBTag = pfDeepFlavourTagInfos.clone(
+            candidates = cms.InputTag("hltParticleFlowROIForBTag"),
+            jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+            fallback_puppi_weight = cms.bool(True),
+            puppi_value_map = cms.InputTag(""),
+            secondary_vertices = cms.InputTag("hltDeepInclusiveSecondaryVerticesPFROIForBTag"),
+            shallow_tag_infos = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfosROIForBTag"),
+            vertex_associator = cms.InputTag("hltPrimaryVertexAssociationROIForBTag","original"),
+            vertices = cms.InputTag("hltVerticesPFFilterROIForBTag")
+        )
+        process.hltPFDeepFlavourJetTagsROIForBTag = pfDeepFlavourJetTags.clone(
+            src = cms.InputTag("hltPFDeepFlavourTagInfosROIForBTag")
+        )
+
+        process.HLTBtagDeepJetSequencePFROIForBTag = cms.Sequence(
+            process.hltVerticesPFROIForBTag+
+            process.hltVerticesPFSelectorROIForBTag+
+            process.hltVerticesPFFilterROIForBTag+
+            process.hltPFJetForBtagSelectorROIForBTag+
+            process.hltPFJetForBtagROIForBTag+
+            process.hltDeepBLifetimeTagInfosPFROIForBTag+
+            process.hltDeepInclusiveVertexFinderPFROIForBTag+
+            process.hltDeepInclusiveSecondaryVerticesPFROIForBTag+
+            process.hltDeepTrackVertexArbitratorPFROIForBTag+
+            process.hltDeepInclusiveMergedVerticesPFROIForBTag+
+            process.hltDeepSecondaryVertexTagInfosPFROIForBTag+
+            process.hltDeepCombinedSecondaryVertexBJetTagsInfosROIForBTag+
+            process.hltPrimaryVertexAssociationROIForBTag+
+            process.hltPFDeepFlavourTagInfosROIForBTag+
+            process.hltPFDeepFlavourJetTagsROIForBTag+
+            process.hltDeepJetDiscriminatorsJetTagsROIForBTag
+        )
+
+        process.hltPreMCPFBTagDeepJet = process.hltPreMCPFBTagDeepCSV.clone()
+
+        process.hltBTagPFDeepJet4p06SingleROIForBTag = process.hltBTagPFDeepCSV4p06Single.clone(
+            JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+            MaxTag = cms.double(999999.0),
+            MinJets = cms.int32(1),
+            MinTag = cms.double(0.25),
+            TriggerType = cms.int32(86),
+            saveTags = cms.bool(True)
+        )
+
+        ############################################################################
+        ####                    MC_PFBTagDeepJet_v1                   ###
+        ############################################################################
+        process.hltPreMCPFBTagDeepJetROIForBTag = process.hltPreMCPFBTagDeepCSV.clone()
+
+        process.MC_PFBTagDeepJet_v1 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltPreMCPFBTagDeepJetROIForBTag+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltBTagPFDeepJet4p06SingleROIForBTag+
+            process.HLTEndSequence
+        )
+    ####         endif           DeepJet?
+
+
+
+
+
+
 
     ############################################################################
-    ####                    MC_PFBTagDeepCSV_v10ROIForBTag                   ###
+    ####                    MC_PFBTagDeepCSV_v10                   ###
     ############################################################################
-
 
     process.hltBTagPFDeepCSV4p06SingleROIForBTag = process.hltBTagPFDeepCSV4p06Single.clone(
         JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag","probb"),
         Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
     )
 
-    process.hltPreMCPFBTagDeepCSVROIForBTag = cms.EDFilter("HLTPrescaler",
-        L1GtReadoutRecordTag = cms.InputTag("hltGtStage2Digis"),
-        offset = cms.uint32(0)
-    )
+    process.hltPreMCPFBTagDeepCSVROIForBTag = process.hltPreMCPFBTagDeepCSV.clone()
 
-    # process.MC_PFBTagDeepCSVROIForBTag_v10 = cms.Path(
     process.MC_PFBTagDeepCSV_v10 = cms.Path(
         process.HLTBeginSequence+
         process.hltPreMCPFBTagDeepCSVROIForBTag+
@@ -558,9 +684,8 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
 
 
     ############################################################################
-    #### HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v3ROIForBTag
+    #### HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v3
     ############################################################################
-
 
     process.hltPFCentralJetLooseIDQuad30ROIForBTag = process.hltPFCentralJetLooseIDQuad30.clone(
         inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
@@ -607,25 +732,21 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         MinTag = cms.double(0.17),
     )
 
-    # process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5ROIForBTag_v3 = cms.Path(
     process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5_v3 = cms.Path(
         process.HLTBeginSequence+
-
         process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+
         process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV4p5+
 
         process.HLTAK4CaloJetsSequence+
-
         process.hltQuadCentralJet30+
         process.hltCaloJetsQuad30ForHt+
         process.hltHtMhtCaloJetsQuadC30+
         process.hltCaloQuadJet30HT320+
 
-         process.HLTBtagDeepCSVSequenceL3ROIForBTag+
-         process.hltBTagCaloDeepCSVp17DoubleROIForBTag+
+        process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+        process.hltBTagCaloDeepCSVp17DoubleROIForBTag+
 
         process.HLTAK4PFJetsSequenceROIForBTag+
-
         process.hltPFCentralJetLooseIDQuad30ROIForBTag+
         process.hlt1PFCentralJetLooseID75ROIForBTag+
         process.hlt2PFCentralJetLooseID60ROIForBTag+
@@ -636,18 +757,49 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         process.hltPFCentralJetsLooseIDQuad30HT330ROIForBTag+
 
         process.HLTBtagDeepCSVSequencePFROIForBTag+
-
         process.hltBTagPFDeepCSV4p5TripleROIForBTag+
 
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltBTagPFDeepJet4p5TripleROIForBTag = process.hltBTagPFDeepCSV4p5Triple.clone(
+            JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            MinTag = cms.double(0.24),
+        )
+        process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepJet4p5 = process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV4p5.clone()
+        process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepJet_4p5_v3 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sQuadJetC50to60IorHTT280to500IorHTT250to340QuadJet+
+            process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepJet4p5+
 
+            process.HLTAK4CaloJetsSequence+
+            process.hltQuadCentralJet30+
+            process.hltCaloJetsQuad30ForHt+
+            process.hltHtMhtCaloJetsQuadC30+
+            process.hltCaloQuadJet30HT320+
+
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSVp17DoubleROIForBTag+
+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFCentralJetLooseIDQuad30ROIForBTag+
+            process.hlt1PFCentralJetLooseID75ROIForBTag+
+            process.hlt2PFCentralJetLooseID60ROIForBTag+
+            process.hlt3PFCentralJetLooseID45ROIForBTag+
+            process.hlt4PFCentralJetLooseID40ROIForBTag+
+            process.hltPFCentralJetLooseIDQuad30forHtROIForBTag+
+            process.hltHtMhtPFCentralJetsLooseIDQuadC30ROIForBTag+
+            process.hltPFCentralJetsLooseIDQuad30HT330ROIForBTag+
+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltBTagPFDeepJet4p5TripleROIForBTag+
+
+            process.HLTEndSequence
+        )
 
     ############################################################################
-    #### HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5_v8ROIForBTag
+    #### HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5_v8
     ############################################################################
-
-
 
     process.hltPFJetFilterTwo100er3p0ROIForBTag = process.hltPFJetFilterTwo100er3p0.clone(
         inputTag = cms.InputTag("hltAK4PFJetsCorrectedROIForBTag"),
@@ -681,7 +833,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         MinTag = cms.double(0.14),
     )
 
-    # process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5ROIForBTag_v8 = cms.Path(
     process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sHTT280to500erIorHTT250to340erQuadJetTripleJet+
@@ -707,7 +858,37 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
 
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltBTagPFDeepJet4p5DoubleROIForBTag = process.hltBTagPFDeepCSV4p5Double.clone(
+            JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+        )
+        process.hltPrePFHT400FivePFJet100100603030DoublePFBTagDeepJet4p5 = process.hltPrePFHT400FivePFJet100100603030DoublePFBTagDeepCSV4p5.clone()
+        process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepJet_4p5_v8 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sHTT280to500erIorHTT250to340erQuadJetTripleJet+
+            process.hltPrePFHT400FivePFJet100100603030DoublePFBTagDeepJet4p5+
+            process.HLTAK4CaloJetsSequence+
+            process.hltCaloJetFilterFiveC25+
+            process.hltCaloJetsFive25ForHt+
+            process.hltHtMhtCaloJetsFiveC25+
+            process.hltCaloFiveJet25HT300+
 
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSV10p01SingleROIForBTag+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+
+            process.hltPFJetFilterTwo100er3p0ROIForBTag+
+            process.hltPFJetFilterThree60er3p0ROIForBTag+
+            process.hltPFJetFilterFive30er3p0ROIForBTag+
+            process.hltPFJetsFive30ForHtROIForBTag+
+            process.hltHtMhtPFJetsFive30er3p0ROIForBTag+
+            process.hltPFFiveJet30HT400ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltBTagPFDeepJet4p5DoubleROIForBTag+
+
+            process.HLTEndSequence
+        )
 
     ############################################################################
     #### HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepCSV_4p5_v
@@ -717,7 +898,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         inputTag = cms.InputTag("hltAK4PFJetsCorrectedROIForBTag"),
     )
 
-    # process.HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepCSV_4p5ROIForBTag_v8 = cms.Path(
     process.HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepCSV_4p5_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sHTT280to500erIorHTT250to340erQuadJetTripleJet+
@@ -743,6 +923,33 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
 
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltPrePFHT400FivePFJet120120603030DoublePFBTagDeepJet4p5 = process.hltPrePFHT400FivePFJet120120603030DoublePFBTagDeepCSV4p5.clone()
+        process.HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepJet_4p5_v8 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sHTT280to500erIorHTT250to340erQuadJetTripleJet+
+            process.hltPrePFHT400FivePFJet120120603030DoublePFBTagDeepJet4p5+
+            process.HLTAK4CaloJetsSequence+
+            process.hltCaloJetFilterFiveC25+
+            process.hltCaloJetsFive25ForHt+
+            process.hltHtMhtCaloJetsFiveC25+
+            process.hltCaloFiveJet25HT300+
+
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSV10p01SingleROIForBTag+
+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFJetFilterTwo120er3p0ROIForBTag+
+            process.hltPFJetFilterThree60er3p0ROIForBTag+
+            process.hltPFJetFilterFive30er3p0ROIForBTag+
+            process.hltPFJetsFive30ForHtROIForBTag+
+            process.hltHtMhtPFJetsFive30er3p0ROIForBTag+
+            process.hltPFFiveJet30HT400ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltBTagPFDeepJet4p5DoubleROIForBTag+
+
+            process.HLTEndSequence
+        )
 
     ############################################################################
     #### HLT_PFHT400_SixPFJet32_DoublePFBTagDeepCSV_2p94_v
@@ -776,7 +983,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
     )
 
-    # process.HLT_PFHT400_SixPFJet32_DoublePFBTagDeepCSV_2p94ROIForBTag_v8 = cms.Path(
     process.HLT_PFHT400_SixPFJet32_DoublePFBTagDeepCSV_2p94_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sHTT280to500erIorHTT250to340erQuadJet+
@@ -801,6 +1007,36 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
 
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltBTagPFDeepJet2p94DoubleROIForBTag = process.hltBTagPFDeepCSV2p94Double.clone(
+            JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+        )
+        process.hltPrePFHT400SixPFJet32DoublePFBTagDeepJet2p94 = process.hltPrePFHT400SixPFJet32DoublePFBTagDeepCSV2p94.clone()
+        process.HLT_PFHT400_SixPFJet32_DoublePFBTagDeepJet_2p94_v8 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sHTT280to500erIorHTT250to340erQuadJet+
+            process.hltPrePFHT400SixPFJet32DoublePFBTagDeepJet2p94+
+            process.HLTAK4CaloJetsSequence+
+            process.hltCaloJetFilterSixC25+
+            process.hltCaloJetsSix25ForHt+
+            process.hltHtMhtCaloJetsSixC25+
+            process.hltCaloSixJet25HT300+
+
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSV10p01SingleROIForBTag+
+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFJetFilterSix30er2p5ROIForBTag+
+            process.hltPFJetFilterSix32er2p5ROIForBTag+
+            process.hltPFJetsSix30ForHtROIForBTag+
+            process.hltHtMhtPFJetsSix30er2p5ROIForBTag+
+            process.hltPFSixJet30HT400ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltBTagPFDeepJet2p94DoubleROIForBTag+
+
+            process.HLTEndSequence
+        )
 
     ############################################################################
     #### HLT_PFHT450_SixPFJet36_PFBTagDeepCSV_1p59_v
@@ -820,7 +1056,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
     )
 
-    # process.HLT_PFHT450_SixPFJet36_PFBTagDeepCSV_1p59ROIForBTag_v7 = cms.Path(
     process.HLT_PFHT450_SixPFJet36_PFBTagDeepCSV_1p59_v7 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sHTT280to500erIorHTT250to340erQuadJet+
@@ -842,7 +1077,33 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
 
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltBTagPFDeepJet1p59SingleROIForBTag = process.hltBTagPFDeepCSV1p59Single.clone(
+            JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+        )
+        process.hltPrePFHT450SixPFJet36PFBTagDeepJet1p59 = process.hltPrePFHT450SixPFJet36PFBTagDeepCSV1p59.clone()
+        process.HLT_PFHT450_SixPFJet36_PFBTagDeepJet_1p59_v7 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sHTT280to500erIorHTT250to340erQuadJet+
+            process.hltPrePFHT450SixPFJet36PFBTagDeepJet1p59+
+            process.HLTAK4CaloJetsSequence+
+            process.hltCaloJetFilterSixC30+
+            process.hltCaloJetsSix30ForHt+
+            process.hltHtMhtCaloJetsSixC30+
+            process.hltCaloSixJet30HT350+
 
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFJetFilterSix30er2p5ROIForBTag+
+            process.hltPFJetFilterSix36er2p5ROIForBTag+
+            process.hltPFJetsSix30ForHtROIForBTag+
+            process.hltHtMhtPFJetsSix30er2p5ROIForBTag+
+            process.hltPFSixJet30HT450ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltBTagPFDeepJet1p59SingleROIForBTag+
+
+            process.HLTEndSequence
+        )
     ############################################################################
     #### HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v
     ############################################################################
@@ -887,7 +1148,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         MinTag = cms.double(0.4),
     )
 
-    # process.HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1ROIForBTag_v8 = cms.Path(
     process.HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sTripleJetVBFIorHTTIorSingleJet+
@@ -916,6 +1176,50 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
 
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltBTagPFDeepJet7p68Double6JetsROIForBTag = process.hltBTagPFDeepCSV7p68Double6Jets.clone(
+            JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            Jets = cms.InputTag("hltSelector6PFJetsROIForBTag"),
+        )
+
+        process.hltBTagPFDeepJet1p28Single6JetsROIForBTag = process.hltBTagPFDeepCSV1p28Single6Jets.clone(
+            JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            Jets = cms.InputTag("hltSelector6PFJetsROIForBTag"),
+        )
+
+        process.hltVBFPFJetDeepJetSortedMqq200Detaqq1p5ROIForBTag = process.hltVBFPFJetCSVSortedMqq200Detaqq1p5.clone(
+            inputJetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            inputJets = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+        )
+        process.hltPreQuadPFJet103887515DoublePFBTagDeepJet1p37p7VBF1 = process.hltPreQuadPFJet103887515DoublePFBTagDeepCSV1p37p7VBF1.clone()
+        process.HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sTripleJetVBFIorHTTIorSingleJet+
+            process.hltPreQuadPFJet103887515DoublePFBTagDeepJet1p37p7VBF1+
+            process.HLTAK4CaloJetsSequence+
+            process.hltQuadJet15+
+            process.hltTripleJet50+
+            process.hltDoubleJet65+
+            process.hltSingleJet80+
+            process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+            process.HLTFastPrimaryVertexSequenceROIForBTag+
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSV1p56SingleROIForBTag+
+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFQuadJetLooseID15ROIForBTag+
+            process.hltPFTripleJetLooseID75ROIForBTag+
+            process.hltPFDoubleJetLooseID88ROIForBTag+
+            process.hltPFSingleJetLooseID103ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltSelector6PFJetsROIForBTag+
+            process.hltBTagPFDeepJet7p68Double6JetsROIForBTag+
+            process.hltBTagPFDeepJet1p28Single6JetsROIForBTag+
+            process.hltVBFPFJetDeepJetSortedMqq200Detaqq1p5ROIForBTag+
+
+            process.HLTEndSequence
+        )
 
 
     ############################################################################
@@ -927,7 +1231,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         inputJets = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
     )
 
-    # process.HLT_QuadPFJet103_88_75_15_PFBTagDeepCSV_1p3_VBF2ROIForBTag_v8 = cms.Path(
     process.HLT_QuadPFJet103_88_75_15_PFBTagDeepCSV_1p3_VBF2_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sTripleJetVBFIorHTTIorSingleJet+
@@ -954,6 +1257,38 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         process.hltVBFPFJetCSVSortedMqq460Detaqq3p5ROIForBTag+
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltVBFPFJetDeepJetSortedMqq460Detaqq3p5ROIForBTag = process.hltVBFPFJetCSVSortedMqq460Detaqq3p5.clone(
+            inputJetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            inputJets = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
+        )
+        process.hltPreQuadPFJet103887515PFBTagDeepJet1p3VBF2 = process.hltPreQuadPFJet103887515PFBTagDeepCSV1p3VBF2.clone()
+        process.HLT_QuadPFJet103_88_75_15_PFBTagDeepJet_1p3_VBF2_v8 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sTripleJetVBFIorHTTIorSingleJet+
+            process.hltPreQuadPFJet103887515PFBTagDeepJet1p3VBF2+
+            process.HLTAK4CaloJetsSequence+
+            process.hltQuadJet15+
+            process.hltTripleJet50+
+            process.hltDoubleJet65+
+            process.hltSingleJet80+
+            process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+            process.HLTFastPrimaryVertexSequenceROIForBTag+
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSV1p56SingleROIForBTag+
+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFQuadJetLooseID15ROIForBTag+
+            process.hltPFTripleJetLooseID75ROIForBTag+
+            process.hltPFDoubleJetLooseID88ROIForBTag+
+            process.hltPFSingleJetLooseID103ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltSelector6PFJetsROIForBTag+
+            process.hltBTagPFDeepJet1p28Single6JetsROIForBTag+
+            process.hltVBFPFJetDeepJetSortedMqq460Detaqq3p5ROIForBTag+
+            process.HLTEndSequence
+        )
 
     ############################################################################
     #### HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v
@@ -967,7 +1302,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
     )
 
-    # process.HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1ROIForBTag_v8 = cms.Path(
     process.HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sTripleJet1008572VBFIorHTTIorDoubleJetCIorSingleJet+
@@ -995,14 +1329,40 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         process.hltVBFPFJetCSVSortedMqq200Detaqq1p5ROIForBTag+
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltPreQuadPFJet105887615DoublePFBTagDeepJet1p37p7VBF1 = process.hltPreQuadPFJet105887615DoublePFBTagDeepCSV1p37p7VBF1.clone()
+        process.HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sTripleJet1008572VBFIorHTTIorDoubleJetCIorSingleJet+
+            process.hltPreQuadPFJet105887615DoublePFBTagDeepJet1p37p7VBF1+
+            process.HLTAK4CaloJetsSequence+
+            process.hltQuadJet15+
+            process.hltTripleJet50+
+            process.hltDoubleJet65+
+            process.hltSingleJet80+
+            process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+            process.HLTFastPrimaryVertexSequenceROIForBTag+
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSV1p56SingleROIForBTag+
+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFQuadJetLooseID15ROIForBTag+
+            process.hltPFTripleJetLooseID76ROIForBTag+
+            process.hltPFDoubleJetLooseID88ROIForBTag+
+            process.hltPFSingleJetLooseID105ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltSelector6PFJetsROIForBTag+
+            process.hltBTagPFDeepJet7p68Double6JetsROIForBTag+
+            process.hltBTagPFDeepJet1p28Single6JetsROIForBTag+
+            process.hltVBFPFJetDeepJetSortedMqq200Detaqq1p5ROIForBTag+
+            process.HLTEndSequence
+        )
 
     ############################################################################
     #### HLT_QuadPFJet105_88_76_15_PFBTagDeepCSV_1p3_VBF2_v
     ############################################################################
 
-
-
-    # process.HLT_QuadPFJet105_88_76_15_PFBTagDeepCSV_1p3_VBF2ROIForBTag_v8 = cms.Path(
     process.HLT_QuadPFJet105_88_76_15_PFBTagDeepCSV_1p3_VBF2_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sTripleJet1008572VBFIorHTTIorDoubleJetCIorSingleJet+
@@ -1029,6 +1389,34 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         process.hltVBFPFJetCSVSortedMqq460Detaqq3p5ROIForBTag+
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltPreQuadPFJet105887615PFBTagDeepJet1p3VBF2 = process.hltPreQuadPFJet105887615PFBTagDeepCSV1p3VBF2.clone()
+        process.HLT_QuadPFJet105_88_76_15_PFBTagDeepJet_1p3_VBF2_v8 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sTripleJet1008572VBFIorHTTIorDoubleJetCIorSingleJet+
+            process.hltPreQuadPFJet105887615PFBTagDeepJet1p3VBF2+
+            process.HLTAK4CaloJetsSequence+
+            process.hltQuadJet15+
+            process.hltTripleJet50+
+            process.hltDoubleJet65+
+            process.hltSingleJet80+
+            process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+            process.HLTFastPrimaryVertexSequenceROIForBTag+
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSV1p56SingleROIForBTag+
+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFQuadJetLooseID15ROIForBTag+
+            process.hltPFTripleJetLooseID76ROIForBTag+
+            process.hltPFDoubleJetLooseID88ROIForBTag+
+            process.hltPFSingleJetLooseID105ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltSelector6PFJetsROIForBTag+
+            process.hltBTagPFDeepJet1p28Single6JetsROIForBTag+
+            process.hltVBFPFJetDeepJetSortedMqq460Detaqq3p5ROIForBTag+
+            process.HLTEndSequence
+        )
 
     ############################################################################
     #### HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v
@@ -1046,7 +1434,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrected"),
     )
 
-    # process.HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1ROIForBTag_v8 = cms.Path(
     process.HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sTripleJet1058576VBFIorHTTIorDoubleJetCIorSingleJet+
@@ -1075,13 +1462,42 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
 
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltPreQuadPFJet111908015DoublePFBTagDeepJet1p37p7VBF1 = process.hltPreQuadPFJet111908015DoublePFBTagDeepCSV1p37p7VBF1.clone()
+        process.HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sTripleJet1058576VBFIorHTTIorDoubleJetCIorSingleJet+
+            process.hltPreQuadPFJet111908015DoublePFBTagDeepJet1p37p7VBF1+
+            process.HLTAK4CaloJetsSequence+
+            process.hltQuadJet15+
+            process.hltTripleJet50+
+            process.hltDoubleJet65+
+            process.hltSingleJet80+
+            process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+            process.HLTFastPrimaryVertexSequenceROIForBTag+
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSV1p56SingleROIForBTag+
+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFQuadJetLooseID15ROIForBTag+
+            process.hltPFTripleJetLooseID80ROIForBTag+
+            process.hltPFDoubleJetLooseID90ROIForBTag+
+            process.hltPFSingleJetLooseID111ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltSelector6PFJetsROIForBTag+
+            process.hltBTagPFDeepJet7p68Double6JetsROIForBTag+
+            process.hltBTagPFDeepJet1p28Single6JetsROIForBTag+
+            process.hltVBFPFJetDeepJetSortedMqq200Detaqq1p5ROIForBTag+
+
+            process.HLTEndSequence
+        )
 
 
     ############################################################################
     #### HLT_QuadPFJet111_90_80_15_PFBTagDeepCSV_1p3_VBF2_v
     ############################################################################
 
-    # process.HLT_QuadPFJet111_90_80_15_PFBTagDeepCSV_1p3_VBF2ROIForBTag_v8 = cms.Path(
     process.HLT_QuadPFJet111_90_80_15_PFBTagDeepCSV_1p3_VBF2_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sTripleJet1058576VBFIorHTTIorDoubleJetCIorSingleJet+
@@ -1109,6 +1525,35 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
 
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltPreQuadPFJet111908015PFBTagDeepJet1p3VBF2 = process.hltPreQuadPFJet111908015PFBTagDeepCSV1p3VBF2.clone()
+        process.HLT_QuadPFJet111_90_80_15_PFBTagDeepJet_1p3_VBF2_v8 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sTripleJet1058576VBFIorHTTIorDoubleJetCIorSingleJet+
+            process.hltPreQuadPFJet111908015PFBTagDeepJet1p3VBF2+
+            process.HLTAK4CaloJetsSequence+
+            process.hltQuadJet15+
+            process.hltTripleJet50+
+            process.hltDoubleJet65+
+            process.hltSingleJet80+
+            process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+            process.HLTFastPrimaryVertexSequenceROIForBTag+
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSV1p56SingleROIForBTag+
+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFQuadJetLooseID15ROIForBTag+
+            process.hltPFTripleJetLooseID80ROIForBTag+
+            process.hltPFDoubleJetLooseID90ROIForBTag+
+            process.hltPFSingleJetLooseID111ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltSelector6PFJetsROIForBTag+
+            process.hltBTagPFDeepJet1p28Single6JetsROIForBTag+
+            process.hltVBFPFJetDeepJetSortedMqq460Detaqq3p5ROIForBTag+
+
+            process.HLTEndSequence
+        )
 
     ############################################################################
     #### HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v
@@ -1126,7 +1571,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         inputTag = cms.InputTag("hltAK4PFJetsLooseIDCorrectedROIForBTag"),
     )
 
-    # process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1ROIForBTag_v8 = cms.Path(
     process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepCSV_1p3_7p7_VBF1_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sTripleJet927664VBFIorHTTIorDoubleJetCIorSingleJet+
@@ -1154,12 +1598,39 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         process.hltVBFPFJetCSVSortedMqq200Detaqq1p5ROIForBTag+
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sTripleJet927664VBFIorHTTIorDoubleJetCIorSingleJet+
+            process.hltPreQuadPFJet98837115DoublePFBTagDeepCSV1p37p7VBF1+
+            process.HLTAK4CaloJetsSequence+
+            process.hltQuadJet15+
+            process.hltTripleJet50+
+            process.hltDoubleJet65+
+            process.hltSingleJet80+
+            process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
+
+            process.HLTFastPrimaryVertexSequenceROIForBTag+
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSV1p56SingleROIForBTag+
+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFQuadJetLooseID15ROIForBTag+
+            process.hltPFTripleJetLooseID71ROIForBTag+
+            process.hltPFDoubleJetLooseID83ROIForBTag+
+            process.hltPFSingleJetLooseID98ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltSelector6PFJetsROIForBTag+
+            process.hltBTagPFDeepJet7p68Double6JetsROIForBTag+
+            process.hltBTagPFDeepJet1p28Single6JetsROIForBTag+
+            process.hltVBFPFJetDeepJetSortedMqq200Detaqq1p5ROIForBTag+
+            process.HLTEndSequence
+        )
 
     ############################################################################
     #### HLT_QuadPFJet98_83_71_15_PFBTagDeepCSV_1p3_VBF2_v
     ############################################################################
 
-    # process.HLT_QuadPFJet98_83_71_15_PFBTagDeepCSV_1p3_VBF2ROIForBTag_v8 = cms.Path(
     process.HLT_QuadPFJet98_83_71_15_PFBTagDeepCSV_1p3_VBF2_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sTripleJet927664VBFIorHTTIorDoubleJetCIorSingleJet+
@@ -1186,7 +1657,33 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         process.hltVBFPFJetCSVSortedMqq460Detaqq3p5ROIForBTag+
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.HLT_QuadPFJet98_83_71_15_PFBTagDeepJet_1p3_VBF2_v8 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sTripleJet927664VBFIorHTTIorDoubleJetCIorSingleJet+
+            process.hltPreQuadPFJet98837115PFBTagDeepCSV1p3VBF2+
+            process.HLTAK4CaloJetsSequence+
+            process.hltQuadJet15+
+            process.hltTripleJet50+
+            process.hltDoubleJet65+
+            process.hltSingleJet80+
+            process.hltVBFCaloJetEtaSortedMqq150Deta1p5+
 
+            process.HLTFastPrimaryVertexSequenceROIForBTag+
+            process.HLTBtagDeepCSVSequenceL3ROIForBTag+
+            process.hltBTagCaloDeepCSV1p56SingleROIForBTag+
+
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFQuadJetLooseID15ROIForBTag+
+            process.hltPFTripleJetLooseID71ROIForBTag+
+            process.hltPFDoubleJetLooseID83ROIForBTag+
+            process.hltPFSingleJetLooseID98ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltSelector6PFJetsROIForBTag+
+            process.hltBTagPFDeepJet1p28Single6JetsROIForBTag+
+            process.hltVBFPFJetDeepJetSortedMqq460Detaqq3p5ROIForBTag+
+            process.HLTEndSequence
+        )
 
     ############################################################################
     #### HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepCSV_1p5_v
@@ -1201,7 +1698,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
     )
 
-    # process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepCSV_1p5ROIForBTag_v1 = cms.Path(
     process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepCSV_1p5_v1 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sMu5EG23IorMu5IsoEG20IorMu7EG23IorMu7IsoEG20IorMuIso7EG23+
@@ -1217,14 +1713,26 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         process.hltBTagPFDeepCSV1p5SingleROIForBTag+
         process.HLTEndSequence
     )
+    if addDeepJetPaths:
+        process.hltBTagPFDeepJet1p5SingleROIForBTag = process.hltBTagPFDeepCSV1p5Single.clone(
+            JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
+        )
+        process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepJet_1p5_v1 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sMu5EG23IorMu5IsoEG20IorMu7EG23IorMu7IsoEG20IorMuIso7EG23+
+            process.hltPreMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZPFDiJet30PFBtagDeepCSV1p5+
 
+            process.HLTMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegSequence+
+            process.HLTMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegSequence+
+            process.hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZFilter+
 
-
-
-
-
-
-
+            process.HLTAK4PFJetsSequenceROIForBTag+
+            process.hltPFJetFilterTwoC30ROIForBTag+
+            process.HLTBtagDeepJetSequencePFROIForBTag+
+            process.hltBTagPFDeepJet1p5SingleROIForBTag+
+            process.HLTEndSequence
+        )
 
 
 
@@ -1247,7 +1755,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         mhtLabels = cms.VInputTag("hltPFHTJet30ROIForBTag"),
     )
 
-    # process.HLT_Ele15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5ROIForBTag_v8 = cms.Path(
     process.HLT_Ele15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sHTT380erIorHTT320er+
@@ -1282,7 +1789,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         inputTag = cms.InputTag("hltAK4PFJetsCorrectedROIForBTag"),
     )
 
-    # process.HLT_DoublePFJets100_CaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_DoublePFJets100_CaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1DoubleJet100er3p0+
@@ -1320,7 +1826,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         originTag2 = cms.VInputTag("hltAK4PFJetsCorrectedROIForBTag"),
     )
 
-    # process.HLT_DoublePFJets116MaxDeta1p6_DoubleCaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_DoublePFJets116MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1DoubleJet112er2p3dEtaMax1p6+
@@ -1355,7 +1860,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         originTag2 = cms.VInputTag("hltAK4PFJetsCorrectedROIForBTag"),
     )
 
-    # process.HLT_DoublePFJets128MaxDeta1p6_DoubleCaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_DoublePFJets128MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1DoubleJet112er2p3dEtaMax1p6+
@@ -1383,7 +1887,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         inputTag = cms.InputTag("hltAK4PFJetsCorrectedROIForBTag"),
     )
 
-    # process.HLT_DoublePFJets200_CaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_DoublePFJets200_CaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1DoubleJet120er3p0+
@@ -1410,7 +1913,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         inputTag = cms.InputTag("hltAK4PFJetsCorrectedROIForBTag"),
     )
 
-    # process.HLT_DoublePFJets350_CaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_DoublePFJets350_CaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1DoubleJet120er3p0+
@@ -1442,7 +1944,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         inputTag = cms.InputTag("hltAK4PFJetsCorrectedROIForBTag"),
     )
 
-    # process.HLT_DoublePFJets40_CaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_DoublePFJets40_CaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1DoubleJet40er3p0+
@@ -1500,7 +2001,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         Jets = cms.InputTag("hltBSoftMuonGetJetsFromDiJet100PFROIForBTag"),
     )
 
-    # process.HLT_Mu12_DoublePFJets100_CaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_Mu12_DoublePFJets100_CaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sMu3JetC60dRMax0p4+
@@ -1567,7 +2067,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         Jets = cms.InputTag("hltBSoftMuonGetJetsFromDiJet200PFROIForBTag"),
     )
 
-    # process.HLT_Mu12_DoublePFJets200_CaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_Mu12_DoublePFJets200_CaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sMu3JetC120dRMax0p4+
@@ -1633,7 +2132,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         process.hltBSoftMuonDiJet350PFMu12L3BJetTagsByDRROIForBTag
     )
 
-    # process.HLT_Mu12_DoublePFJets350_CaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_Mu12_DoublePFJets350_CaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sMu3JetC120dRMax0p4+
@@ -1711,7 +2209,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         Jets = cms.InputTag("hltBSoftMuonGetJetsFromDiJet40PFROIForBTag"),
     )
 
-    # process.HLT_Mu12_DoublePFJets40MaxDeta1p6_DoubleCaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_Mu12_DoublePFJets40MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1Mu12er2p3Jet40er2p3dRMax0p4DoubleJet40er2p3dEtaMax1p6+
@@ -1741,7 +2238,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     #### HLT_Mu12_DoublePFJets40_CaloBTagDeepCSV_p71_v
     ############################################################################
 
-    # process.HLT_Mu12_DoublePFJets40_CaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_Mu12_DoublePFJets40_CaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sMu3JetC16dRMax0p4+
@@ -1812,7 +2308,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         Jets = cms.InputTag("hltBSoftMuonGetJetsFromDiJet54PFROIForBTag"),
     )
 
-    # process.HLT_Mu12_DoublePFJets54MaxDeta1p6_DoubleCaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_Mu12_DoublePFJets54MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1Mu12er2p3Jet40er2p3dRMax0p4DoubleJet40er2p3dEtaMax1p6+
@@ -1839,7 +2334,7 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     #### HLT_Mu12_DoublePFJets62MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v
     ############################################################################
 
-    process.hltDoublePFBJets62Eta2p3ROIForBTag = rocess.hltDoublePFBJets62Eta2p3.clone(
+    process.hltDoublePFBJets62Eta2p3ROIForBTag = process.hltDoublePFBJets62Eta2p3.clone(
         inputTag = cms.InputTag("hltAK4PFJetsCorrected"),
     )
 
@@ -1885,7 +2380,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         Jets = cms.InputTag("hltBSoftMuonGetJetsFromDiJet62PFROIForBTag"),
     )
 
-    # process.HLT_Mu12_DoublePFJets62MaxDeta1p6_DoubleCaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_Mu12_DoublePFJets62MaxDeta1p6_DoubleCaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1Mu12er2p3Jet40er2p3dRMax0p4DoubleJet40er2p3dEtaMax1p6+
@@ -1916,7 +2410,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
         JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag","probb"),
     )
 
-    # process.HLT_PFMET110_PFMHT110_IDTight_CaloBTagDeepCSV_3p1ROIForBTag_v8 = cms.Path(
     process.HLT_PFMET110_PFMHT110_IDTight_CaloBTagDeepCSV_3p1_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sAllETMHFSeeds+
@@ -1941,7 +2434,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     #### HLT_PFMET120_PFMHT120_IDTight_CaloBTagDeepCSV_3p1_v
     ############################################################################
 
-    # process.HLT_PFMET120_PFMHT120_IDTight_CaloBTagDeepCSV_3p1ROIForBTag_v8 = cms.Path(
     process.HLT_PFMET120_PFMHT120_IDTight_CaloBTagDeepCSV_3p1_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sAllETMHFSeeds+
@@ -1965,7 +2457,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     #### HLT_PFMET130_PFMHT130_IDTight_CaloBTagDeepCSV_3p1_v
     ############################################################################
 
-    # process.HLT_PFMET130_PFMHT130_IDTight_CaloBTagDeepCSV_3p1ROIForBTag_v8 = cms.Path(
     process.HLT_PFMET130_PFMHT130_IDTight_CaloBTagDeepCSV_3p1_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sAllETMHFSeeds+
@@ -1989,7 +2480,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     #### HLT_PFMET100_PFMHT100_IDTight_CaloBTagDeepCSV_3p1_v
     ############################################################################
 
-    # process.HLT_PFMET100_PFMHT100_IDTight_CaloBTagDeepCSV_3p1ROIForBTag_v8 = cms.Path(
     process.HLT_PFMET100_PFMHT100_IDTight_CaloBTagDeepCSV_3p1_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sAllETMHFSeeds+
@@ -2013,7 +2503,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     #### HLT_PFMET140_PFMHT140_IDTight_CaloBTagDeepCSV_3p1_v
     ############################################################################
 
-    # process.HLT_PFMET140_PFMHT140_IDTight_CaloBTagDeepCSV_3p1ROIForBTag_v8 = cms.Path(
     process.HLT_PFMET140_PFMHT140_IDTight_CaloBTagDeepCSV_3p1_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sAllETMHFSeeds+
@@ -2037,7 +2526,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     #### HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_CaloDiJet30_CaloBtagDeepCSV_1p5_v
     ############################################################################
 
-    # process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_CaloDiJet30_CaloBtagDeepCSV_1p5ROIForBTag_v1 = cms.Path(
     process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_CaloDiJet30_CaloBtagDeepCSV_1p5_v1 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sMu5EG23IorMu5IsoEG20IorMu7EG23IorMu7IsoEG20IorMuIso7EG23+
@@ -2056,7 +2544,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     #### HLT_Mu15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5_v
     ############################################################################
 
-    # process.HLT_Mu15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5ROIForBTag_v8 = cms.Path(
     process.HLT_Mu15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sHTT380erIorHTT320er+
@@ -2086,7 +2573,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     #### HLT_DoublePFJets40_CaloBTagDeepCSV_p71_v
     ############################################################################
 
-    # process.HLT_DoublePFJets40_CaloBTagDeepCSV_p71ROIForBTag_v2 = cms.Path(
     process.HLT_DoublePFJets40_CaloBTagDeepCSV_p71_v2 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1DoubleJet40er3p0+
@@ -2104,7 +2590,6 @@ def customiseRun3BTagRegionalTracks_Replacement_calo(process):
     #### HLT_Ele15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5_v
     ############################################################################
 
-    # process.HLT_Ele15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5ROIForBTag_v8 = cms.Path(
     process.HLT_Ele15_IsoVVVL_PFHT450_CaloBTagDeepCSV_4p5_v8 = cms.Path(
         process.HLTBeginSequence+
         process.hltL1sHTT380erIorHTT320er+
