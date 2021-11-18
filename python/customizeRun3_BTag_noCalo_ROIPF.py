@@ -642,11 +642,12 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True):
         ############################################################################
         ####                    MC_PFBTagDeepJet_v1                   ###
         ############################################################################
-        process.hltPreMCPFBTagDeepJetROIForBTag = process.hltPreMCPFBTagDeepCSV.clone()
+        # process.hltPreMCPFBTagDeepJetROIForBTag = process.hltPreMCPFBTagDeepCSV.clone()
 
         process.MC_PFBTagDeepJet_v1 = cms.Path(
             process.HLTBeginSequence+
-            process.hltPreMCPFBTagDeepJetROIForBTag+
+            # process.hltPreMCPFBTagDeepJetROIForBTag+
+            process.hltPreMCPFBTagDeepJet+
             process.HLTAK4PFJetsSequenceROIForBTag+
             process.HLTBtagDeepJetSequencePFROIForBTag+
             process.hltBTagPFDeepJet4p06SingleROIForBTag+
@@ -669,11 +670,12 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True):
         Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
     )
 
-    process.hltPreMCPFBTagDeepCSVROIForBTag = process.hltPreMCPFBTagDeepCSV.clone()
+    # process.hltPreMCPFBTagDeepCSVROIForBTag = process.hltPreMCPFBTagDeepCSV.clone()
 
     process.MC_PFBTagDeepCSV_v10 = cms.Path(
         process.HLTBeginSequence+
-        process.hltPreMCPFBTagDeepCSVROIForBTag+
+        # process.hltPreMCPFBTagDeepCSVROIForBTag+
+        process.hltPreMCPFBTagDeepCSV+
 
         process.HLTAK4PFJetsSequenceROIForBTag+
         process.HLTBtagDeepCSVSequencePFROIForBTag+

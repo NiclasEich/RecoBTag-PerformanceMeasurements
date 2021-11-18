@@ -41,7 +41,7 @@
 // class declaration
 //
 
-class EventCounter : public edm::one::EDAnalyzer<> {
+class EventCounter : public edm::one::EDAnalyzer<edm::one::SharedResources> {
    public:
       explicit EventCounter(const edm::ParameterSet&);
       ~EventCounter();
@@ -83,6 +83,7 @@ class EventCounter : public edm::one::EDAnalyzer<> {
 //
 EventCounter::EventCounter(const edm::ParameterSet& iConfig)
 {
+   usesResource("TFileService");
    generator = consumes<GenEventInfoProduct>(edm::InputTag("generator"));
    putoken = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("addPileupInfo"));
    putokenmini = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("slimmedAddPileupInfo"));

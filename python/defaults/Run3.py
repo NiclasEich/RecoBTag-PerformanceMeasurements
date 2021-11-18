@@ -10,9 +10,8 @@ common = {
 	'usePuppi' : False,
 	'usePuppiForFatJets' : True,
 	'usePuppiForBTagging' : False,
-	# 'dataGlobalTag' : '121X_dataRun3_HLT_v9', #for data
-	# 'mcGlobalTag' : '120X_mcRun3_2021_realistic_v4', #for MC
-	'mcGlobalTag' : '121X_mcRun3_2021_realistic_v15', #for MC
+	# 'dataGlobalTag' : '122X_dataRun3_HLT_v1', #for data
+	'mcGlobalTag' : '122X_mcRun3_2021_realistic_v1', #for MC
 	'remakeAllDiscr' : True,
 	'maxJetEta' : 2.5,
 	'usePrivateJEC' : False,

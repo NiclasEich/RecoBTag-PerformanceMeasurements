@@ -23,7 +23,7 @@
 using namespace analyzerBase;
 
 template<typename IPTI,typename VTX>
-class HLTBTagAnalyzerT : public edm::one::EDAnalyzer<>
+class HLTBTagAnalyzerT : public edm::one::EDAnalyzer<edm::one::SharedResources>
 {
 public:
   explicit HLTBTagAnalyzerT(const edm::ParameterSet&);
@@ -302,6 +302,7 @@ HLTBTagAnalyzerT<IPTI,VTX>::HLTBTagAnalyzerT(const edm::ParameterSet& iConfig):
   decayLength_(iConfig.getParameter<double>("decayLength")),
   deltaR_(iConfig.getParameter<double>("deltaR"))
 {
+  usesResource("TFileService");
   //now do what ever initialization you need
   std::string module_type  = iConfig.getParameter<std::string>("@module_type");
   std::string module_label = iConfig.getParameter<std::string>("@module_label");
@@ -667,7 +668,7 @@ void HLTBTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Ev
         EventInfo.Genquark_phi[EventInfo.nGenquark]    = genIt.p4().phi();
         EventInfo.Genquark_pdgID[EventInfo.nGenquark]  = genIt.pdgId();
         if (genIt.numberOfMothers()>0) EventInfo.Genquark_mother[EventInfo.nGenquark] = genIt.mother()->pdgId();   // protection
-        else EventInfo.Genquark_mother[EventInfo.nGenquark] = -99999;
+        else EventInfo.Genquark_mother[EventInfo.nGenquark] = -999;
         //  cout << " status " << genIt.status() << " pdgId " << genIt.pdgId()  << " pT " << genIt.p4().pt() << " mother " << moth->pdgId() << endl;
         ++EventInfo.nGenquark;
       }
@@ -809,9 +810,9 @@ void HLTBTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Ev
               EventInfo.Genlep_pdgID[EventInfo.nGenlep] = genIt.pdgId();
               EventInfo.Genlep_status[EventInfo.nGenlep] = genIt.status();
               int ID1 = abs( moth1->pdgId() );
-              int ID2 = -9999;
-              int ID3 = -9999;
-              int ID4 = -9999;
+              int ID2 = -999;
+              int ID3 = -999;
+              int ID4 = -999;
               int isWZ = 0, istau = 0, isB = 0, isD = 0;
               if (moth1->numberOfMothers()>0) {   // protection for herwig ttbar mc
                 const Candidate * moth2 = moth1->mother();
@@ -914,7 +915,7 @@ void HLTBTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Ev
           EventInfo.BHadron_mass[EventInfo.nBHadrons]  = genIt.mass();
           EventInfo.BHadron_pdgID[EventInfo.nBHadrons] = genIt.pdgId();
           if (genIt.numberOfMothers()>0) EventInfo.BHadron_mother[EventInfo.nBHadrons] = genIt.mother()->pdgId();
-          else EventInfo.BHadron_mother[EventInfo.nBHadrons] = -99999;
+          else EventInfo.BHadron_mother[EventInfo.nBHadrons] = -999;
           // check if any of the daughters is also B hadron
           int hasBHadronDaughter = 0;
           for (unsigned int d=0; d<nDaughters; ++d) {
@@ -925,9 +926,9 @@ void HLTBTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Ev
           int idD1 = -1, idD2 = -1;
           int nCharged = 0;
           // take vertex of first daughter for SV
-          EventInfo.BHadron_SVx[EventInfo.nBHadrons] = (nDaughters>0 ? genIt.daughter(0)->vx() : -9999);
-          EventInfo.BHadron_SVy[EventInfo.nBHadrons] = (nDaughters>0 ? genIt.daughter(0)->vy() : -9999);
-          EventInfo.BHadron_SVz[EventInfo.nBHadrons] = (nDaughters>0 ? genIt.daughter(0)->vz() : -9999);
+          EventInfo.BHadron_SVx[EventInfo.nBHadrons] = (nDaughters>0 ? genIt.daughter(0)->vx() : -999);
+          EventInfo.BHadron_SVy[EventInfo.nBHadrons] = (nDaughters>0 ? genIt.daughter(0)->vy() : -999);
+          EventInfo.BHadron_SVz[EventInfo.nBHadrons] = (nDaughters>0 ? genIt.daughter(0)->vz() : -999);
 
           if ( !hasBHadronDaughter ) {
             // Loop on daughters: B -> X
@@ -2315,23 +2316,23 @@ void HLTBTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>
       reco::TaggingVariableList vars = computer->taggingVariables(helper);
 
       // per jet
-      JetInfo[iJetColl].TagVarCSV_trackJetPt[JetInfo[iJetColl].nJet]                  = ( vars.checkTag(reco::btau::trackJetPt) ? vars.get(reco::btau::trackJetPt) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_vertexCategory[JetInfo[iJetColl].nJet]              = ( vars.checkTag(reco::btau::vertexCategory) ? vars.get(reco::btau::vertexCategory) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_trackJetPt[JetInfo[iJetColl].nJet]                  = ( vars.checkTag(reco::btau::trackJetPt) ? vars.get(reco::btau::trackJetPt) : -999 );
+      JetInfo[iJetColl].TagVarCSV_vertexCategory[JetInfo[iJetColl].nJet]              = ( vars.checkTag(reco::btau::vertexCategory) ? vars.get(reco::btau::vertexCategory) : -999 );
       JetInfo[iJetColl].TagVarCSV_jetNSecondaryVertices[JetInfo[iJetColl].nJet]       = ( vars.checkTag(reco::btau::jetNSecondaryVertices) ? vars.get(reco::btau::jetNSecondaryVertices) : 0 );
-      JetInfo[iJetColl].TagVarCSV_trackSumJetEtRatio[JetInfo[iJetColl].nJet]          = ( vars.checkTag(reco::btau::trackSumJetEtRatio) ? vars.get(reco::btau::trackSumJetEtRatio) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_trackSumJetDeltaR[JetInfo[iJetColl].nJet]           = ( vars.checkTag(reco::btau::trackSumJetDeltaR) ? vars.get(reco::btau::trackSumJetDeltaR) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_trackSip2dValAboveCharm[JetInfo[iJetColl].nJet]     = ( vars.checkTag(reco::btau::trackSip2dValAboveCharm) ? vars.get(reco::btau::trackSip2dValAboveCharm) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_trackSip2dSigAboveCharm[JetInfo[iJetColl].nJet]     = ( vars.checkTag(reco::btau::trackSip2dSigAboveCharm) ? vars.get(reco::btau::trackSip2dSigAboveCharm) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_trackSip3dValAboveCharm[JetInfo[iJetColl].nJet]     = ( vars.checkTag(reco::btau::trackSip3dValAboveCharm) ? vars.get(reco::btau::trackSip3dValAboveCharm) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_trackSip3dSigAboveCharm[JetInfo[iJetColl].nJet]     = ( vars.checkTag(reco::btau::trackSip3dSigAboveCharm) ? vars.get(reco::btau::trackSip3dSigAboveCharm) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_vertexMass[JetInfo[iJetColl].nJet]                  = ( vars.checkTag(reco::btau::vertexMass) ? vars.get(reco::btau::vertexMass) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_trackSumJetEtRatio[JetInfo[iJetColl].nJet]          = ( vars.checkTag(reco::btau::trackSumJetEtRatio) ? vars.get(reco::btau::trackSumJetEtRatio) : -999 );
+      JetInfo[iJetColl].TagVarCSV_trackSumJetDeltaR[JetInfo[iJetColl].nJet]           = ( vars.checkTag(reco::btau::trackSumJetDeltaR) ? vars.get(reco::btau::trackSumJetDeltaR) : -999 );
+      JetInfo[iJetColl].TagVarCSV_trackSip2dValAboveCharm[JetInfo[iJetColl].nJet]     = ( vars.checkTag(reco::btau::trackSip2dValAboveCharm) ? vars.get(reco::btau::trackSip2dValAboveCharm) : -999 );
+      JetInfo[iJetColl].TagVarCSV_trackSip2dSigAboveCharm[JetInfo[iJetColl].nJet]     = ( vars.checkTag(reco::btau::trackSip2dSigAboveCharm) ? vars.get(reco::btau::trackSip2dSigAboveCharm) : -999 );
+      JetInfo[iJetColl].TagVarCSV_trackSip3dValAboveCharm[JetInfo[iJetColl].nJet]     = ( vars.checkTag(reco::btau::trackSip3dValAboveCharm) ? vars.get(reco::btau::trackSip3dValAboveCharm) : -999 );
+      JetInfo[iJetColl].TagVarCSV_trackSip3dSigAboveCharm[JetInfo[iJetColl].nJet]     = ( vars.checkTag(reco::btau::trackSip3dSigAboveCharm) ? vars.get(reco::btau::trackSip3dSigAboveCharm) : -999 );
+      JetInfo[iJetColl].TagVarCSV_vertexMass[JetInfo[iJetColl].nJet]                  = ( vars.checkTag(reco::btau::vertexMass) ? vars.get(reco::btau::vertexMass) : -999 );
       JetInfo[iJetColl].TagVarCSV_vertexNTracks[JetInfo[iJetColl].nJet]               = ( vars.checkTag(reco::btau::vertexNTracks) ? vars.get(reco::btau::vertexNTracks) : 0 );
-      JetInfo[iJetColl].TagVarCSV_vertexEnergyRatio[JetInfo[iJetColl].nJet]           = ( vars.checkTag(reco::btau::vertexEnergyRatio) ? vars.get(reco::btau::vertexEnergyRatio) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_vertexJetDeltaR[JetInfo[iJetColl].nJet]             = ( vars.checkTag(reco::btau::vertexJetDeltaR) ? vars.get(reco::btau::vertexJetDeltaR) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_flightDistance2dVal[JetInfo[iJetColl].nJet]         = ( vars.checkTag(reco::btau::flightDistance2dVal) ? vars.get(reco::btau::flightDistance2dVal) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_flightDistance2dSig[JetInfo[iJetColl].nJet]         = ( vars.checkTag(reco::btau::flightDistance2dSig) ? vars.get(reco::btau::flightDistance2dSig) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_flightDistance3dVal[JetInfo[iJetColl].nJet]         = ( vars.checkTag(reco::btau::flightDistance3dVal) ? vars.get(reco::btau::flightDistance3dVal) : -9999 );
-      JetInfo[iJetColl].TagVarCSV_flightDistance3dSig[JetInfo[iJetColl].nJet]         = ( vars.checkTag(reco::btau::flightDistance3dSig) ? vars.get(reco::btau::flightDistance3dSig) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_vertexEnergyRatio[JetInfo[iJetColl].nJet]           = ( vars.checkTag(reco::btau::vertexEnergyRatio) ? vars.get(reco::btau::vertexEnergyRatio) : -999 );
+      JetInfo[iJetColl].TagVarCSV_vertexJetDeltaR[JetInfo[iJetColl].nJet]             = ( vars.checkTag(reco::btau::vertexJetDeltaR) ? vars.get(reco::btau::vertexJetDeltaR) : -999 );
+      JetInfo[iJetColl].TagVarCSV_flightDistance2dVal[JetInfo[iJetColl].nJet]         = ( vars.checkTag(reco::btau::flightDistance2dVal) ? vars.get(reco::btau::flightDistance2dVal) : -999 );
+      JetInfo[iJetColl].TagVarCSV_flightDistance2dSig[JetInfo[iJetColl].nJet]         = ( vars.checkTag(reco::btau::flightDistance2dSig) ? vars.get(reco::btau::flightDistance2dSig) : -999 );
+      JetInfo[iJetColl].TagVarCSV_flightDistance3dVal[JetInfo[iJetColl].nJet]         = ( vars.checkTag(reco::btau::flightDistance3dVal) ? vars.get(reco::btau::flightDistance3dVal) : -999 );
+      JetInfo[iJetColl].TagVarCSV_flightDistance3dSig[JetInfo[iJetColl].nJet]         = ( vars.checkTag(reco::btau::flightDistance3dSig) ? vars.get(reco::btau::flightDistance3dSig) : -999 );
     }
     if ( runCSVTagTrackVariables_ ){
       std::vector<const reco::BaseTagInfo*>  baseTagInfos;
@@ -2383,6 +2384,9 @@ void HLTBTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>
       JetInfo[iJetColl].Jet_nFirstTrkEtaRelTagVarCSV[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkEtaRelTagVarCSV;
       tagValList = vars.getList(reco::btau::trackEtaRel,false);
       JetInfo[iJetColl].TagVarCSV_jetNTracksEtaRel[JetInfo[iJetColl].nJet] = tagValList.size();
+      if (tagValList.size()<=0){
+        JetInfo[iJetColl].TagVarCSV_jetNTracksEtaRel[JetInfo[iJetColl].nJet] = -1.;
+    }
 
       if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_trackEtaRel[JetInfo[iJetColl].nTrkEtaRelTagVarCSV] );
 
@@ -3047,151 +3051,151 @@ void HLTBTagAnalyzerT<IPTI,VTX>::processCaloJets(const edm::Handle<PatJetCollect
 	  if(tagVars.getList(reco::btau::trackJetPt,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackJetPt[JetInfo[iJetColl].nJet]                  = ( tagVars.getList(reco::btau::trackJetPt,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackJetPt[JetInfo[iJetColl].nJet]                  = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackJetPt[JetInfo[iJetColl].nJet]                  = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::jetNTracks,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_jetNTracks[JetInfo[iJetColl].nJet]                  = ( tagVars.getList(reco::btau::jetNTracks,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_jetNTracks[JetInfo[iJetColl].nJet]                  = -9999;
+	    JetInfo[iJetColl].TagVarCSV_jetNTracks[JetInfo[iJetColl].nJet]                  = 0.;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackSumJetEtRatio,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackSumJetEtRatio[JetInfo[iJetColl].nJet]          = ( tagVars.getList(reco::btau::trackSumJetEtRatio,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackSumJetEtRatio[JetInfo[iJetColl].nJet]          = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackSumJetEtRatio[JetInfo[iJetColl].nJet]          = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackSumJetDeltaR,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackSumJetDeltaR[JetInfo[iJetColl].nJet]           = ( tagVars.getList(reco::btau::trackSumJetDeltaR,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackSumJetDeltaR[JetInfo[iJetColl].nJet]           = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackSumJetDeltaR[JetInfo[iJetColl].nJet]           = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackSip2dValAboveCharm,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackSip2dValAboveCharm[JetInfo[iJetColl].nJet]     = ( tagVars.getList(reco::btau::trackSip2dValAboveCharm,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackSip2dValAboveCharm[JetInfo[iJetColl].nJet]     = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackSip2dValAboveCharm[JetInfo[iJetColl].nJet]     = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackSip2dSigAboveCharm,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackSip2dSigAboveCharm[JetInfo[iJetColl].nJet]     = ( tagVars.getList(reco::btau::trackSip2dSigAboveCharm,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackSip2dSigAboveCharm[JetInfo[iJetColl].nJet]     = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackSip2dSigAboveCharm[JetInfo[iJetColl].nJet]     = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackSip3dValAboveCharm,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackSip3dValAboveCharm[JetInfo[iJetColl].nJet]     = ( tagVars.getList(reco::btau::trackSip3dValAboveCharm,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackSip3dValAboveCharm[JetInfo[iJetColl].nJet]     = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackSip3dValAboveCharm[JetInfo[iJetColl].nJet]     = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackSip3dSigAboveCharm,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackSip3dSigAboveCharm[JetInfo[iJetColl].nJet]     = ( tagVars.getList(reco::btau::trackSip3dSigAboveCharm,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackSip3dSigAboveCharm[JetInfo[iJetColl].nJet]     = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackSip3dSigAboveCharm[JetInfo[iJetColl].nJet]     = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::vertexCategory,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_vertexCategory[JetInfo[iJetColl].nJet]              = ( tagVars.getList(reco::btau::vertexCategory,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_vertexCategory[JetInfo[iJetColl].nJet]              = -9999;
+	    JetInfo[iJetColl].TagVarCSV_vertexCategory[JetInfo[iJetColl].nJet]              = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::jetNSecondaryVertices,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_jetNSecondaryVertices[JetInfo[iJetColl].nJet]       = ( tagVars.getList(reco::btau::jetNSecondaryVertices,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_jetNSecondaryVertices[JetInfo[iJetColl].nJet]       = -9999;
+	    JetInfo[iJetColl].TagVarCSV_jetNSecondaryVertices[JetInfo[iJetColl].nJet]       = 0.;
 	  }
 
 	  if(tagVars.getList(reco::btau::vertexMass,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_vertexMass[JetInfo[iJetColl].nJet]                  = ( tagVars.getList(reco::btau::vertexMass,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_vertexMass[JetInfo[iJetColl].nJet]                  = -9999;
+	    JetInfo[iJetColl].TagVarCSV_vertexMass[JetInfo[iJetColl].nJet]                  = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::vertexNTracks,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_vertexNTracks[JetInfo[iJetColl].nJet]               = ( tagVars.getList(reco::btau::vertexNTracks,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_vertexNTracks[JetInfo[iJetColl].nJet]               = -9999;
+	    JetInfo[iJetColl].TagVarCSV_vertexNTracks[JetInfo[iJetColl].nJet]               = 0.;
 	  }
 
 	  if(tagVars.getList(reco::btau::vertexEnergyRatio,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_vertexEnergyRatio[JetInfo[iJetColl].nJet]           = ( tagVars.getList(reco::btau::vertexEnergyRatio,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_vertexEnergyRatio[JetInfo[iJetColl].nJet]           = -9999;
+	    JetInfo[iJetColl].TagVarCSV_vertexEnergyRatio[JetInfo[iJetColl].nJet]           = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::vertexJetDeltaR,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_vertexJetDeltaR[JetInfo[iJetColl].nJet]             = ( tagVars.getList(reco::btau::vertexJetDeltaR,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_vertexJetDeltaR[JetInfo[iJetColl].nJet]             = -9999;
+	    JetInfo[iJetColl].TagVarCSV_vertexJetDeltaR[JetInfo[iJetColl].nJet]             = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::flightDistance2dVal,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_flightDistance2dVal[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::flightDistance2dVal,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_flightDistance2dVal[JetInfo[iJetColl].nJet]         = -9999;
+	    JetInfo[iJetColl].TagVarCSV_flightDistance2dVal[JetInfo[iJetColl].nJet]         = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::flightDistance2dSig,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_flightDistance2dSig[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::flightDistance2dSig,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_flightDistance2dSig[JetInfo[iJetColl].nJet]         = -9999;
+	    JetInfo[iJetColl].TagVarCSV_flightDistance2dSig[JetInfo[iJetColl].nJet]         = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::flightDistance3dVal,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_flightDistance3dVal[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::flightDistance3dVal,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_flightDistance3dVal[JetInfo[iJetColl].nJet]         = -9999;
+	    JetInfo[iJetColl].TagVarCSV_flightDistance3dVal[JetInfo[iJetColl].nJet]         = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::flightDistance3dSig,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_flightDistance3dSig[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::flightDistance3dSig,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_flightDistance3dSig[JetInfo[iJetColl].nJet]         = -9999;
+	    JetInfo[iJetColl].TagVarCSV_flightDistance3dSig[JetInfo[iJetColl].nJet]         = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackJetDistVal,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackJetDistVal[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackJetDistVal,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackJetDistVal[JetInfo[iJetColl].nJet]         = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackJetDistVal[JetInfo[iJetColl].nJet]         = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackPtRel,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackPtRel[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackPtRel,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackPtRel[JetInfo[iJetColl].nJet]         = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackPtRel[JetInfo[iJetColl].nJet]         = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackDeltaR,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackDeltaR[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackDeltaR,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackDeltaR[JetInfo[iJetColl].nJet]         = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackDeltaR[JetInfo[iJetColl].nJet]         = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackPtRatio,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackPtRatio[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackPtRatio,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackPtRatio[JetInfo[iJetColl].nJet]         = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackPtRatio[JetInfo[iJetColl].nJet]         = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackSip2dSig,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackSip2dSig[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackSip2dSig,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackSip2dSig[JetInfo[iJetColl].nJet]         = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackSip2dSig[JetInfo[iJetColl].nJet]         = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackSip3dSig,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackSip3dSig[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackSip3dSig,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackSip3dSig[JetInfo[iJetColl].nJet]         = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackSip3dSig[JetInfo[iJetColl].nJet]         = -999;
 	  }
 
 	  if(tagVars.getList(reco::btau::trackDecayLenVal,false).size()){
 	    JetInfo[iJetColl].TagVarCSV_trackDecayLenVal[JetInfo[iJetColl].nJet]         = ( tagVars.getList(reco::btau::trackDecayLenVal,false).at(0));
 	  }else{
-	    JetInfo[iJetColl].TagVarCSV_trackDecayLenVal[JetInfo[iJetColl].nJet]         = -9999;
+	    JetInfo[iJetColl].TagVarCSV_trackDecayLenVal[JetInfo[iJetColl].nJet]         = -999;
 	  }
 
 
@@ -3247,6 +3251,9 @@ void HLTBTagAnalyzerT<IPTI,VTX>::processCaloJets(const edm::Handle<PatJetCollect
 	  JetInfo[iJetColl].Jet_nFirstTrkEtaRelTagVarCSV[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkEtaRelTagVarCSV;
 	  tagValList = tagVars.getList(reco::btau::trackEtaRel,false);
 	  JetInfo[iJetColl].TagVarCSV_jetNTracksEtaRel[JetInfo[iJetColl].nJet] = tagValList.size();
+      if (tagValList.size()<=0){
+          JetInfo[iJetColl].TagVarCSV_jetNTracksEtaRel[JetInfo[iJetColl].nJet] = -1.;
+      }
 
 	  if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_trackEtaRel[JetInfo[iJetColl].nTrkEtaRelTagVarCSV] );
 

@@ -628,7 +628,7 @@ def customizeRun3_BTag_GlobalCalo_GlobalPF(process, addDeepJetPaths = True):
             process.hltDeepJetDiscriminatorsJetTags
         )
 
-        process.hltPreMCPFBTagDeepJet = process.hltPreMCPFBTagDeepCSV.clone()
+        # process.hltPreMCPFBTagDeepJet = process.hltPreMCPFBTagDeepCSV.clone()
 
         process.hltBTagPFDeepJet4p06Single = process.hltBTagPFDeepCSV4p06Single.clone(
             JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTags","BvsAll"),
@@ -670,7 +670,7 @@ def customizeRun3_BTag_GlobalCalo_GlobalPF(process, addDeepJetPaths = True):
         Jets = cms.InputTag("hltPFJetForBtag"),
     )
 
-    process.hltPreMCPFBTagDeepCSV = process.hltPreMCPFBTagDeepCSV.clone()
+    # process.hltPreMCPFBTagDeepCSV = process.hltPreMCPFBTagDeepCSV.clone()
 
     process.MC_PFBTagDeepCSV_v10 = cms.Path(
         process.HLTBeginSequence+

@@ -12,25 +12,20 @@
 ```bash
 # setting up the latest release
 export SCRAM_ARCH=slc7_amd64_gcc900
-cmsrel CMSSW_12_1_0
-cd CMSSW_12_1_0/src
+cmsrel CMSSW_12_2_0_pre2
+cd CMSSW_12_2_0_pre2/src
 cmsenv
 
 export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
 git cms-init
 
 git cms-addpkg HLTrigger/Configuration
-git cms-addpkg RecoBTag/FeatureTools
 
-#Run3TRk, see https://its.cern.ch/jira/browse/CMSHLT-2187
+#Run3TRK, see https://its.cern.ch/jira/browse/CMSHLT-2187
 git cms-remote add mmasciov
 git fetch mmasciov
 git cherry-pick 91909330a10724646b4aed0596d62fc30a56a024
-
-# needed for DeepJet (temporary solution)
-git cms-remote add SWuchterl
-git fetch SWuchterl
-git cherry-pick 082f9db9482dde327545f63e533593f46c8da4c5
+git cherry-pick b9f05b0bd850fd0e24d9024e8582c7b4cb418389
 
 # clone our version of JMET tools
 git clone https://github.com/SWuchterl/JMETriggerAnalysis.git -o SWuchterl -b run3
@@ -79,7 +74,7 @@ New variables need also to be added (apart from adding them in the code) in ```R
 Recent versions are also stored already in [here](python/Configs)
 For MC:
 ```bash
-hltGetConfiguration /dev/CMSSW_12_1_0/GRun \
+hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
 --full \
 --offline \
 --unprescale \
@@ -90,11 +85,11 @@ hltGetConfiguration /dev/CMSSW_12_1_0/GRun \
 > tmp.py
 ```
 ```bash
-edmConfigDump tmp.py > HLT_dev_CMSSW_12_1_0_GRun_configDump_MC.py
+edmConfigDump tmp.py > HLT_dev_CMSSW_12_2_0_GRun_configDump_MC.py
 ```
 For data:
 ```bash
-hltGetConfiguration /dev/CMSSW_12_1_0/GRun \
+hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
 --full \
 --offline \
 --unprescale \
@@ -106,7 +101,24 @@ hltGetConfiguration /dev/CMSSW_12_1_0/GRun \
 > tmp_data.py
 ```
 ```bash
-edmConfigDump tmp_data.py > HLT_dev_CMSSW_12_1_0_GRun_configDump_Data.py
+edmConfigDump tmp_data.py > HLT_dev_CMSSW_12_2_0_GRun_configDump_Data.py
+```
+For data+timing:
+```bash
+hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
+--full \
+--offline \
+--unprescale \
+--data \
+--process HLT2 \
+--globaltag auto:run3_hlt \
+--max-events 10 \
+--customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+--timing \
+> tmp_data_timing.py
+```
+```bash
+edmConfigDump tmp_data_timing.py > HLT_dev_CMSSW_12_2_0_GRun_configDump_Data_timing.py
 ```
 
 

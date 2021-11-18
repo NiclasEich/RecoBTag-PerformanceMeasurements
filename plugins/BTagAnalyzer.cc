@@ -23,7 +23,7 @@
 using namespace analyzerBase;
 
 template<typename IPTI,typename VTX>
-class BTagAnalyzerT : public edm::one::EDAnalyzer<>
+class BTagAnalyzerT : public edm::one::EDAnalyzer<edm::one::SharedResources>
 {
 public:
   explicit BTagAnalyzerT(const edm::ParameterSet&);
@@ -372,6 +372,7 @@ BTagAnalyzerT<IPTI,VTX>::BTagAnalyzerT(const edm::ParameterSet& iConfig):
   decayLengthSubJets_(iConfig.getParameter<double>("decayLengthSubJets")),
   deltaRSubJets_(iConfig.getParameter<double>("deltaRSubJets"))
 {
+      usesResource("TFileService");
   //now do what ever initialization you need
   std::string module_type  = iConfig.getParameter<std::string>("@module_type");
   std::string module_label = iConfig.getParameter<std::string>("@module_label");

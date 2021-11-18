@@ -3,7 +3,7 @@ common = {
                 # 'PFMuon',"PFElectron",
                 "TagVar",'JetTrack',
                 'JetInfo','JetSV','CSVTagVar','JetDeepCSV','JetDeepFlavour','CSVTagTrackVar', 'DeepFlavourFeat',
-                'PuppiJetTagVar','PuppiJetTrack',
+                # 'PuppiJetTagVar','PuppiJetTrack',
                 # 'PuppiJetInfo','PuppiJetSV','PuppiJetCSVTagVar','PuppiJetDeepCSV','PuppiJetDeepFlavour','PuppiJetCSVTagTrackVar','PuppiJetDeepFlavourFeat',
                 # 'PuppiJetTrack','PuppiJetTagVar',
                 'CaloJetInfo','CaloJetSV','CaloJetTrack','CaloJetCSVTagVar','CaloJetDeepCSV','CaloJetTagVar','CaloJetCSVTagTrackVar',
@@ -11,8 +11,8 @@ common = {
 	'eras' : ['Run3'],
     'runCaloJetVariables' : True,
     'runPuppiJetVariables' : False,
-	'globalTag' : '121X_mcRun3_2021_realistic_v15', # mc
-	# 'globalTag' : '121X_dataRun3_HLT_v9', # data
+	'globalTag' : '122X_mcRun3_2021_realistic_v1', # mc
+	# 'globalTag' : '122X_dataRun3_HLT_v1', # data
 	'maxJetEta' : 2.5,
 	'usePrivateJEC' : False,
 	# 'jecDBFileMC' : 'PhaseIIFall17_V5b_MC',
