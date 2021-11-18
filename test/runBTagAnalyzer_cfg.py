@@ -1730,6 +1730,9 @@ process.p = cms.Path(
     process.tsk
 )
 
+process.analysisNTupleEndPath = cms.EndPath(process.btagana)
+process.schedule = cms.Schedule([process.p])
+
 # Delete predefined output module (needed for running with CRAB)
 del process.out
 # dump content of cms.Process to python file
