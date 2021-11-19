@@ -59,6 +59,12 @@ options.register(
   VarParsing.varType.bool,
   'add DeepJet paths to reconstruction'
 )
+options.register(
+    'replaceBTagMuPaths', True,
+  VarParsing.multiplicity.singleton,
+  VarParsing.varType.bool,
+  'renaming BTagMu NoAlgo paths in reconstruction'
+)
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', -1)
 
@@ -152,7 +158,7 @@ elif options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF':
     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_GlobalCalo_GlobalPF import *
-    process = customizeRun3_BTag_GlobalCalo_GlobalPF(process, options.addDeepJet)
+    process = customizeRun3_BTag_GlobalCalo_GlobalPF(process, options.addDeepJet, options.replaceBTagMuPaths)
     update_jmeCalibs = True
     process = fixMenu(process)
 
