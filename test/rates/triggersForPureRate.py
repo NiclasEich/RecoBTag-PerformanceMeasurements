@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import json
 
-from JMETriggerAnalysis.Common.configs.HLT_dev_CMSSW_11_2_0_GRun_V19_Data_NoOutput_configDump import cms, process
+from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_2_0_GRun_Data_NoOutput_configDump import cms, process
 
 outputFile = 'triggersForPureRate.json'
 

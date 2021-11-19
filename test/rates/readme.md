@@ -17,12 +17,12 @@ bmonitor -i tmpout -r
 # when EDM outputs are available, write raw and pure counts of HLT paths to .json file
 ./triggerResultsCounts.py \
   -i tmpout/job_*/out_*.root \
-  -o tmp.json \
-  -l json_323775.txt \
-  -p HLTX -v 10
+  -o rates.json \
+  -l data/json_323775.txt \
+  -p MYHLT -v 10
 
 # print to stdout the rates of selected trigger paths
 ./triggerRates.py \
-  -p 1100 -t 'HLT_PFJet*' 'HLT_PFHT*' 'HLT_PFMET*' \
-  -i tmp.json
+  -p 1100 -t 'HLT_*' \
+  -i rates.json
 ```

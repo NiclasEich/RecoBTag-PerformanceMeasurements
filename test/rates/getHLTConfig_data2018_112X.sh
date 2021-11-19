@@ -18,12 +18,12 @@ inputFiles=(
 
 printf -v inputFilesStr '%s,' "${inputFiles[@]}"
 
-# hltGetConfiguration /dev/CMSSW_11_2_0/GRun/V19 --full --offline --no-output --data --process MYHLT --type GRun \
-#  --prescale 2.0e34+ZB+HLTPhysics --globaltag 112X_dataRun3_HLT_v4 --input "${inputFilesStr%,}" --max-events -1 \
-#  > .tmp.py
-hltGetConfiguration /dev/CMSSW_12_0_0/GRun/V6 --full --no-output --data --process MYHLT --type GRun \
- --prescale 2.0e34+ZB+HLTPhysics --globaltag auto:run3_hlt_GRun --input "${inputFilesStr%,}" --max-events -1 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
- > .tmp.py
+# hltGetConfiguration /dev/CMSSW_12_2_0_pre2/GRun --full --offline --no-output --data --process MYHLT --type GRun \
+#  --prescale 2.0e34+ZB+HLTPhysics --globaltag auto:run3_hlt_GRun --input "${inputFilesStr%,}" --max-events -1 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+#  > tmpRates.py
+hltGetConfiguration /dev/CMSSW_12_2_0_pre2/GRun --full --offline --no-output --data --process MYHLT --type GRun \
+ --prescale 2.0e34+ZB+HLTPhysics --globaltag auto:run3_hlt_GRun --max-events -1 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+ > tmpRates.py
 
  # a. comment out the following lines:
 

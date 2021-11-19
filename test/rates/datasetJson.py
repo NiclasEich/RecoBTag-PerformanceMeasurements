@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import json
 from JMETriggerAnalysis.NTuplizers.utils.common import *
 
@@ -16,19 +16,19 @@ dsetDict = {"DAS": dset, 'files': []}
 edmFiles = []
 for lumiBlock in lumiBlocks:
   edmFilesTmp = get_output('dasgoclient -query "file run='+str(run)+' dataset='+dset+' lumi='+str(lumiBlock)+'"')
-  edmFilesTmp = [edmFile.replace('\n', '') for edmFile in edmFilesTmp]
+  edmFilesTmp = [edmFile.decode('utf-8').replace('\n', '') for edmFile in edmFilesTmp]
   edmFilesTmp = [edmFile for edmFile in edmFilesTmp if edmFile]
   edmFiles += edmFilesTmp
 
   if verbosity > 0:
-    print edmFilesTmp
+    print (edmFilesTmp)
 
 edmFiles = sorted(list(set(edmFiles)))
 
 for edmFile in edmFiles:
 
   edmFileNEvents = get_output('dasgoclient -query "file='+edmFile+' | grep file.nevents"')
-  edmFileNEvents = [nEvt.replace('\n', '') for nEvt in edmFileNEvents]
+  edmFileNEvents = [nEvt.decode('utf-8').replace('\n', '') for nEvt in edmFileNEvents]
   edmFileNEvents = [nEvt for nEvt in edmFileNEvents if nEvt]
 
   if len(edmFileNEvents) != 1:
@@ -42,6 +42,6 @@ for edmFile in edmFiles:
   }]
 
   if verbosity > 0:
-    print dsetDict['files'][-1]
+    print (dsetDict['files'][-1])
 
 json.dump(dsetDict, open(outputFile, 'w'), sort_keys=True, indent=2)

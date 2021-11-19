@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Script to print trigger rates from a collection of .json files
 """
@@ -51,7 +51,7 @@ if __name__ == '__main__':
    for inputFile in opts.input_files:
 
      if opts.verbosity > 0:
-       print 'File =', inputFile
+       print ('File =', inputFile)
 
      countsDict = json.load(open(inputFile, 'r'))
      for runStr in countsDict:
@@ -88,7 +88,7 @@ if __name__ == '__main__':
    totTime = opts.ls_time * len(lsList)
    if totTime <= 0.:
      raise RuntimeError('non-positive time')
-
+   print ('| trigName | rateRaw +/- rateRawErr (countRaw) | ratePure +/- ratePureErr (countPure) |')
    for trig_i in trigList:
      countRaw_i = ratesDict[trig_i][0]
      countRawErr_i = math.sqrt(countRaw_i)
@@ -102,4 +102,4 @@ if __name__ == '__main__':
      ratePure_i = countPure_i / totTime
      ratePureErr_i = countPureErr_i / totTime
 
-     print '| {: <90} | {:>8.2f} +/- {:>8.2f} ({:>9d}) | {:>8.2f} +/- {:>8.2f} ({:>9d}) |'.format(trig_i, rateRaw_i, rateRawErr_i, countRaw_i, ratePure_i, ratePureErr_i, countPure_i)
+     print ('| {: <90} | {:>8.2f} +/- {:>8.2f} ({:>9d}) | {:>8.2f} +/- {:>8.2f} ({:>9d}) |'.format(trig_i, rateRaw_i, rateRawErr_i, countRaw_i, ratePure_i, ratePureErr_i, countPure_i))

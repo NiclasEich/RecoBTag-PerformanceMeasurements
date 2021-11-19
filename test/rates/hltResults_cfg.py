@@ -61,50 +61,11 @@ opts.parseArguments()
 ###
 update_jmeCalibs = False
 
-def fixForGRunConfig(process):
-  from HLTrigger.Configuration.common import producers_by_type
-  for producer in producers_by_type(process, 'TrackWithVertexSelector'):
-    if not hasattr(producer, 'numberOfValidHitsForGood'):
-      producer.numberOfValidHitsForGood = cms.uint32(999)
-    if not hasattr(producer, 'numberOfValidPixelHitsForGood'):
-      producer.numberOfValidPixelHitsForGood = cms.uint32(999)
-    if not hasattr(producer, 'zetaVtxScale'):
-      producer.zetaVtxScale = cms.double(1.0)
-    if not hasattr(producer, 'rhoVtxScale'):
-      producer.rhoVtxScale = cms.double(1.0)
-    if not hasattr(producer, 'zetaVtxSig'):
-      producer.zetaVtxSig = cms.double(999.0)
-    if not hasattr(producer, 'rhoVtxSig'):
-      producer.rhoVtxSig = cms.double(999.0)
-  return process
-
-def fixAlca(process):
-	#  see https://github.com/cms-sw/cmssw/pull/35567
-	if 'AlCa_LumiPixelsCounts_Random_v1' in process.__dict__:
-		# redefine the path to use the HLTDoLocalPixelSequence
-		process.AlCa_LumiPixelsCounts_Random_v1 = cms.Path(
-			process.HLTBeginSequenceRandom +
-			process.hltScalersRawToDigi +
-			process.hltPreAlCaLumiPixelsCountsRandom +
-			process.hltPixelTrackerHVOn +
-			process.HLTDoLocalPixelSequence +
-			process.hltAlcaPixelClusterCounts +
-			process.HLTEndSequence )
-	if 'AlCa_LumiPixelsCounts_ZeroBias_v1' in process.__dict__:
-		# redefine the path to use the HLTDoLocalPixelSequence
-		process.AlCa_LumiPixelsCounts_ZeroBias_v1 = cms.Path(
-			process.HLTBeginSequence +
-			process.hltScalersRawToDigi +
-			process.hltL1sZeroBias +
-			process.hltPreAlCaLumiPixelsCountsZeroBias +
-			process.hltPixelTrackerHVOn +
-			process.HLTDoLocalPixelSequence +
-			process.hltAlcaPixelClusterCounts +
-			process.HLTEndSequence )
-
-	#  process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")
-	#  find ../../../../HLTrigger/Configuration/python/customizeHLTforPatatrack.py -type f -exec sed -i 's/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone()/process.hltSiPixelClustersLegacy = process.hltSiPixelClusters.clone(src = "hltSiPixelDigisLegacy")/g' {} \;
-
+def fixMenu(process):
+	if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
+		process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
+	if hasattr(process, 'hltIter1ClustersRefRemoval'):
+		process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
 	return process
 
 def prescale_path(path,ps_service):
@@ -112,147 +73,71 @@ def prescale_path(path,ps_service):
         if pset.pathName.value() == path.label():
             pset.prescales = [0]*len(pset.prescales)
 
+from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_2_0_GRun_Data_NoOutput_configDump import cms, process
+
 if opts.reco == 'HLT_GRun_oldJECs':
-  from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_Data_NoOutput_configDump import cms, process
-  process = fixForGRunConfig(process)
-  update_jmeCalibs = False
-  prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+    update_jmeCalibs = False
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif opts.reco == 'HLT_GRun':
-  from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_Data_NoOutput_configDump import cms, process
-  process = fixForGRunConfig(process)
-  update_jmeCalibs = True
-  prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+    update_jmeCalibs = True
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif opts.reco == 'HLT_GRun_PatatrackQuadruplets':
-    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_Data_NoOutput_configDump import cms, process
-    process = fixForGRunConfig(process)
+    # default GRun menu (Run 2 configurations) + Patatrack pixeltracks (Quadruplets only) instead of legacy pixeltracks
     from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
     process = customizeHLTforPatatrack(process)
     update_jmeCalibs = True
-    process = fixAlca(process)
+    # process = fixMenu(process)
     prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
-    if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
-        process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
-
-    if hasattr(process, 'hltIter1ClustersRefRemoval'):
-        process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
-
-    #  for _tmpPathName in [
-        #  'AlCa_LumiPixelsCounts_ZeroBias_v1',
-        #  'AlCa_LumiPixelsCounts_Random_v1',
-    #  ]:
-        #  if hasattr(process, _tmpPathName):
-            #  _tmpPath = getattr(process, _tmpPathName)
-            #  _tmpPath.remove(process.hltSiPixelDigis)
-            #  _tmpPath.remove(process.hltSiPixelClusters)
-            #  _tmpPath.associate(process.HLTDoLocalPixelTask)
-
 elif opts.reco == 'HLT_GRun_PatatrackTriplets':
-    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_Data_NoOutput_configDump import cms, process
-    process = fixForGRunConfig(process)
+    # default GRun menu (Run 2 configurations) + Patatrack pixeltracks (Triplets+Quadruplets) instead of legacy pixeltracks
     from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
     process = customizeHLTforPatatrackTriplets(process)
     update_jmeCalibs = True
-    process = fixAlca(process)
+    # process = fixMenu(process)
     prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
-    if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
-        process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
-
-    if hasattr(process, 'hltIter1ClustersRefRemoval'):
-        process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
-
-    #  for _tmpPathName in [
-        #  'AlCa_LumiPixelsCounts_ZeroBias_v1',
-        #  'AlCa_LumiPixelsCounts_Random_v1',
-    #  ]:
-        #  if hasattr(process, _tmpPathName):
-            #  _tmpPath = getattr(process, _tmpPathName)
-            #  _tmpPath.remove(process.hltSiPixelDigis)
-            #  _tmpPath.remove(process.hltSiPixelClusters)
-            #  _tmpPath.associate(process.HLTDoLocalPixelTask)
 
 elif opts.reco == 'HLT_Run3TRK':
-  # (a) Run-3 tracking: standard
-  from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_2_GRun_V6_Data_NoOutput_configDump import cms, process
-  # from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-  from RecoBTag.PerformanceMeasurements.Configs.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-  process = customizeHLTforRun3Tracking(process)
-  update_jmeCalibs = True
-  process = fixAlca(process)
-  prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
-
-  if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
-      process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
-
-  if hasattr(process, 'hltIter1ClustersRefRemoval'):
-      process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
-
-  #  for _tmpPathName in [
-    #  'AlCa_LumiPixelsCounts_ZeroBias_v1',
-    #  'AlCa_LumiPixelsCounts_Random_v1',
-  #  ]:
-    #  if hasattr(process, _tmpPathName):
-      #  _tmpPath = getattr(process, _tmpPathName)
-      #  _tmpPath.remove(process.hltSiPixelDigis)
-      #  _tmpPath.remove(process.hltSiPixelClusters)
-      #  _tmpPath.associate(process.HLTDoLocalPixelTask)
-
-elif opts.reco == 'HLT_Run3TRKWithPU':
-  # (b) Run-3 tracking: all pixel vertices
-  from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_0_0_GRun_V3_Data_NoOutput_configDump import cms, process
-  from HLTrigger.Configuration.customizeHLTRun3Tracking import customizeHLTRun3TrackingAllPixelVertices
-  process = customizeHLTRun3TrackingAllPixelVertices(process)
-  update_jmeCalibs = True
-
-  if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
-    process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
-
-  if hasattr(process, 'hltIter1ClustersRefRemoval'):
-    process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
-
-  for _tmpPathName in [
-    'AlCa_LumiPixelsCounts_ZeroBias_v1',
-    'AlCa_LumiPixelsCounts_Random_v1',
-  ]:
-    if hasattr(process, _tmpPathName):
-      _tmpPath = getattr(process, _tmpPathName)
-      _tmpPath.remove(process.hltSiPixelDigis)
-      _tmpPath.remove(process.hltSiPixelClusters)
-      _tmpPath.associate(process.HLTDoLocalPixelTask)
+    # Run-3 tracking: standard (Triplets+Quadruplets)
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    update_jmeCalibs = True
+    process = fixMenu(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 else:
-  raise RuntimeError('keyword "reco = '+opts.reco+'" not recognised')
+    raise RuntimeError('keyword "reco = '+opts.reco+'" not recognised')
 
 # remove FastTimerService
 if hasattr(process, 'FastTimerService'):
-  del process.FastTimerService
+    del process.FastTimerService
 
 # remove MessageLogger
 if hasattr(process, 'MessageLogger'):
-  del process.MessageLogger
+    del process.MessageLogger
 
 if update_jmeCalibs:
-  ## ES modules for PF-Hadron Calibrations
-  import os
-  from CondCore.CondDB.CondDB_cfi import CondDB as _CondDB
-  process.pfhcESSource = cms.ESSource('PoolDBESSource',
-    _CondDB.clone(connect = 'sqlite_file:'+os.environ['CMSSW_BASE']+'/src/JMETriggerAnalysis/NTuplizers/data/PFHC_Run3Winter20_HLT_v01.db'),
-    toGet = cms.VPSet(
-      cms.PSet(
-        record = cms.string('PFCalibrationRcd'),
-        tag = cms.string('PFCalibration_HLT_mcRun3_2021'),
-        label = cms.untracked.string('HLT'),
-      ),
-    ),
-  )
-  process.pfhcESPrefer = cms.ESPrefer('PoolDBESSource', 'pfhcESSource')
-  #process.hltParticleFlow.calibrationsLabel = '' # standard label for Offline-PFHC in GT
+    ## ES modules for PF-Hadron Calibrations
+    import os
+    from CondCore.CondDB.CondDB_cfi import CondDB as _CondDB
+    process.pfhcESSource = cms.ESSource('PoolDBESSource',
+        _CondDB.clone(connect = 'sqlite_file:'+os.environ['CMSSW_BASE']+'/src/JMETriggerAnalysis/NTuplizers/data/PFHC_Run3Winter20_HLT_v01.db'),
+        toGet = cms.VPSet(
+            cms.PSet(
+                record = cms.string('PFCalibrationRcd'),
+                tag = cms.string('PFCalibration_HLT_mcRun3_2021'),
+                label = cms.untracked.string('HLT'),
+            ),
+        ),
+    )
+    process.pfhcESPrefer = cms.ESPrefer('PoolDBESSource', 'pfhcESSource')
+    #process.hltParticleFlow.calibrationsLabel = '' # standard label for Offline-PFHC in GT
 
   ## ES modules for HLT JECs
-  process.jescESSource = cms.ESSource('PoolDBESSource',
+    process.jescESSource = cms.ESSource('PoolDBESSource',
     _CondDB.clone(connect = 'sqlite_file:'+os.environ['CMSSW_BASE']+'/src/JMETriggerAnalysis/NTuplizers/data/JESC_Run3Winter20_V2_MC.db'),
     toGet = cms.VPSet(
       cms.PSet(
@@ -306,26 +191,26 @@ if update_jmeCalibs:
         label = cms.untracked.string('AK8PFPuppiHLT'),
       ),
     ),
-  )
-  process.jescESPrefer = cms.ESPrefer('PoolDBESSource', 'jescESSource')
+    )
+    process.jescESPrefer = cms.ESPrefer('PoolDBESSource', 'jescESSource')
 
 ###
 ### output
 ###
 if hasattr(process, 'DQMOutput'):
-  process.DQMOutput.remove(process.dqmOutput)
+    process.DQMOutput.remove(process.dqmOutput)
 
 process.hltOutput = cms.OutputModule('PoolOutputModule',
-  fileName = cms.untracked.string(opts.output),
-  fastCloning = cms.untracked.bool(False),
-  dataset = cms.untracked.PSet(
-    filterName = cms.untracked.string(''),
-    dataTier = cms.untracked.string('RAW')
-  ),
-  outputCommands = cms.untracked.vstring(
-    'drop *',
-    'keep edmTriggerResults_*_*_'+process.name_(),
-  )
+    fileName = cms.untracked.string(opts.output),
+    fastCloning = cms.untracked.bool(False),
+    dataset = cms.untracked.PSet(
+        filterName = cms.untracked.string(''),
+        dataTier = cms.untracked.string('RAW')
+    ),
+    outputCommands = cms.untracked.vstring(
+        'drop *',
+        'keep edmTriggerResults_*_*_'+process.name_(),
+    )
 )
 
 process.hltOutputEndPath = cms.EndPath(process.hltOutput)
@@ -349,47 +234,47 @@ process.options.wantSummary = cms.untracked.bool(opts.wantSummary)
 
 # update process.GlobalTag.globaltag
 if opts.globalTag is not None:
-  from Configuration.AlCa.GlobalTag import GlobalTag
-  process.GlobalTag = GlobalTag(process.GlobalTag, opts.globalTag, '')
+    from Configuration.AlCa.GlobalTag import GlobalTag
+    process.GlobalTag = GlobalTag(process.GlobalTag, opts.globalTag, '')
 
 # select luminosity sections from .json file
 if opts.lumis is not None:
-  import FWCore.PythonUtilities.LumiList as LumiList
-  process.source.lumisToProcess = LumiList.LumiList(filename = opts.lumis).getVLuminosityBlockRange()
+    import FWCore.PythonUtilities.LumiList as LumiList
+    process.source.lumisToProcess = LumiList.LumiList(filename = opts.lumis).getVLuminosityBlockRange()
 
 # input EDM files [primary]
 if opts.inputFiles:
-  process.source.fileNames = opts.inputFiles
+    process.source.fileNames = opts.inputFiles
 else:
-  process.source.fileNames = [
-    '/store/data/Run2018D/EphemeralHLTPhysics1/RAW/v1/000/323/775/00000/65EA98C3-88C1-5A43-8152-824F3169174E.root',
-  ]
+    process.source.fileNames = [
+        '/store/data/Run2018D/EphemeralHLTPhysics1/RAW/v1/000/323/775/00000/65EA98C3-88C1-5A43-8152-824F3169174E.root',
+    ]
 
 # input EDM files [secondary]
 if not hasattr(process.source, 'secondaryFileNames'):
-  process.source.secondaryFileNames = cms.untracked.vstring()
+    process.source.secondaryFileNames = cms.untracked.vstring()
 
 if opts.secondaryInputFiles:
-  process.source.secondaryFileNames = opts.secondaryInputFiles
+    process.source.secondaryFileNames = opts.secondaryInputFiles
 else:
-  process.source.secondaryFileNames = [
-  ]
+    process.source.secondaryFileNames = [
+    ]
 
 # dump content of cms.Process to python file
 if opts.dumpPython is not None:
-  open(opts.dumpPython, 'w').write(process.dumpPython())
+    open(opts.dumpPython, 'w').write(process.dumpPython())
 
 # printouts
 if opts.verbosity > 0:
-  print ('--- hltResults_cfg.py ---------')
-  print ('')
-  print ('option: output =', opts.output)
-  print ('option: reco =', opts.reco)
-  print ('option: dumpPython =', opts.dumpPython)
-  print ('')
-  print ('process.name_() =', process.name_())
-  print ('process.GlobalTag =', process.GlobalTag.dumpPython())
-  print ('process.source =', process.source.dumpPython())
-  print ('process.maxEvents =', process.maxEvents.dumpPython())
-  print ('process.options =', process.options.dumpPython())
-  print ('-------------------------------')
+    print ('--- hltResults_cfg.py ---------')
+    print ('')
+    print ('option: output =', opts.output)
+    print ('option: reco =', opts.reco)
+    print ('option: dumpPython =', opts.dumpPython)
+    print ('')
+    print ('process.name_() =', process.name_())
+    print ('process.GlobalTag =', process.GlobalTag.dumpPython())
+    print ('process.source =', process.source.dumpPython())
+    print ('process.maxEvents =', process.maxEvents.dumpPython())
+    print ('process.options =', process.options.dumpPython())
+    print ('-------------------------------')
