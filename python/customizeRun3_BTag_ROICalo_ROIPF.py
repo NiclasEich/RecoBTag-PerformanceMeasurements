@@ -572,16 +572,16 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True):
                 cms.PSet(
                     name = cms.string("BvsAll"),
                     numerator = cms.VInputTag(
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probb"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probbb"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "problepb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probbb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:problepb"),
                         ),
                     denominator=cms.VInputTag(
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probb"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probbb"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "problepb"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probc"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probuds"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probbb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:problepb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probc"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probuds"),
                         cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probg"),
                         ),
                 ),
@@ -2608,5 +2608,23 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True):
         process.HLTEndSequence
     )
 
+    if addDeepJetPaths:
+        process.schedule.extend([
+            process.MC_PFBTagDeepJet_v1,
+            process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepJet_4p5_v3,
+            process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepJet_4p5_v8,
+            process.HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepJet_4p5_v8,
+            process.HLT_PFHT400_SixPFJet32_DoublePFBTagDeepJet_2p94_v8,
+            process.HLT_PFHT450_SixPFJet36_PFBTagDeepJet_1p59_v7,
+            process.HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+            process.HLT_QuadPFJet103_88_75_15_PFBTagDeepJet_1p3_VBF2_v8,
+            process.HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+            process.HLT_QuadPFJet105_88_76_15_PFBTagDeepJet_1p3_VBF2_v8,
+            process.HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+            process.HLT_QuadPFJet111_90_80_15_PFBTagDeepJet_1p3_VBF2_v8,
+            process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+            process.HLT_QuadPFJet98_83_71_15_PFBTagDeepJet_1p3_VBF2_v8,
+            process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepJet_1p5_v1,
+        ])
 
     return process

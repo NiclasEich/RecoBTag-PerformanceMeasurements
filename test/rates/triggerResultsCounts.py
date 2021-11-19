@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Script to write to a .json file the raw and pure counts of HLT accepts
 from the edm::TriggerResults of one or more EDM files
@@ -75,12 +75,12 @@ if __name__ == '__main__':
    for inputFile in opts.input_files:
 
      if opts.verbosity > 0:
-       print 'File =', inputFile
+       print ('File =', inputFile)
 
      events = Events(inputFile)
      for event in events:
 
-       if opts.maxEvents >= 0 and nEvents >= opts.maxEvents: 
+       if opts.maxEvents >= 0 and nEvents >= opts.maxEvents:
          break
 
        runnbr = event.object().id().run()
@@ -97,14 +97,14 @@ if __name__ == '__main__':
 
        nEvents += 1
        if opts.verbosity > 0 and nEvents%1000 == 0:
-         print 'Processing entry ', nEvents
-   
+         print ('Processing entry ', nEvents)
+
        if runnbr not in rateDict:
          rateDict[runnbr] = {}
-   
+
        event.getByLabel(triggerBitLabel, triggerBits)
        names = event.object().triggerNames(triggerBits.product())
-   
+
        if runls not in rateDict[runnbr]:
          rateDict[runnbr][runls] = {'numberOfEvents': 0, 'pathAcceptsRawAndPure': {}}
          for name in names.triggerNames():
@@ -128,7 +128,7 @@ if __name__ == '__main__':
          if triggerName not in triggersFired: continue
          rateDict[runnbr][runls]['pathAcceptsRawAndPure'][triggerName][0] += 1
 
-         if triggerName.startswith('HLT_IsoMu24_v'): print triggersFired, triggerCounts
+         if triggerName.startswith('HLT_IsoMu24_v'): print (triggersFired, triggerCounts)
 
          if triggerCounts != 1 or not triggerName.startswith('HLT_'): continue
          rateDict[runnbr][runls]['pathAcceptsRawAndPure'][triggerName][1] += 1
