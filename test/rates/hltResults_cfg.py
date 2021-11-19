@@ -108,6 +108,45 @@ elif opts.reco == 'HLT_Run3TRK':
     process = fixMenu(process)
     prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
+elif options.reco == 'HLT_Run3TRK_ROICaloROIPF':
+    # Run-3 tracking: standard (Triplets+Quadruplets)
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_ROIPF import *
+    process = customizeRun3_BTag_ROICalo_ROIPF(process, options.addDeepJet)
+    update_jmeCalibs = True
+    process = fixMenu(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
+elif options.reco == 'HLT_Run3TRK_noCaloROIPF':
+    # Run-3 tracking: standard (Triplets+Quadruplets)
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_noCalo_ROIPF import *
+    process = customizeRun3_BTag_noCalo_ROIPF(process, options.addDeepJet)
+    update_jmeCalibs = True
+    process = fixMenu(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
+elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
+    # Run-3 tracking: standard (Triplets+Quadruplets)
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_GlobalPF import *
+    process = customizeRun3_BTag_ROICalo_GlobalPF(process, options.addDeepJet)
+    update_jmeCalibs = True
+    process = fixMenu(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
+elif options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF':
+    # Run-3 tracking: standard (Triplets+Quadruplets)
+    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    process = customizeHLTforRun3Tracking(process)
+    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_GlobalCalo_GlobalPF import *
+    process = customizeRun3_BTag_GlobalCalo_GlobalPF(process, options.addDeepJet)
+    update_jmeCalibs = True
+    process = fixMenu(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 else:
     raise RuntimeError('keyword "reco = '+opts.reco+'" not recognised')
 
