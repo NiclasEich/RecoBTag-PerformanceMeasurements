@@ -3,34 +3,34 @@ import FWCore.ParameterSet.Config as cms
 def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True):
 
     # delete the old legacy sequences, to be sure
-    if hasattr(process, 'HLTDoLocalPixelSequenceRegForBTag'):
+    if hasattr(process, "HLTDoLocalPixelSequenceRegForBTag"):
     	del process.HLTDoLocalPixelSequenceRegForBTag
-    if hasattr(process, 'HLTFastRecopixelvertexingSequence'):
+    if hasattr(process, "HLTFastRecopixelvertexingSequence"):
     	del process.HLTFastRecopixelvertexingSequence
-    if hasattr(process, 'HLTDoLocalStripSequenceRegForBTag'):
+    if hasattr(process, "HLTDoLocalStripSequenceRegForBTag"):
     	del process.HLTDoLocalStripSequenceRegForBTag
-    if hasattr(process, 'HLTIterativeTrackingIter02ForBTag'):
+    if hasattr(process, "HLTIterativeTrackingIter02ForBTag"):
     	del process.HLTIterativeTrackingIter02ForBTag
-    if hasattr(process, 'HLTIterativeTrackingIteration0ForBTag'):
+    if hasattr(process, "HLTIterativeTrackingIteration0ForBTag"):
     	del process.HLTIterativeTrackingIteration0ForBTag
-    if hasattr(process, 'HLTIterativeTrackingIteration1ForBTag'):
+    if hasattr(process, "HLTIterativeTrackingIteration1ForBTag"):
     	del process.HLTIterativeTrackingIteration1ForBTag
-    if hasattr(process, 'HLTIterativeTrackingIteration2ForBTag'):
+    if hasattr(process, "HLTIterativeTrackingIteration2ForBTag"):
     	del process.HLTIterativeTrackingIteration2ForBTag
-    if hasattr(process, 'HLTIterativeTrackingDoubletRecoveryForBTag'):
+    if hasattr(process, "HLTIterativeTrackingDoubletRecoveryForBTag"):
     	del process.HLTIterativeTrackingDoubletRecoveryForBTag
     # delete the remaining unneeded paths
-    if hasattr(process, 'MC_AK4CaloJetsFromPV_v8'):
+    if hasattr(process, "MC_AK4CaloJetsFromPV_v8"):
     	del process.MC_AK4CaloJetsFromPV_v8
-    if hasattr(process, 'hltPreMCAK4CaloJetsFromPV'):
+    if hasattr(process, "hltPreMCAK4CaloJetsFromPV"):
     	del process.hltPreMCAK4CaloJetsFromPV
-    if hasattr(process, 'HLTNoPUSequence'):
+    if hasattr(process, "HLTNoPUSequence"):
     	del process.HLTNoPUSequence
-    if hasattr(process, 'hltCaloJetFromPVCollection20Filter'):
+    if hasattr(process, "hltCaloJetFromPVCollection20Filter"):
     	del process.hltCaloJetFromPVCollection20Filter
-    if hasattr(process, 'hltHtMhtFromPVForMC'):
+    if hasattr(process, "hltHtMhtFromPVForMC"):
     	del process.hltHtMhtFromPVForMC
-    if hasattr(process, 'hltCaloHtMhtFromPVOpenFilter'):
+    if hasattr(process, "hltCaloHtMhtFromPVOpenFilter"):
     	del process.hltCaloHtMhtFromPVOpenFilter
 
     #speed up PFPS
@@ -48,7 +48,7 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True):
         maxNRegions = cms.int32(8),
         maxNVertices = cms.int32(2),
         measurementTrackerName = cms.InputTag(""),
-        mode = cms.string('VerticesFixed'),
+        mode = cms.string("VerticesFixed"),
         nSigmaZBeamSpot = cms.double(3.0),
         nSigmaZVertex = cms.double(0.0),
         originRadius = cms.double(0.3),
@@ -56,7 +56,7 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True):
         ptMin = cms.double(0.8),
         searchOpt = cms.bool(True),
         vertexCollection = cms.InputTag("hltTrimmedPixelVertices"),
-        whereToUseMeasurementTracker = cms.string('Never'),
+        whereToUseMeasurementTracker = cms.string("Never"),
         zErrorBeamSpot = cms.double(0.5),
         zErrorVetex = cms.double(0.3)
         )
@@ -79,7 +79,7 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True):
         ptErrorCut = cms.double(5.0),
         ptMax = cms.double(500.0),
         ptMin = cms.double(0.8),
-        quality = cms.string('loose'),
+        quality = cms.string("loose"),
         rhoVtx = cms.double(0.2),
         src = cms.InputTag("hltPixelTracks"),
         timeResosTag = cms.InputTag(""),
@@ -91,9 +91,9 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True):
     )
 
     #select seeds based on our regions
-    process.hltPixelTracksForBTag = cms.EDProducer('TrackSelectorByRegion',
-          tracks = cms.InputTag('hltPixelTracksCleanForBTag'),
-          regions = cms.InputTag('hltBTaggingRegion'),
+    process.hltPixelTracksForBTag = cms.EDProducer("TrackSelectorByRegion",
+          tracks = cms.InputTag("hltPixelTracksCleanForBTag"),
+          regions = cms.InputTag("hltBTaggingRegion"),
           produceTrackCollection = cms.bool(True),
           produceMask = cms.bool(True),
           mightGet = cms.optional.untracked.vstring
@@ -162,10 +162,10 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True):
     # )
     #
     # process.hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag = process.hltDeepCombinedSecondaryVertexBJetTagsPF.clone(
-    #     NNConfig = cms.FileInPath('RecoBTag/Combined/data/DeepCSV_PhaseI.json'),
+    #     NNConfig = cms.FileInPath("RecoBTag/Combined/data/DeepCSV_PhaseI.json"),
     #     src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfosROIForBTag"),
     #     toAdd = cms.PSet(
-    #         probbb = cms.string('probb')
+    #         probbb = cms.string("probb")
     #     )
     # )
 
@@ -215,13 +215,13 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True):
     # process.hltMuonsROIForBTag = process.hltMuons.clone(
     #     # TrackExtractorPSet = cms.PSet(
     #     #     BeamSpotLabel = cms.InputTag("hltOnlineBeamSpot"),
-    #     #     BeamlineOption = cms.string('BeamSpotFromEvent'),
+    #     #     BeamlineOption = cms.string("BeamSpotFromEvent"),
     #     #     Chi2Ndof_Max = cms.double(1e+64),
     #     #     Chi2Prob_Min = cms.double(-1.0),
-    #     #     ComponentName = cms.string('TrackExtractor'),
+    #     #     ComponentName = cms.string("TrackExtractor"),
     #     #     DR_Max = cms.double(1.0),
     #     #     DR_Veto = cms.double(0.01),
-    #     #     DepositLabel = cms.untracked.string(''),
+    #     #     DepositLabel = cms.untracked.string(""),
     #     #     Diff_r = cms.double(0.1),
     #     #     Diff_z = cms.double(0.2),
     #     #     NHits_Min = cms.uint32(0),
@@ -249,25 +249,25 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True):
     #                 3
     #             ),
     #             cleanBadConvertedBrems = cms.bool(False),
-    #             importerName = cms.string('GeneralTracksImporter'),
+    #             importerName = cms.string("GeneralTracksImporter"),
     #             muonMaxDPtOPt = cms.double(1.0),
     #             muonSrc = cms.InputTag("hltMuonsROIForBTag"),
     #             source = cms.InputTag("hltLightPFTracksROIForBTag"),
-    #             trackQuality = cms.string('highPurity'),
+    #             trackQuality = cms.string("highPurity"),
     #             useIterativeTracking = cms.bool(False),
     #             vetoEndcap = cms.bool(False)
     #         ),
     #         cms.PSet(
     #             BCtoPFCMap = cms.InputTag(""),
-    #             importerName = cms.string('ECALClusterImporter'),
+    #             importerName = cms.string("ECALClusterImporter"),
     #             source = cms.InputTag("hltParticleFlowClusterECALUnseededROIForBTag")
     #         ),
     #         cms.PSet(
-    #             importerName = cms.string('GenericClusterImporter'),
+    #             importerName = cms.string("GenericClusterImporter"),
     #             source = cms.InputTag("hltParticleFlowClusterHCAL")
     #         ),
     #         cms.PSet(
-    #             importerName = cms.string('GenericClusterImporter'),
+    #             importerName = cms.string("GenericClusterImporter"),
     #             source = cms.InputTag("hltParticleFlowClusterHF")
     #         )
     #     ),
@@ -567,22 +567,22 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True):
         from RecoBTag.ONNXRuntime.pfDeepFlavourJetTags_cfi import pfDeepFlavourJetTags
 
         process.hltDeepJetDiscriminatorsJetTags = cms.EDProducer(
-            'BTagProbabilityToDiscriminator',
+            "BTagProbabilityToDiscriminator",
             discriminators = cms.VPSet(
                 cms.PSet(
-                    name = cms.string('BvsAll'),
+                    name = cms.string("BvsAll"),
                     numerator = cms.VInputTag(
-                        cms.InputTag('hltPFDeepFlavourJetTags', 'probb'),
-                        cms.InputTag('hltPFDeepFlavourJetTags', 'probbb'),
-                        cms.InputTag('hltPFDeepFlavourJetTags', 'problepb'),
+                        cms.InputTag("hltPFDeepFlavourJetTags", "probb"),
+                        cms.InputTag("hltPFDeepFlavourJetTags", "probbb"),
+                        cms.InputTag("hltPFDeepFlavourJetTags", "problepb"),
                         ),
                     denominator=cms.VInputTag(
-                        cms.InputTag('hltPFDeepFlavourJetTags', 'probb'),
-                        cms.InputTag('hltPFDeepFlavourJetTags', 'probbb'),
-                        cms.InputTag('hltPFDeepFlavourJetTags', 'problepb'),
-                        cms.InputTag('hltPFDeepFlavourJetTags', 'probc'),
-                        cms.InputTag('hltPFDeepFlavourJetTags', 'probuds'),
-                        cms.InputTag('hltPFDeepFlavourJetTags', 'probg'),
+                        cms.InputTag("hltPFDeepFlavourJetTags", "probb"),
+                        cms.InputTag("hltPFDeepFlavourJetTags", "probbb"),
+                        cms.InputTag("hltPFDeepFlavourJetTags", "problepb"),
+                        cms.InputTag("hltPFDeepFlavourJetTags", "probc"),
+                        cms.InputTag("hltPFDeepFlavourJetTags", "probuds"),
+                        cms.InputTag("hltPFDeepFlavourJetTags", "probg"),
                         ),
                 ),
             )
