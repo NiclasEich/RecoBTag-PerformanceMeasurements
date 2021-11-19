@@ -131,7 +131,7 @@ elif options.reco == 'HLT_Run3TRK_ROICaloROIPF':
     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_ROIPF import *
-    process = customizeRun3_BTag_ROICalo_ROIPF(process, options.addDeepJet)
+    process = customizeRun3_BTag_ROICalo_ROIPF(process, options.addDeepJet, options.replaceBTagMuPaths)
     update_jmeCalibs = True
     process = fixMenu(process)
 
@@ -140,7 +140,7 @@ elif options.reco == 'HLT_Run3TRK_noCaloROIPF':
     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_noCalo_ROIPF import *
-    process = customizeRun3_BTag_noCalo_ROIPF(process, options.addDeepJet)
+    process = customizeRun3_BTag_noCalo_ROIPF(process, options.addDeepJet, options.replaceBTagMuPaths)
     update_jmeCalibs = True
     process = fixMenu(process)
 
@@ -149,7 +149,7 @@ elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
     process = customizeHLTforRun3Tracking(process)
     from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_GlobalPF import *
-    process = customizeRun3_BTag_ROICalo_GlobalPF(process, options.addDeepJet)
+    process = customizeRun3_BTag_ROICalo_GlobalPF(process, options.addDeepJet, options.replaceBTagMuPaths)
     update_jmeCalibs = True
     process = fixMenu(process)
 
