@@ -573,17 +573,17 @@ def customizeRun3_BTag_GlobalCalo_GlobalPF(process, addDeepJetPaths = True):
                 cms.PSet(
                     name = cms.string("BvsAll"),
                     numerator = cms.VInputTag(
-                        cms.InputTag("hltPFDeepFlavourJetTags", "probb"),
-                        cms.InputTag("hltPFDeepFlavourJetTags", "probbb"),
-                        cms.InputTag("hltPFDeepFlavourJetTags", "problepb"),
+                        cms.InputTag("hltPFDeepFlavourJetTags:probb"),
+                        cms.InputTag("hltPFDeepFlavourJetTags:probbb"),
+                        cms.InputTag("hltPFDeepFlavourJetTags:problepb"),
                         ),
                     denominator=cms.VInputTag(
-                        cms.InputTag("hltPFDeepFlavourJetTags", "probb"),
-                        cms.InputTag("hltPFDeepFlavourJetTags", "probbb"),
-                        cms.InputTag("hltPFDeepFlavourJetTags", "problepb"),
-                        cms.InputTag("hltPFDeepFlavourJetTags", "probc"),
-                        cms.InputTag("hltPFDeepFlavourJetTags", "probuds"),
-                        cms.InputTag("hltPFDeepFlavourJetTags", "probg"),
+                        cms.InputTag("hltPFDeepFlavourJetTags:probb"),
+                        cms.InputTag("hltPFDeepFlavourJetTags:probbb"),
+                        cms.InputTag("hltPFDeepFlavourJetTags:problepb"),
+                        cms.InputTag("hltPFDeepFlavourJetTags:probc"),
+                        cms.InputTag("hltPFDeepFlavourJetTags:probuds"),
+                        cms.InputTag("hltPFDeepFlavourJetTags:probg"),
                         ),
                 ),
             )

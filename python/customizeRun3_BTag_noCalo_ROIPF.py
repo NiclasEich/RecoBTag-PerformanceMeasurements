@@ -572,17 +572,17 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True):
                 cms.PSet(
                     name = cms.string("BvsAll"),
                     numerator = cms.VInputTag(
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probb"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probbb"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "problepb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probbb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:problepb"),
                         ),
                     denominator=cms.VInputTag(
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probb"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probbb"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "problepb"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probc"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probuds"),
-                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag", "probg"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probbb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:problepb"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probc"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probuds"),
+                        cms.InputTag("hltPFDeepFlavourJetTagsROIForBTag:probg"),
                         ),
                 ),
             )
