@@ -21,12 +21,12 @@ samplesMap["Run2018D_EphemeralHLTPhysics1_RAW_run323775_ls52to151"]="${CMSSW_BAS
 
 recoKeys=(
   # HLT_GRun_oldJECs
-  HLT_GRun
-  # HLT_Run3TRK
+  #HLT_GRun
+   HLT_Run3TRK
 )
 
 for recoKey in "${recoKeys[@]}"; do
-  python "${CMSSW_BASE}"/src/RecoBTag/PerformanceMeasurements/test/rates/hltResults_cfg.py \
+  cmsRun "${CMSSW_BASE}"/src/RecoBTag/PerformanceMeasurements/test/rates/hltResults_cfg.py \
     dumpPython=.tmp_${recoKey}_cfg.py numThreads=1 reco=${recoKey}
 
   for sampleKey in ${!samplesMap[@]}; do

@@ -16,13 +16,13 @@ bmonitor -i tmpout -r
 
 # when EDM outputs are available, write raw and pure counts of HLT paths to .json file
 ./triggerResultsCounts.py \
-  -i tmpout/job_*/out_*.root \
-  -o rates.json \
+  -i tmpout/HLT_Run3TRK/Run2018D_EphemeralHLTPhysics1_RAW_run323775_ls52to151/job_*/out_*.root \
+  -o rates_HLT_Run3TRK.json \
   -l data/json_323775.txt \
   -p MYHLT -v 10
 
 # print to stdout the rates of selected trigger paths
 ./triggerRates.py \
   -p 1100 -t 'HLT_*' \
-  -i rates.json
+  -i rates_HLT_Run3TRK.json
 ```
