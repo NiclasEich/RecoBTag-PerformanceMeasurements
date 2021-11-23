@@ -605,7 +605,9 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True):
             vertices = cms.InputTag("hltVerticesPFFilter")
         )
         process.hltPFDeepFlavourJetTags = pfDeepFlavourJetTags.clone(
-            src = cms.InputTag("hltPFDeepFlavourTagInfos")
+            src = cms.InputTag("hltPFDeepFlavourTagInfos"),
+            model_path = cms.FileInPath('/nfs/dust/cms/user/neich/BTV/cmssw_tests/test_online_model_01/CMSSW_12_2_0_pre2/src/RecoBTag/PerformanceMeasurements/test/DeepJet_test_online.onnx'),
+            output_names = cms.vstring('ID_pred'),
         )
 
         process.HLTBtagDeepJetSequencePF = cms.Sequence(
