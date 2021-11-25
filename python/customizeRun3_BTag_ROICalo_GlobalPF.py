@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replaceBTagMuPaths = True):
+def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replaceBTagMuPaths = True, useNewDeepJetModel = False):
 
     # delete the old legacy sequences, to be sure
     if hasattr(process, "HLTDoLocalPixelSequenceRegForBTag"):
@@ -625,18 +625,23 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
             vertex_associator = cms.InputTag("hltPrimaryVertexAssociation","original"),
             vertices = cms.InputTag("hltVerticesPFFilter")
         )
-        process.hltPFDeepFlavourJetTags = pfDeepFlavourJetTags.clone(
-            src = cms.InputTag("hltPFDeepFlavourTagInfos"),
-            model_path = cms.FileInPath("RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx"),
-            output_names = cms.vstring("ID_pred"),
+        if useNewDeepJetModel==True:
+            process.hltPFDeepFlavourJetTags = pfDeepFlavourJetTags.clone(
+                src = cms.InputTag("hltPFDeepFlavourTagInfos"),
+                model_path = cms.FileInPath("RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx"),
+                output_names = cms.vstring("ID_pred"),
                 input_names = cms.vstring(
-                "input_0",
-                "input_1",
-                "input_2",
-                "input_3",
-                "input_4",
-            ),
-        )
+                    "input_0",
+                    "input_1",
+                    "input_2",
+                    "input_3",
+                    "input_4",
+                ),
+            )
+        else:
+            process.hltPFDeepFlavourJetTags = pfDeepFlavourJetTags.clone(
+                src = cms.InputTag("hltPFDeepFlavourTagInfos"),
+            )
 
         process.HLTBtagDeepJetSequencePF = cms.Sequence(
             process.hltVerticesPF+

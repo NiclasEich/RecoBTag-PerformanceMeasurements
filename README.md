@@ -47,6 +47,7 @@ cp /afs/cern.ch/work/m/missirol/public/run3/JESC/Run3Winter20_V2_MC/Run3Winter20
 git clone -b Run3_ForJIRA --recursive https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
 
 # use the newest temporary DeepJet retraining
+# not yet applicable, dummy setup commands, model file still under production
 mkdir -p RecoBTag/Combined/data/DeepFlavour_HLT_12X
 cp RecoBTag/PerformanceMeasurements/test/DeepJet_test_online.onnx RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx
 

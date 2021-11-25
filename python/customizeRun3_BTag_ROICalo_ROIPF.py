@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTagMuPaths = True):
+def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTagMuPaths = True, useNewDeepJetModel = False):
 
     # delete the old legacy sequences, to be sure
     if hasattr(process, "HLTDoLocalPixelSequenceRegForBTag"):
@@ -625,18 +625,24 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             vertex_associator = cms.InputTag("hltPrimaryVertexAssociationROIForBTag","original"),
             vertices = cms.InputTag("hltVerticesPFFilterROIForBTag")
         )
-        process.hltPFDeepFlavourJetTagsROIForBTag = pfDeepFlavourJetTags.clone(
-            src = cms.InputTag("hltPFDeepFlavourTagInfosROIForBTag"),
-            model_path = cms.FileInPath("RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx"),
-            output_names = cms.vstring("ID_pred"),
+
+        if useNewDeepJetModel==True:
+            process.hltPFDeepFlavourJetTagsROIForBTag = pfDeepFlavourJetTags.clone(
+                src = cms.InputTag("hltPFDeepFlavourTagInfosROIForBTag"),
+                model_path = cms.FileInPath("RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx"),
+                output_names = cms.vstring("ID_pred"),
                 input_names = cms.vstring(
-                "input_0",
-                "input_1",
-                "input_2",
-                "input_3",
-                "input_4",
-            ),
-        )
+                    "input_0",
+                    "input_1",
+                    "input_2",
+                    "input_3",
+                    "input_4",
+                ),
+            )
+        else:
+            process.hltPFDeepFlavourJetTagsROIForBTag = pfDeepFlavourJetTags.clone(
+                src = cms.InputTag("hltPFDeepFlavourTagInfosROIForBTag"),
+            )
 
         process.HLTBtagDeepJetSequencePFROIForBTag = cms.Sequence(
             process.hltVerticesPFROIForBTag+
@@ -794,6 +800,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     if addDeepJetPaths:
         process.hltBTagPFDeepJet4p5TripleROIForBTag = process.hltBTagPFDeepCSV4p5Triple.clone(
             JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
             MinTag = cms.double(0.24),
         )
         process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepJet4p5 = process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV4p5.clone()
