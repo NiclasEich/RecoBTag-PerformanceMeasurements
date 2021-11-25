@@ -627,8 +627,15 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
         )
         process.hltPFDeepFlavourJetTags = pfDeepFlavourJetTags.clone(
             src = cms.InputTag("hltPFDeepFlavourTagInfos"),
-            model_path = cms.FileInPath('/nfs/dust/cms/user/neich/BTV/cmssw_tests/test_online_model_01/CMSSW_12_2_0_pre2/src/RecoBTag/PerformanceMeasurements/test/DeepJet_test_online.onnx'),
-            output_names = cms.vstring('ID_pred'),
+            model_path = cms.FileInPath("RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx"),
+            output_names = cms.vstring("ID_pred"),
+                input_names = cms.vstring(
+                "input_0",
+                "input_1",
+                "input_2",
+                "input_3",
+                "input_4",
+            ),
         )
 
         process.HLTBtagDeepJetSequencePF = cms.Sequence(
@@ -2649,7 +2656,7 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
             process.hltBSoftMuonDiJet20L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
-        del process.HLT_BTagMu_AK4DiJet20_Mu5_noalgo_v13 
+        del process.HLT_BTagMu_AK4DiJet20_Mu5_noalgo_v13
 
     ############################################################################
     #### HLT_BTagMu_AK4DiJet40_Mu5_v13
@@ -2797,23 +2804,42 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
         del process.HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12
 
     if addDeepJetPaths:
-        process.schedule.extend([
-            process.MC_PFBTagDeepJet_v1,
-            process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepJet_4p5_v3,
-            process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepJet_4p5_v8,
-            process.HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepJet_4p5_v8,
-            process.HLT_PFHT400_SixPFJet32_DoublePFBTagDeepJet_2p94_v8,
-            process.HLT_PFHT450_SixPFJet36_PFBTagDeepJet_1p59_v7,
-            process.HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
-            process.HLT_QuadPFJet103_88_75_15_PFBTagDeepJet_1p3_VBF2_v8,
-            process.HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
-            process.HLT_QuadPFJet105_88_76_15_PFBTagDeepJet_1p3_VBF2_v8,
-            process.HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
-            process.HLT_QuadPFJet111_90_80_15_PFBTagDeepJet_1p3_VBF2_v8,
-            process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
-            process.HLT_QuadPFJet98_83_71_15_PFBTagDeepJet_1p3_VBF2_v8,
-            process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepJet_1p5_v1,
-        ])
+        if hasattr(process, "schedule"):
+            process.schedule.extend([
+                process.MC_PFBTagDeepJet_v1,
+                process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepJet_4p5_v3,
+                process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepJet_4p5_v8,
+                process.HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepJet_4p5_v8,
+                process.HLT_PFHT400_SixPFJet32_DoublePFBTagDeepJet_2p94_v8,
+                process.HLT_PFHT450_SixPFJet36_PFBTagDeepJet_1p59_v7,
+                process.HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet103_88_75_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet105_88_76_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet111_90_80_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet98_83_71_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepJet_1p5_v1,
+            ])
+        elif hasattr(process, "HLTSchedule"):
+            process.HLTSchedule.extend([
+                process.MC_PFBTagDeepJet_v1,
+                process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepJet_4p5_v3,
+                process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepJet_4p5_v8,
+                process.HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepJet_4p5_v8,
+                process.HLT_PFHT400_SixPFJet32_DoublePFBTagDeepJet_2p94_v8,
+                process.HLT_PFHT450_SixPFJet36_PFBTagDeepJet_1p59_v7,
+                process.HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet103_88_75_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet105_88_76_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet111_90_80_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet98_83_71_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepJet_1p5_v1,
+            ])
     return process
 
     return process
