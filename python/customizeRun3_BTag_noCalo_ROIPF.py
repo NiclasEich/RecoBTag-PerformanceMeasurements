@@ -2313,7 +2313,7 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True, replaceBTag
     )
 
     process.hltBSoftMuonGetJetsFromDiJet54PFROIForBTag = process.hltBSoftMuonGetJetsFromDiJet54PF.clone(
-        HLTObject = cms.InputTag("hltDoublePFBJets54Eta2p3"),
+        HLTObject = cms.InputTag("hltDoublePFBJets54Eta2p3ROIForBTag"),
     )
 
     process.hltSelector4JetsDiJet54PFROIForBTag = process.hltSelector4JetsDiJet54PF.clone(
@@ -2364,7 +2364,7 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True, replaceBTag
         process.hltDoublePFBJets54Eta2p3ROIForBTag+
         process.hltDoublePFJets54Eta2p3MaxDeta1p6ROIForBTag+
         process.HLTBTagMuDiJet54PFMu12SequenceL3ROIForBTag+
-        process.hltBSoftMuonDiJet54Mu12L3FilterByDR+
+        process.hltBSoftMuonDiJet54Mu12L3FilterByDRROIForBTag+
         process.HLTEndSequence
     )
 
@@ -2409,7 +2409,7 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True, replaceBTag
         process.hltBSoftMuonDiJet62PFMu12L3JetsROIForBTag+
         process.hltBSoftMuonMu12L3+
         process.hltBSoftMuonDiJet62PFMu12L3TagInfosROIForBTag+
-        process.hltBSoftMuonDiJet62PFMu12L3BJetTagsByDR
+        process.hltBSoftMuonDiJet62PFMu12L3BJetTagsByDRROIForBTag
     )
 
 
