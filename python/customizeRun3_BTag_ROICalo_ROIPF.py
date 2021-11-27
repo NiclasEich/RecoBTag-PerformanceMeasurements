@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True):
+def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTagMuPaths = True, useNewDeepJetModel = False):
 
     # delete the old legacy sequences, to be sure
     if hasattr(process, "HLTDoLocalPixelSequenceRegForBTag"):
@@ -32,6 +32,27 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True):
     	del process.hltHtMhtFromPVForMC
     if hasattr(process, "hltCaloHtMhtFromPVOpenFilter"):
     	del process.hltCaloHtMhtFromPVOpenFilter
+    # delete old BTagMu paths containing AlgoCut
+    if replaceBTagMuPaths:
+        if hasattr(process, "HLT_BTagMu_AK4DiJet20_Mu5_v13"):
+             del process.HLT_BTagMu_AK4DiJet20_Mu5_v13
+        if hasattr(process, "HLT_BTagMu_AK4DiJet40_Mu5_v13"):
+             del process.HLT_BTagMu_AK4DiJet40_Mu5_v13
+        if hasattr(process, "HLT_BTagMu_AK4DiJet70_Mu5_v13"):
+             del process.HLT_BTagMu_AK4DiJet70_Mu5_v13
+        if hasattr(process, "HLT_BTagMu_AK4DiJet110_Mu5_v13"):
+             del process.HLT_BTagMu_AK4DiJet110_Mu5_v13
+        if hasattr(process, "HLT_BTagMu_AK4DiJet170_Mu5_v12"):
+             del process.HLT_BTagMu_AK4DiJet170_Mu5_v12
+        if hasattr(process, "HLT_BTagMu_AK4Jet300_Mu5_v12"):
+             del process.HLT_BTagMu_AK4Jet300_Mu5_v12
+        if hasattr(process, "HLT_BTagMu_AK8DiJet170_Mu5_v9"):
+             del process.HLT_BTagMu_AK8DiJet170_Mu5_v9
+        if hasattr(process, "HLT_BTagMu_AK8Jet170_DoubleMu5_v2"):
+             del process.HLT_BTagMu_AK8Jet170_DoubleMu5_v2
+        if hasattr(process, "HLT_BTagMu_AK8Jet300_Mu5_v12"):
+             del process.HLT_BTagMu_AK8Jet300_Mu5_v12
+
 
     #speed up PFPS
     process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
@@ -604,9 +625,24 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True):
             vertex_associator = cms.InputTag("hltPrimaryVertexAssociationROIForBTag","original"),
             vertices = cms.InputTag("hltVerticesPFFilterROIForBTag")
         )
-        process.hltPFDeepFlavourJetTagsROIForBTag = pfDeepFlavourJetTags.clone(
-            src = cms.InputTag("hltPFDeepFlavourTagInfosROIForBTag")
-        )
+
+        if useNewDeepJetModel==True:
+            process.hltPFDeepFlavourJetTagsROIForBTag = pfDeepFlavourJetTags.clone(
+                src = cms.InputTag("hltPFDeepFlavourTagInfosROIForBTag"),
+                model_path = cms.FileInPath("RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx"),
+                output_names = cms.vstring("ID_pred"),
+                input_names = cms.vstring(
+                    "input_0",
+                    "input_1",
+                    "input_2",
+                    "input_3",
+                    "input_4",
+                ),
+            )
+        else:
+            process.hltPFDeepFlavourJetTagsROIForBTag = pfDeepFlavourJetTags.clone(
+                src = cms.InputTag("hltPFDeepFlavourTagInfosROIForBTag"),
+            )
 
         process.HLTBtagDeepJetSequencePFROIForBTag = cms.Sequence(
             process.hltVerticesPFROIForBTag+
@@ -764,6 +800,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True):
     if addDeepJetPaths:
         process.hltBTagPFDeepJet4p5TripleROIForBTag = process.hltBTagPFDeepCSV4p5Triple.clone(
             JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
+            Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
             MinTag = cms.double(0.24),
         )
         process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepJet4p5 = process.hltPrePFHT330PT30QuadPFJet75604540TriplePFBTagDeepCSV4p5.clone()
@@ -2275,7 +2312,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True):
     )
 
     process.hltBSoftMuonGetJetsFromDiJet54PFROIForBTag = process.hltBSoftMuonGetJetsFromDiJet54PF.clone(
-        HLTObject = cms.InputTag("hltDoublePFBJets54Eta2p3"),
+        HLTObject = cms.InputTag("hltDoublePFBJets54Eta2p3ROIForBTag"),
     )
 
     process.hltSelector4JetsDiJet54PFROIForBTag = process.hltSelector4JetsDiJet54PF.clone(
@@ -2326,7 +2363,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True):
         process.hltDoublePFBJets54Eta2p3ROIForBTag+
         process.hltDoublePFJets54Eta2p3MaxDeta1p6ROIForBTag+
         process.HLTBTagMuDiJet54PFMu12SequenceL3ROIForBTag+
-        process.hltBSoftMuonDiJet54Mu12L3FilterByDR+
+        process.hltBSoftMuonDiJet54Mu12L3FilterByDRROIForBTag+
         process.HLTEndSequence
     )
 
@@ -2371,7 +2408,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True):
         process.hltBSoftMuonDiJet62PFMu12L3JetsROIForBTag+
         process.hltBSoftMuonMu12L3+
         process.hltBSoftMuonDiJet62PFMu12L3TagInfosROIForBTag+
-        process.hltBSoftMuonDiJet62PFMu12L3BJetTagsByDR
+        process.hltBSoftMuonDiJet62PFMu12L3BJetTagsByDRROIForBTag
     )
 
 
@@ -2608,23 +2645,208 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True):
         process.HLTEndSequence
     )
 
+    # Rename NoAlgo BTagMu branches and delete NoAlgo paths afterwards
+    if replaceBTagMuPaths:
+
+    ############################################################################
+    #### HLT_BTagMu_AK4DiJet20_Mu5_v13
+    ############################################################################
+
+        process.HLT_BTagMu_AK4DiJet20_Mu5_v13 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sMu3JetC16dRMax0p4+
+            process.hltPreBTagMuAK4DiJet20Mu5noalgo+
+            process.HLTAK4CaloJetsSequence+
+            process.hltBDiJet20L1FastJetCentral+
+            process.HLTBTagMuDiJet20L1FastJetSequenceL25+
+            process.hltBSoftMuonDiJet20L1FastJetL25FilterByDR+
+            process.HLTBTagMuDiJet20L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonDiJet20L1FastJetMu5L3FilterByDRnoalgo+
+            process.HLTEndSequence
+        )
+        del process.HLT_BTagMu_AK4DiJet20_Mu5_noalgo_v13
+
+    ############################################################################
+    #### HLT_BTagMu_AK4DiJet40_Mu5_v13
+    ############################################################################
+
+        process.HLT_BTagMu_AK4DiJet40_Mu5_v13 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sMu3JetC35dRMax0p4+
+            process.hltPreBTagMuAK4DiJet40Mu5noalgo+
+            process.HLTAK4CaloJetsSequence+
+            process.hltBDiJet40L1FastJetCentral+
+            process.HLTBTagMuDiJet40L1FastJetSequenceL25+
+            process.hltBSoftMuonDiJet40L1FastJetL25FilterByDR+
+            process.HLTBTagMuDiJet40L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonDiJet40L1FastJetMu5L3FilterByDRnoalgo+
+            process.HLTEndSequence
+        )
+        del process.HLT_BTagMu_AK4DiJet40_Mu5_noalgo_v13
+
+    ############################################################################
+    #### HLT_BTagMu_AK4DiJet70_Mu5_v13
+    ############################################################################
+
+        process.HLT_BTagMu_AK4DiJet70_Mu5_v13 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sMu3JetC60dRMax0p4+
+            process.hltPreBTagMuAK4DiJet70Mu5noalgo+
+            process.HLTAK4CaloJetsSequence+
+            process.hltBDiJet70L1FastJetCentral+
+            process.HLTBTagMuDiJet70L1FastJetSequenceL25+
+            process.hltBSoftMuonDiJet70L1FastJetL25FilterByDR+
+            process.HLTBTagMuDiJet70L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonDiJet70L1FastJetMu5L3FilterByDRnoalgo+
+            process.HLTEndSequence
+        )
+        del process.HLT_BTagMu_AK4DiJet70_Mu5_noalgo_v13
+
+    ############################################################################
+    #### HLT_BTagMu_AK4DiJet110_Mu5_v13
+    ############################################################################
+
+        process.HLT_BTagMu_AK4DiJet110_Mu5_v13 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sMu3JetC80dRMax0p4+
+            process.hltPreBTagMuAK4DiJet110Mu5noalgo+
+            process.HLTAK4CaloJetsSequence+
+            process.hltBDiJet110L1FastJetCentral+
+            process.HLTBTagMuDiJet110L1FastJetSequenceL25+
+            process.hltBSoftMuonDiJet110L1FastJetL25FilterByDR+
+            process.HLTBTagMuDiJet110L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonDiJet110L1FastJetMu5L3FilterByDRnoalgo+
+            process.HLTEndSequence
+        )
+        del process.HLT_BTagMu_AK4DiJet110_Mu5_noalgo_v13
+
+    ############################################################################
+    #### HLT_BTagMu_AK4DiJet170_Mu5_v12
+    ############################################################################
+
+        process.HLT_BTagMu_AK4DiJet170_Mu5_v12 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sMu3JetC120dRMax0p4+
+            process.hltPreBTagMuAK4DiJet170Mu5noalgo+
+            process.HLTAK4CaloJetsSequence+
+            process.hltBDiJet200L1FastJetCentral+
+            process.HLTBTagMuDiJet200L1FastJetSequenceL25+
+            process.hltBSoftMuonDiJet200L1FastJetL25FilterByDR+
+            process.HLTBTagMuDiJet200L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonDiJet200L1FastJetMu5L3FilterByDRnoalgo+
+            process.HLTEndSequence
+        )
+        del process.HLT_BTagMu_AK4DiJet170_Mu5_noalgo_v12
+
+    ############################################################################
+    #### HLT_BTagMu_AK4Jet300_Mu5_v12
+    ############################################################################
+
+        process.HLT_BTagMu_AK4Jet300_Mu5_v12 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sSingleJet200+
+            process.hltPreBTagMuAK4Jet300Mu5noalgo+
+            process.HLTAK4CaloJetsSequence+
+            process.hltBJet300L1FastJetCentral+
+            process.HLTBTagMuJet300L1FastJetSequenceL25+
+            process.hltBSoftMuonJet300L1FastJetL25FilterByDR+
+            process.HLTBTagMuJet300L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonJet300L1FastJetMu5L3FilterByDRnoalgo+
+            process.HLTEndSequence
+        )
+        del process.HLT_BTagMu_AK4Jet300_Mu5_noalgo_v12
+
+    ############################################################################
+    #### HLT_BTagMu_AK8DiJet170_Mu5_v9
+    ############################################################################
+
+        process.HLT_BTagMu_AK8DiJet170_Mu5_v9 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sMu3JetC120dRMax0p8+
+            process.hltPreBTagMuAK8DiJet170Mu5noalgo+
+            process.HLTAK8CaloJetsSequence+
+            process.hltBAK8DiJet170L1FastJetCentral+
+            process.HLTBTagMuAK8DiJet170L1FastJetSequenceL25+
+            process.hltBSoftMuonAK8DiJet170L1FastJetL25FilterByDR+
+            process.HLTBTagMuAK8DiJet170L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonAK8DiJet170L1FastJetMu5L3FilterByDRnoalgo+
+            process.HLTEndSequence
+        )
+        del process.HLT_BTagMu_AK8DiJet170_Mu5_noalgo_v9
+
+    ############################################################################
+    #### HLT_BTagMu_AK8Jet170_DoubleMu5_v2
+    ############################################################################
+
+        process.HLT_BTagMu_AK8Jet170_DoubleMu5_v2 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sDoubleMu0Jet90er2p5dRMax0p8dRMu1p6+
+            process.hltPreBTagMuAK8Jet170DoubleMu5noalgo+
+            process.hltDoubleMuon0L1Filtered0+
+            process.HLTAK8CaloJetsSequence+
+            process.hltBAK8Jet170L1FastJetCentral+
+            process.HLTBTagMuAK8Jet170L1FastJetDoubleMuSequenceL25+
+            process.hltBSoftMuonAK8Jet170L1FastJetL25FilterByDR+
+            process.HLTBTagMuAK8Jet170L1FastJetDoubleMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonAK8Jet170L1FastJetDoubleMu5L3FilterByDRnoalgo+
+            process.HLTEndSequence
+        )
+        del process.HLT_BTagMu_AK8Jet170_DoubleMu5_noalgo_v2
+
+    ############################################################################
+    #### HLT_BTagMu_AK8Jet300_Mu5_v12
+    ############################################################################
+
+        process.HLT_BTagMu_AK8Jet300_Mu5_v12 = cms.Path(
+            process.HLTBeginSequence+
+            process.hltL1sSingleJet200+
+            process.hltPreBTagMuAK8Jet300Mu5noalgo+
+            process.HLTAK8CaloJetsSequence+
+            process.hltBJet300L1AK8FastJetCentral+
+            process.HLTBTagMuJet300L1AK8FastJetSequenceL25+
+            process.hltBSoftMuonJet300L1FastJetAK8L25FilterByDR+
+            process.HLTBTagMuJet300L1AK8FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonJet300L1FastJetAK8Mu5L3FilterByDRnoalgo+
+            process.HLTEndSequence
+        )
+        del process.HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12
+
     if addDeepJetPaths:
-        process.schedule.extend([
-            process.MC_PFBTagDeepJet_v1,
-            process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepJet_4p5_v3,
-            process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepJet_4p5_v8,
-            process.HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepJet_4p5_v8,
-            process.HLT_PFHT400_SixPFJet32_DoublePFBTagDeepJet_2p94_v8,
-            process.HLT_PFHT450_SixPFJet36_PFBTagDeepJet_1p59_v7,
-            process.HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
-            process.HLT_QuadPFJet103_88_75_15_PFBTagDeepJet_1p3_VBF2_v8,
-            process.HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
-            process.HLT_QuadPFJet105_88_76_15_PFBTagDeepJet_1p3_VBF2_v8,
-            process.HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
-            process.HLT_QuadPFJet111_90_80_15_PFBTagDeepJet_1p3_VBF2_v8,
-            process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
-            process.HLT_QuadPFJet98_83_71_15_PFBTagDeepJet_1p3_VBF2_v8,
-            process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepJet_1p5_v1,
-        ])
+        if hasattr(process, "schedule"):
+            process.schedule.extend([
+                process.MC_PFBTagDeepJet_v1,
+                process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepJet_4p5_v3,
+                process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepJet_4p5_v8,
+                process.HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepJet_4p5_v8,
+                process.HLT_PFHT400_SixPFJet32_DoublePFBTagDeepJet_2p94_v8,
+                process.HLT_PFHT450_SixPFJet36_PFBTagDeepJet_1p59_v7,
+                process.HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet103_88_75_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet105_88_76_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet111_90_80_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet98_83_71_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepJet_1p5_v1,
+            ])
+        elif hasattr(process, "HLTSchedule"):
+            process.HLTSchedule.extend([
+                process.MC_PFBTagDeepJet_v1,
+                process.HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepJet_4p5_v3,
+                process.HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepJet_4p5_v8,
+                process.HLT_PFHT400_FivePFJet_120_120_60_30_30_DoublePFBTagDeepJet_4p5_v8,
+                process.HLT_PFHT400_SixPFJet32_DoublePFBTagDeepJet_2p94_v8,
+                process.HLT_PFHT450_SixPFJet36_PFBTagDeepJet_1p59_v7,
+                process.HLT_QuadPFJet103_88_75_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet103_88_75_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet105_88_76_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet105_88_76_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet111_90_80_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet111_90_80_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8,
+                process.HLT_QuadPFJet98_83_71_15_PFBTagDeepJet_1p3_VBF2_v8,
+                process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepJet_1p5_v1,
+            ])
 
     return process

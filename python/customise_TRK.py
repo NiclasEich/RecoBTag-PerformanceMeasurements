@@ -470,7 +470,18 @@ def addDeepJet(process, doPF=True, doPuppi=False, roiReplace=False):
                 vertices = cms.InputTag("hltVerticesPFFilter")
             )
             process.hltPFDeepFlavourJetTags = pfDeepFlavourJetTags.clone(
-                src = cms.InputTag("hltPFDeepFlavourTagInfos")
+                src = cms.InputTag("hltPFDeepFlavourTagInfos"),
+                model_path = cms.FileInPath('RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx'),
+                # output_names = cms.vstring('ID_pred/Softmax:0'),
+                output_names = cms.vstring('ID_pred'),
+                    input_names = cms.vstring(
+                    'input_0',
+                    'input_1',
+                    'input_2',
+                    'input_3',
+                    'input_4',
+                    # 'input_5'
+                ),
             )
         else:
             process.hltPFDeepFlavourTagInfosROIForBTag = pfDeepFlavourTagInfos.clone(
