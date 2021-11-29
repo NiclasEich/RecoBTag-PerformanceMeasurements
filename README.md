@@ -49,7 +49,7 @@ git clone -b Run3_ForJIRA --recursive https://github.com/SWuchterl/RecoBTag-Perf
 # use the newest temporary DeepJet retraining
 # not yet applicable, dummy setup commands, model file still under production
 mkdir -p RecoBTag/Combined/data/DeepFlavour_HLT_12X
-cp RecoBTag/PerformanceMeasurements/test/DeepJet_test_online.onnx RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx
+cp RecoBTag/PerformanceMeasurements/test/DeepJetnoNorm_04.onnx RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx
 
 scram b -j12
 
@@ -90,7 +90,7 @@ hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
 --mc \
 --process HLT2 \
 --globaltag auto:phase1_2021_realistic \
---max-events 10 \
+--max-events 10 --eras Run3 \
 > tmp.py
 ```
 ```bash
@@ -105,7 +105,7 @@ hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
 --data \
 --process HLT2 \
 --globaltag auto:run3_hlt \
---max-events 10 \
+--max-events 10 --eras Run2_2018 \
 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
 > tmp_data.py
 ```
@@ -123,7 +123,7 @@ hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
 --globaltag auto:run3_hlt \
 --max-events 10 \
 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
---timing \
+--timing --eras Run2_2018 \
 > tmp_data_timing.py
 ```
 ```bash
