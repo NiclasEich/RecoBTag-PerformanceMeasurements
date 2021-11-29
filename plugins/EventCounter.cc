@@ -24,6 +24,7 @@
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
+// #include "FWCore/Framework/interface/EDAnalyzer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -42,6 +43,7 @@
 //
 
 class EventCounter : public edm::one::EDAnalyzer<edm::one::SharedResources> {
+// class EventCounter : public edm::EDAnalyzer {
    public:
       explicit EventCounter(const edm::ParameterSet&);
       ~EventCounter();
@@ -84,6 +86,7 @@ class EventCounter : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 EventCounter::EventCounter(const edm::ParameterSet& iConfig)
 {
    usesResource("TFileService");
+   usesResource();
    generator = consumes<GenEventInfoProduct>(edm::InputTag("generator"));
    putoken = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("addPileupInfo"));
    putokenmini = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("slimmedAddPileupInfo"));

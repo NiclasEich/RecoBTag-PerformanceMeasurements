@@ -23,6 +23,7 @@
 using namespace analyzerBase;
 
 template<typename IPTI,typename VTX>
+// class HLTBTagAnalyzerT : public edm::EDAnalyzer
 class HLTBTagAnalyzerT : public edm::one::EDAnalyzer<edm::one::SharedResources>
 {
 public:
@@ -303,6 +304,8 @@ HLTBTagAnalyzerT<IPTI,VTX>::HLTBTagAnalyzerT(const edm::ParameterSet& iConfig):
   deltaR_(iConfig.getParameter<double>("deltaR"))
 {
   usesResource("TFileService");
+  usesResource();
+  // usesResource();
   //now do what ever initialization you need
   std::string module_type  = iConfig.getParameter<std::string>("@module_type");
   std::string module_label = iConfig.getParameter<std::string>("@module_label");

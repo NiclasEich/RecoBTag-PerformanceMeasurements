@@ -24,6 +24,7 @@ using namespace analyzerBase;
 
 template<typename IPTI,typename VTX>
 class BTagAnalyzerT : public edm::one::EDAnalyzer<edm::one::SharedResources>
+// class BTagAnalyzerT : public edm::EDAnalyzer
 {
 public:
   explicit BTagAnalyzerT(const edm::ParameterSet&);
@@ -373,6 +374,7 @@ BTagAnalyzerT<IPTI,VTX>::BTagAnalyzerT(const edm::ParameterSet& iConfig):
   deltaRSubJets_(iConfig.getParameter<double>("deltaRSubJets"))
 {
       usesResource("TFileService");
+      usesResource();
   //now do what ever initialization you need
   std::string module_type  = iConfig.getParameter<std::string>("@module_type");
   std::string module_label = iConfig.getParameter<std::string>("@module_label");
@@ -1432,6 +1434,12 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
 
   edm::Handle<edm::TriggerResults> trigRes;
   iEvent.getByToken(triggerTable_, trigRes);
+  if (not trigRes.isValid()) {
+  edm::LogWarning("HLTBTagAnalyzerT::analyze")
+      << "invalid handle for input collection: \""// << triggerTable_->inputTagLabel()
+      << "\" (NTuple branches for HLT paths)";
+      // triggerTable_->clear();
+  }
 
   EventInfo.nBitTrigger = int(triggerPathNames_.size()/32)+1;
   for(int i=0; i<EventInfo.nBitTrigger; ++i) EventInfo.BitTrigger[i] = 0;
