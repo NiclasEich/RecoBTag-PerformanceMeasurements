@@ -259,8 +259,8 @@ globalTag = options.globalTag
 # if options.runOnData:
 #     globalTag = options.dataGlobalTag
 
-trigresults='TriggerResults::HLT'
-# trigresults='TriggerResults'
+# trigresults='TriggerResults::HLT'
+trigresults='TriggerResults'
 if options.runOnData: options.isReHLT=False
 if options.isReHLT: trigresults = trigresults+'2'
 
