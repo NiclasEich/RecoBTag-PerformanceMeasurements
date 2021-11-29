@@ -36,7 +36,7 @@ HLTInputFiles = [
     "/store/mc/Run3Winter21DRMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/140000/2c5880e9-81b8-4ec1-8e34-31764390592d.root",
     "/store/mc/Run3Winter21DRMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/140000/57aafa00-4aa6-4b52-9f7a-dcf93808dc05.root",
     "/store/mc/Run3Winter21DRMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/140000/5f409ffb-ef07-4825-944a-10982d1f7595.root",
-    "/store/mc/Run3Winter21DRMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/140000/9c37be55-f5ee-4fb3-92c3-5c7d0e31508a.root",
+    # "/store/mc/Run3Winter21DRMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/140000/9c37be55-f5ee-4fb3-92c3-5c7d0e31508a.root",
     "/store/mc/Run3Winter21DRMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/140000/b71f8b97-5831-4602-a157-5aeefa1c7b36.root",
     "/store/mc/Run3Winter21DRMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/140000/cfea9793-91e8-415e-859a-afb876bad76b.root",
     "/store/mc/Run3Winter21DRMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/140000/fff0d30c-e551-4866-b236-391f1e5ef906.root",
@@ -74,14 +74,16 @@ HLT_recos = [
             # # "HLT_Run3TRKPixelOnlyCleaned3",
             # # "HLT_Run3TRKPixelOnlyCleaned4",
             # "HLT_Run3TRKForBTag",
-            "HLT_Run3TRKForBTag_Replacement",
-            "HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo",
+            # "HLT_Run3TRKForBTag_Replacement",
+            # "HLT_Run3TRKForBTag_Replacement_Run3TRKNoCaloJets_NewCalo",
+            "HLT_Run3TRK_ROICaloGlobalPF",
+            "HLT_Run3TRK_ROICaloROIPF",
             # "HLT_Run3TRKForBTag_2",
             # "HLT_Run3TRKForBTag_3",
             # "HLT_Run3TRKForBTag_Pt"
             ]
 
-executableHLT = "cmsRun runHLTBTagAnalyzer_cfg.py defaults=Run3 reco=RECOKEY runOnData=False outFilename=OUTNAME globalTag=120X_mcRun3_2021_realistic_v9"
+executableHLT = "cmsRun runHLTBTagAnalyzer_cfg.py defaults=Run3 reco=RECOKEY runOnData=False outFilename=OUTNAME globalTag=122X_mcRun3_2021_realistic_v1"
 executable = "cmsRun runBTagAnalyzer_cfg.py defaults=Run3 runOnData=False outFilename=OUTNAME"
 
 
@@ -127,7 +129,7 @@ for i,file in enumerate(MINIAODInputFiles):
 commandList = commandListHLT
 # commandList = commandListOff
 print (commandList)
-print len(commandList)
+print (len(commandList))
 
 p = multiprocessing.Pool(20)
 p.map(subprocessWrapper, commandList)
@@ -138,7 +140,10 @@ p.map(subprocessWrapper, commandList)
 # haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/22_10_21_12X/"
 # haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/26_10_21_12X/"
 # haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/26_10_21_12X_8regions/"
-haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/26_10_21_12X_tight/"
+# haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/26_10_21_12X_tight/"
+# haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/24_11_21_12X/"
+# haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/27_11_21_12X/"
+haddPath = "/nfs/dust/cms/user/sewuchte/BTV/Run3/nTuples/29_11_21_12X/"
 
 if not os.path.exists(haddPath):
     os.makedirs(haddPath)
@@ -146,9 +151,9 @@ if not os.path.exists(haddPath):
 for reco in HLT_recos:
     infolderHLT = "OutputOnline_"+reco+"/"
     haddcommand = "hadd -f "+haddPath+"/ttbar_"+reco+".root "+infolderHLT+"*.root"
-    print haddcommand
+    print (haddcommand)
     subprocessWrapper(haddcommand)
 
 haddcommandOff = "hadd -f "+haddPath+"/ttbar_Offline.root OutputOffline/*.root"
-print haddcommandOff
-subprocessWrapper(haddcommandOff)
+# print (haddcommandOff)
+# subprocessWrapper(haddcommandOff)

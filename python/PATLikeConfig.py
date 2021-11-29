@@ -153,6 +153,7 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
 
         process.hltFastPixelBLifetimeL3AssociatorPat = process.hltFastPixelBLifetimeL3Associator.clone(
             jets = cms.InputTag(calojetsCutted),
+            tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplaceCalo==False else "hltMergedTracksROIForBTag"),
         )
 
         process.HLTBtagDeepCSVSequenceCaloPat = cms.Sequence(
@@ -211,7 +212,7 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
 
         process.hltFastPixelBLifetimeL3AssociatorPat = process.hltFastPixelBLifetimeL3AssociatorROIForBTag.clone(
             jets = cms.InputTag(calojetsCutted),
-            tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplace==False else "hltMergedTracksROIForBTag"),
+            tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplaceCalo==False else "hltMergedTracksROIForBTag"),
         )
 
         process.HLTBtagDeepCSVSequenceCaloPat = cms.Sequence(

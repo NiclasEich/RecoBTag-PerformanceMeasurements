@@ -699,10 +699,10 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     ####                    MC_PFBTagDeepCSV_v10                   ###
     ############################################################################
 
-    process.hltBTagPFDeepCSV4p06Single = process.hltBTagPFDeepCSV4p06Single.clone(
-        JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPF","probb"),
-        Jets = cms.InputTag("hltPFJetForBtag"),
-    )
+    # process.hltBTagPFDeepCSV4p06Single = process.hltBTagPFDeepCSV4p06Single.clone(
+    #     JetTags = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsPF","probb"),
+    #     Jets = cms.InputTag("hltPFJetForBtag"),
+    # )
 
     # process.hltPreMCPFBTagDeepCSV = process.hltPreMCPFBTagDeepCSV.clone()
 

@@ -7,9 +7,9 @@ common = {
                 'JetInfo','JetSV','CSVTagVar','JetDeepCSV','JetDeepFlavour','CSVTagTrackVar', 'DeepFlavourFeat',],
 	'eras' : ['Run3'],
 	'miniAOD' : True,
-	'usePuppi' : False,
+	'usePuppi' : True,
 	'usePuppiForFatJets' : True,
-	'usePuppiForBTagging' : False,
+	'usePuppiForBTagging' : True,
 	# 'dataGlobalTag' : '122X_dataRun3_HLT_v1', #for data
 	'mcGlobalTag' : '122X_mcRun3_2021_realistic_v1', #for MC
 	'remakeAllDiscr' : True,

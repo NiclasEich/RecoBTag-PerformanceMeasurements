@@ -175,7 +175,6 @@ options.register(
     VarParsing.multiplicity.singleton,
     VarParsing.varType.int,
     "skip N events")
-
 options.register('runTiming', False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
@@ -228,10 +227,12 @@ from RecoBTag.PerformanceMeasurements.HLTBTagAnalyzer_cff import *
 btagana_tmp = HLTBTagAnalyzer.clone()
 print('Storing the variables from the following groups:')
 options_to_change = set() #store which swtiches we need on
+
 for requiredGroup in options.groups:
-  print(requiredGroup)
+  # print(requiredGroup)
   found=False
   for existingGroup in btagana_tmp.groups:
+    # print (existingGroup)
     if(requiredGroup==existingGroup.group):
       existingGroup.store=True
       for var in existingGroup.variables:
@@ -259,6 +260,7 @@ globalTag = options.globalTag
 #     globalTag = options.dataGlobalTag
 
 trigresults='TriggerResults::HLT'
+# trigresults='TriggerResults'
 if options.runOnData: options.isReHLT=False
 if options.isReHLT: trigresults = trigresults+'2'
 
@@ -374,12 +376,17 @@ elif options.reco == 'HLT_Run3TRK_Quadruplets':
 
 elif options.reco == 'HLT_Run3TRK_ROICaloROIPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    process = customizeHLTforRun3Tracking(process)
-    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_ROIPF import *
-    process = customizeRun3_BTag_ROICalo_ROIPF(process, True)
+    # from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    # process = customizeHLTforRun3Tracking(process)
+    # from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_ROIPF import *
+    # process = customizeRun3_BTag_ROICalo_ROIPF(process, True)
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    # process = MUO_newReco(process)
+    process = BTV_roiCalo_roiPF_DeepCSV(process)
+    process = BTV_roiCalo_roiPF_DeepJet(process)
     update_jmeCalibs = True
-    process = fixMenu(process)
+    # process = fixMenu(process)
     pvSource                 = "hltVerticesPFFilterROIForBTag"
     pfCandidates             = 'hltParticleFlowROIForBTag'
     trackSource              = "hltMergedTracksROIForBTag"
@@ -433,13 +440,20 @@ for _modname in process.outputModules_():
        # if options.verbosity > 0:
        #    print '> removed cms.OutputModule:', _modname
 
-# remove cms.EndPath objects from HLT config-dump
-for _modname in process.endpaths_():
-    _mod = getattr(process, _modname)
-    if type(_mod) == cms.EndPath:
-       process.__delattr__(_modname)
-       # if options.verbosity > 0:
-       #    print '> removed cms.EndPath:', _modname
+# # remove cms.EndPath objects from HLT config-dump
+# for _modname in process.endpaths_():
+#     _mod = getattr(process, _modname)
+#     if type(_mod) == cms.EndPath:
+#        process.__delattr__(_modname)
+#        # if options.verbosity > 0:
+#        #    print '> removed cms.EndPath:', _modname
+
+### Drop EndPaths ###
+els = process.__dict__
+for el in list(els):
+    if  ( ( type(els[el]) == cms.OutputModule) or (type(els[el]) == cms.EndPath)  or el == "PrescaleService" or el == "datasets" or el == "streams" ):
+        #print("Deleting %s (%s)"%(el, type(els[el])))
+        delattr(process, el)
 
 ### customizations
 #          only relevant for Ntuplizing
@@ -632,6 +646,16 @@ else:
     # multi-threading settings
     process.options.numberOfThreads = cms.untracked.uint32(options.numThreads if (options.numThreads > 1) else 1)
     process.options.numberOfStreams = cms.untracked.uint32(options.numStreams if (options.numStreams > 1) else 1)
+    process.options.sizeOfStackForThreadsInKB = cms.untracked.uint32(10240)
+    process.options.makeTriggerResults = cms.untracked.bool(True)
+    process.hltTrigReport = cms.EDAnalyzer("HLTrigReport",
+        HLTriggerResults = cms.InputTag("TriggerResults","","@currentProcess"),
+        ReferencePath = cms.untracked.string('HLTriggerFinalPath'),
+        ReferenceRate = cms.untracked.double(100.0),
+        reportBy = cms.untracked.string('job'),
+        resetBy = cms.untracked.string('never'),
+        serviceBy = cms.untracked.string('never')
+    )
 
 process.GlobalTag.globaltag = globalTag
 
@@ -875,9 +899,9 @@ if options.runTiming:
     # process.dqmOutput.fileName = cms.untracked.string(options.output)
 
 process.p = cms.Path(
-    process.allEvents
-    * process.selectedEvents
-    * process.analyzerSeq
+    # process.allEvents
+    # * process.selectedEvents
+    process.analyzerSeq
     # * process.trkMonitoringSeq
     # * process.vtxMonitoringSeq
 )
@@ -901,4 +925,6 @@ print ('')
 print ('process.GlobalTag =', process.GlobalTag.globaltag)
 print ('process.source =', process.source.dumpPython())
 print ('process.maxEvents =', process.maxEvents.input)
+print ('process.numberOfStreams =', process.options.numberOfStreams)
+print ('process.numberOfThreads =', process.options.numberOfThreads)
 print ('-------------------------------')
