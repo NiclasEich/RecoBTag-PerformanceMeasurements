@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-def customizeRun3_BTag_GlobalCalo_GlobalPF(process, addDeepJetPaths = True, replaceBTagMuPaths = True, useNewDeepJetModel = False):
+def customizeRun3_BTag_GlobalCalo_GlobalPF(process, addDeepJetPaths = True, replaceBTagMuPaths = True, useNewDeepJetModel = True):
 
     # delete the old legacy sequences, to be sure
     if hasattr(process, "HLTDoLocalPixelSequenceRegForBTag"):
