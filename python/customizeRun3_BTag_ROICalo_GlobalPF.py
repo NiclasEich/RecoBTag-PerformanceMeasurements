@@ -2661,7 +2661,8 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
             process.hltBSoftMuonDiJet20L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
-        del process.HLT_BTagMu_AK4DiJet20_Mu5_noalgo_v13
+        if hasattr(process, "HLT_BTagMu_AK4DiJet20_Mu5_noalgo_v13"):
+            del process.HLT_BTagMu_AK4DiJet20_Mu5_noalgo_v13
 
     ############################################################################
     #### HLT_BTagMu_AK4DiJet40_Mu5_v13
@@ -2679,7 +2680,8 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
             process.hltBSoftMuonDiJet40L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
-        del process.HLT_BTagMu_AK4DiJet40_Mu5_noalgo_v13
+        if hasattr(process, "HLT_BTagMu_AK4DiJet40_Mu5_noalgo_v13"):
+            del process.HLT_BTagMu_AK4DiJet40_Mu5_noalgo_v13
 
     ############################################################################
     #### HLT_BTagMu_AK4DiJet70_Mu5_v13
@@ -2697,7 +2699,8 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
             process.hltBSoftMuonDiJet70L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
-        del process.HLT_BTagMu_AK4DiJet70_Mu5_noalgo_v13
+        if hasattr(process, "HLT_BTagMu_AK4DiJet70_Mu5_noalgo_v13"):
+            del process.HLT_BTagMu_AK4DiJet70_Mu5_noalgo_v13
 
     ############################################################################
     #### HLT_BTagMu_AK4DiJet110_Mu5_v13
@@ -2715,7 +2718,8 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
             process.hltBSoftMuonDiJet110L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
-        del process.HLT_BTagMu_AK4DiJet110_Mu5_noalgo_v13
+        if hasattr(process, "HLT_BTagMu_AK4DiJet110_Mu5_noalgo_v13"):
+            del process.HLT_BTagMu_AK4DiJet110_Mu5_noalgo_v13
 
     ############################################################################
     #### HLT_BTagMu_AK4DiJet170_Mu5_v12
@@ -2733,7 +2737,8 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
             process.hltBSoftMuonDiJet200L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
-        del process.HLT_BTagMu_AK4DiJet170_Mu5_noalgo_v12
+        if hasattr(process, "HLT_BTagMu_AK4DiJet170_Mu5_noalgo_v12"):
+            del process.HLT_BTagMu_AK4DiJet170_Mu5_noalgo_v12
 
     ############################################################################
     #### HLT_BTagMu_AK4Jet300_Mu5_v12
@@ -2751,7 +2756,8 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
             process.hltBSoftMuonJet300L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
-        del process.HLT_BTagMu_AK4Jet300_Mu5_noalgo_v12
+        if hasattr(process, "HLT_BTagMu_AK4Jet300_Mu5_noalgo_v12"):
+            del process.HLT_BTagMu_AK4Jet300_Mu5_noalgo_v12
 
     ############################################################################
     #### HLT_BTagMu_AK8DiJet170_Mu5_v9
@@ -2769,7 +2775,8 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
             process.hltBSoftMuonAK8DiJet170L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
-        del process.HLT_BTagMu_AK8DiJet170_Mu5_noalgo_v9
+        if hasattr(process, "HLT_BTagMu_AK8DiJet170_Mu5_noalgo_v9"):
+            del process.HLT_BTagMu_AK8DiJet170_Mu5_noalgo_v9
 
     ############################################################################
     #### HLT_BTagMu_AK8Jet170_DoubleMu5_v2
@@ -2788,7 +2795,8 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
             process.hltBSoftMuonAK8Jet170L1FastJetDoubleMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
-        del process.HLT_BTagMu_AK8Jet170_DoubleMu5_noalgo_v2
+        if hasattr(process, "HLT_BTagMu_AK8Jet170_DoubleMu5_noalgo_v2"):
+            del process.HLT_BTagMu_AK8Jet170_DoubleMu5_noalgo_v2
 
     ############################################################################
     #### HLT_BTagMu_AK8Jet300_Mu5_v12
@@ -2806,7 +2814,8 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
             process.hltBSoftMuonJet300L1FastJetAK8Mu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
-        del process.HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12
+        if hasattr(process, "HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12"):
+            del process.HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12
 
     if addDeepJetPaths:
         if hasattr(process, "schedule"):
