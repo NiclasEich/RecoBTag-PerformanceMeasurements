@@ -259,8 +259,8 @@ globalTag = options.globalTag
 # if options.runOnData:
 #     globalTag = options.dataGlobalTag
 
-trigresults='TriggerResults::HLT'
-# trigresults='TriggerResults'
+# trigresults='TriggerResults::HLT'
+trigresults='TriggerResults'
 if options.runOnData: options.isReHLT=False
 if options.isReHLT: trigresults = trigresults+'2'
 
@@ -661,10 +661,10 @@ process.GlobalTag.globaltag = globalTag
 
 #-------------------------------------
 ## Output Module Configuration (expects a path 'p')
-process.out = cms.OutputModule("PoolOutputModule",
-    fileName = cms.untracked.string(options.outFilename),
-    SelectEvents   = cms.untracked.PSet( SelectEvents = cms.vstring('p') ),
-)
+# process.out = cms.OutputModule("PoolOutputModule",
+#     fileName = cms.untracked.string(options.outFilename),
+#     SelectEvents   = cms.untracked.PSet( SelectEvents = cms.vstring('p') ),
+# )
 #-------------------------------------
 # if options.runOnData:
 #     # Remove MC matching when running over data
@@ -898,15 +898,15 @@ if options.runTiming:
     process.FastTimerService.dqmModuleTimeResolution =     1.
     # process.dqmOutput.fileName = cms.untracked.string(options.output)
 
-process.p = cms.Path(
-    # process.allEvents
-    # * process.selectedEvents
-    process.analyzerSeq
-    # * process.trkMonitoringSeq
-    # * process.vtxMonitoringSeq
-)
+# process.p = cms.Path(
+#     # process.allEvents
+#     # * process.selectedEvents
+#     process.analyzerSeq
+#     # * process.trkMonitoringSeq
+#     # * process.vtxMonitoringSeq
+# )
 process.analysisNTupleEndPath = cms.EndPath(process.btagana)
-process.schedule.extend([process.p])
+process.schedule.extend([process.analysisNTupleEndPath])
 
 # if options.runTiming:
 #     process.p *= process.FastTimerOutput

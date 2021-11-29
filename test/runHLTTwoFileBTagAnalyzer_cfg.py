@@ -261,7 +261,7 @@ globalTag = options.globalTag
 # trigresults="TriggerResults::HLT2"
 # trigresults= cms.InputTag("TriggerResults","","HLT2")
 # trigresults= cms.InputTag("TriggerResults")
-trigresults= cms.InputTag("TriggerResults","","HLT")
+trigresults= cms.InputTag("TriggerResults","","HLT2")
 if options.runOnData: options.isReHLT=False
 # if options.isReHLT: trigresults = trigresults+"2"
 
@@ -807,10 +807,10 @@ process.GlobalTag.globaltag = globalTag
 
 #-------------------------------------
 ## Output Module Configuration (expects a path "p")
-process.out = cms.OutputModule("PoolOutputModule",
-    fileName = cms.untracked.string(options.outFilename),
-    SelectEvents   = cms.untracked.PSet( SelectEvents = cms.vstring("p") ),
-)
+# process.out = cms.OutputModule("PoolOutputModule",
+#     fileName = cms.untracked.string(options.outFilename),
+#     SelectEvents   = cms.untracked.PSet( SelectEvents = cms.vstring("p") ),
+# )
 #-------------------------------------
 # if options.runOnData:
 #     # Remove MC matching when running over data
@@ -883,16 +883,16 @@ process.btagana.rho                   = cms.InputTag(rho)
 # process.btagana.triggerTable          = cms.InputTag("TriggerResults::HLT") # Data and MC
 process.btagana.triggerTable          = trigresults # Data and MC
 process.btagana.genParticles          = cms.InputTag(genParticles)
-process.hltPatJetPartons.particles = cms.InputTag(genParticles)
-process.hltPatJetPartons.src = cms.InputTag("generator:SIM")
-process.hltPatJetPartonsLegacy.genParticles = cms.InputTag(genParticles)
-process.hltPatJetPartonsLegacy.src = cms.InputTag(genParticles)
-process.hltPackedGenParticles.genParticles = cms.InputTag(genParticles)
-process.hltPackedGenParticles.inputOriginal = cms.InputTag(genParticles)
-process.hltPrunedGenParticlesWithStatusOne.genParticles = cms.InputTag(genParticles)
-process.hltPrunedGenParticlesWithStatusOne.src = cms.InputTag(genParticles)
-process.hltSlimmedGenJets.src = cms.InputTag("ak4GenJetsNoNu::HLT")
-process.hltSlimmedGenJets.packedGenParticles = cms.InputTag("packedGenParticles::RECO")
+# process.hltPatJetPartons.particles = cms.InputTag(genParticles)
+# process.hltPatJetPartons.src = cms.InputTag("generator:SIM")
+# process.hltPatJetPartonsLegacy.genParticles = cms.InputTag(genParticles)
+# process.hltPatJetPartonsLegacy.src = cms.InputTag(genParticles)
+# process.hltPackedGenParticles.genParticles = cms.InputTag(genParticles)
+# process.hltPackedGenParticles.inputOriginal = cms.InputTag(genParticles)
+# process.hltPrunedGenParticlesWithStatusOne.genParticles = cms.InputTag(genParticles)
+# process.hltPrunedGenParticlesWithStatusOne.src = cms.InputTag(genParticles)
+# process.hltSlimmedGenJets.src = cms.InputTag("ak4GenJetsNoNu::HLT")
+# process.hltSlimmedGenJets.packedGenParticles = cms.InputTag("packedGenParticles::RECO")
 process.btagana.candidates            = cms.InputTag(pfCandidates)
 process.btagana.runJetVariables       = options.runJetVariables
 process.btagana.runCaloJetVariables   = options.runCaloJetVariables
@@ -1069,15 +1069,16 @@ if options.runTiming:
     process.FastTimerService.dqmModuleTimeResolution =     1.
     # process.dqmOutput.fileName = cms.untracked.string(options.output)
 
-process.p = cms.Path(
-    process.allEvents
-    * process.selectedEvents
-    * process.analyzerSeq
-    # * process.trkMonitoringSeq
-    # * process.vtxMonitoringSeq
-)
+# process.p = cms.Path(
+#     process.allEvents
+#     * process.selectedEvents
+#     * process.analyzerSeq
+#     # * process.trkMonitoringSeq
+#     # * process.vtxMonitoringSeq
+# )
 process.analysisNTupleEndPath = cms.EndPath(process.btagana)
-process.schedule.extend([process.p])
+# process.schedule.extend([process.p])
+process.schedule.extend([process.analysisNTupleEndPath])
 
 # if options.runTiming:
 #     process.p *= process.FastTimerOutput
