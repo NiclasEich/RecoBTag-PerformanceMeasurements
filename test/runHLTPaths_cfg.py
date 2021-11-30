@@ -152,6 +152,8 @@ elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu':
     process = BTV_noCalo_roiPF_DeepJet(process)
     process.hltTauPt15MuPts711Mass1p3to2p1IsoCharge1.IsoTracksSrc = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
     process.hltTauPt15MuPts711Mass1p3to2p1Iso.IsoTracksSrc = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
+    update_jmeCalibs = True
+
 
 elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
@@ -205,13 +207,20 @@ for _modname in process.outputModules_():
        #    print '> removed cms.OutputModule:', _modname
 
 # remove cms.EndPath objects from HLT config-dump
-for _modname in process.endpaths_():
-    _mod = getattr(process, _modname)
-    if type(_mod) == cms.EndPath:
-       process.__delattr__(_modname)
-       # if options.verbosity > 0:
-       #    print '> removed cms.EndPath:', _modname
+# for _modname in process.endpaths_():
+#     _mod = getattr(process, _modname)
+#     if type(_mod) == cms.EndPath:
+#        process.__delattr__(_modname)
+#        # if options.verbosity > 0:
+#        #    print '> removed cms.EndPath:', _modname
 
+
+### Drop EndPaths ###
+els = process.__dict__
+for el in list(els):
+    if  ( ( type(els[el]) == cms.OutputModule) or (type(els[el]) == cms.EndPath)  or el == "PrescaleService" or el == "datasets" or el == "streams" ):
+        #print("Deleting %s (%s)"%(el, type(els[el])))
+        delattr(process, el)
 
 # list of patterns to determine paths to keep
 keepPaths = [
@@ -234,6 +243,12 @@ keepPaths = [
   # 'HLT_*_v*',
   # '*',
   'HLT_*',
+  # 'HLT_QuadPFJet*DeepJet*',
+  # 'HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8',
+  'Status_OnGPU',
+  'Status_OnCPU',
+  'HLTriggerFinalPath',
+  'HLTriggerFirstPath',
 ]
 
 removePaths = []
@@ -377,6 +392,18 @@ else:
     # multi-threading settings
     process.options.numberOfThreads = cms.untracked.uint32(options.numThreads if (options.numThreads > 1) else 1)
     process.options.numberOfStreams = cms.untracked.uint32(options.numStreams if (options.numStreams > 1) else 1)
+    process.options.makeTriggerResults = cms.untracked.bool(True)
+    process.hltTrigReport = cms.EDAnalyzer("HLTrigReport",
+        HLTriggerResults = cms.InputTag("TriggerResults","","@currentProcess"),
+        ReferencePath = cms.untracked.string('HLTriggerFinalPath'),
+        ReferenceRate = cms.untracked.double(100.0),
+        reportBy = cms.untracked.string('job'),
+        resetBy = cms.untracked.string('never'),
+        serviceBy = cms.untracked.string('never')
+    )
+    process.HLTAnalyzerEndpath = cms.EndPath(process.hltTrigReport)
+    process.schedule.extend([process.HLTAnalyzerEndpath])
+    process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 #Set GT by hand:
 # process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")

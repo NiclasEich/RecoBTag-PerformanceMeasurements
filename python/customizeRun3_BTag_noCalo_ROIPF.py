@@ -56,7 +56,8 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True, replaceBTag
 
     #speed up PFPS
     process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
-        skipPS = cms.bool(True)
+        # skipPS = cms.bool(True)
+        skipPS = cms.bool(False)
     )
 
     #our own tracking region
