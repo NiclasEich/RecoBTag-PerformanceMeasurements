@@ -21,8 +21,8 @@ printf -v inputFilesStr '%s,' "${inputFiles[@]}"
 # hltGetConfiguration /dev/CMSSW_12_2_0_pre2/GRun --full --offline --no-output --data --process MYHLT --type GRun \
 #  --prescale 2.0e34+ZB+HLTPhysics --globaltag auto:run3_hlt_GRun --input "${inputFilesStr%,}" --max-events -1 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
 #  > tmpRates.py
-hltGetConfiguration /dev/CMSSW_12_2_0_pre2/GRun --full --offline --no-output --data --process MYHLT --type GRun \
- --prescale 2.0e34+ZB+HLTPhysics --globaltag auto:run3_hlt_GRun --max-events -1 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input \
+hltGetConfiguration /dev/CMSSW_12_2_0_pre2/GRun --full --offline --no-output --data --process HLT2 --type GRun \
+ --prescale 2.0e34+ZB+HLTPhysics --globaltag auto:run3_hlt --max-events -1 --customise HLTrigger/Configuration/customizeHLTforCMSSW.customiseFor2018Input --eras Run2_2018 \
  > tmpRates.py
 
  # a. comment out the following lines:
