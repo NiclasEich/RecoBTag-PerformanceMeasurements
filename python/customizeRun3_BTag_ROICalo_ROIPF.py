@@ -2820,6 +2820,33 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         if hasattr(process, "HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12"):
              del process.HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12
 
+        if hasattr(process, "schedule"):
+            process.schedule.extend([
+                process.HLT_BTagMu_AK4DiJet20_Mu5_v13,
+                process.HLT_BTagMu_AK4DiJet40_Mu5_v13,
+                process.HLT_BTagMu_AK4DiJet70_Mu5_v13,
+                process.HLT_BTagMu_AK4DiJet110_Mu5_v13,
+                process.HLT_BTagMu_AK4DiJet170_Mu5_v12,
+                process.HLT_BTagMu_AK4Jet300_Mu5_v12,
+                process.HLT_BTagMu_AK8DiJet170_Mu5_v9,
+                process.HLT_BTagMu_AK8Jet170_DoubleMu5_v2,
+                process.HLT_BTagMu_AK8Jet300_Mu5_v12,
+
+            ])
+        elif hasattr(process, "HLTSchedule"):
+            process.HLTSchedule.extend([
+                process.HLT_BTagMu_AK4DiJet20_Mu5_v13,
+                process.HLT_BTagMu_AK4DiJet40_Mu5_v13,
+                process.HLT_BTagMu_AK4DiJet70_Mu5_v13,
+                process.HLT_BTagMu_AK4DiJet110_Mu5_v13,
+                process.HLT_BTagMu_AK4DiJet170_Mu5_v12,
+                process.HLT_BTagMu_AK4Jet300_Mu5_v12,
+                process.HLT_BTagMu_AK8DiJet170_Mu5_v9,
+                process.HLT_BTagMu_AK8Jet170_DoubleMu5_v2,
+                process.HLT_BTagMu_AK8Jet300_Mu5_v12,
+
+            ])
+
     if addDeepJetPaths:
         if hasattr(process, "schedule"):
             process.schedule.extend([
