@@ -51,6 +51,17 @@ git clone -b Run3_ForJIRA --recursive https://github.com/SWuchterl/RecoBTag-Perf
 mkdir -p RecoBTag/Combined/data/DeepFlavour_HLT_12X
 cp RecoBTag/PerformanceMeasurements/test/DeepJetnoNorm_04.onnx RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx
 
+
+cd HLTrigger/Configuration/python/Run3
+./downloadCustomizationFunctions.sh
+cd $CMSSW_BASE/src/RecoMuon/TrackerSeedGenerator/data
+git clone -b dev https://github.com/wonpoint4/RecoMuon-TrackerSeedGenerator.git TempNewMuonData
+mv  TempNewMuonData/* .
+mv TempNewMuonData/OIseeding/* OIseeding
+rm -rf TempNewMuonData/
+
+cd $CMSSW_BASE/src/
+
 scram b -j12
 
 ```
