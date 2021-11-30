@@ -144,6 +144,15 @@ elif options.reco == 'HLT_Run3TRK_noCaloROIPF':
     update_jmeCalibs = True
     process = fixMenu(process)
 
+elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_noCalo_roiPF_DeepJet(process)
+    process.hltTauPt15MuPts711Mass1p3to2p1IsoCharge1.IsoTracksSrc = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
+    process.hltTauPt15MuPts711Mass1p3to2p1Iso.IsoTracksSrc = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
+
 elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
@@ -223,7 +232,8 @@ keepPaths = [
   # 'HLT_PFMET*_PFMHT*_v*',
   # 'HLT_*DeepCSV*_v*',
   # 'HLT_*_v*',
-  '*',
+  # '*',
+  'HLT_*',
 ]
 
 removePaths = []
