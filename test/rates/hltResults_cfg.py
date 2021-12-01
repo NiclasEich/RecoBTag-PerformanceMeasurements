@@ -138,6 +138,15 @@ elif opts.reco == 'HLT_Run3TRK_noCaloROIPF':
     process = fixMenu(process)
     prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
+elif opts.reco == 'HLT_Run3TRK_noCaloROIPF_Mu':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_noCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = True
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
 elif opts.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking

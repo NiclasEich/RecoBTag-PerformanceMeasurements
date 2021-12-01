@@ -2643,16 +2643,20 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
         process.HLTEndSequence
     )
     # Rename NoAlgo BTagMu branches and delete NoAlgo paths afterwards
+    # Rename NoAlgo BTagMu branches and delete NoAlgo paths afterwards
     if replaceBTagMuPaths:
 
     ############################################################################
     #### HLT_BTagMu_AK4DiJet20_Mu5_v13
     ############################################################################
+        process.hltPreBTagMuAK4DiJet20Mu5 = process.hltPreBTagMuAK4DiJet20Mu5noalgo.Clone()
+        if hasattr(process, "hltPreBTagMuAK4DiJet20Mu5noalgo"):
+            del process.hltPreBTagMuAK4DiJet20Mu5noalgo
 
         process.HLT_BTagMu_AK4DiJet20_Mu5_v13 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sMu3JetC16dRMax0p4+
-            process.hltPreBTagMuAK4DiJet20Mu5noalgo+
+            process.hltPreBTagMuAK4DiJet20Mu5+
             process.HLTAK4CaloJetsSequence+
             process.hltBDiJet20L1FastJetCentral+
             process.HLTBTagMuDiJet20L1FastJetSequenceL25+
@@ -2667,11 +2671,14 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     ############################################################################
     #### HLT_BTagMu_AK4DiJet40_Mu5_v13
     ############################################################################
+        process.hltPreBTagMuAK4DiJet40Mu5 = process.hltPreBTagMuAK4DiJet40Mu5noalgo.Clone()
+        if hasattr(process, "hltPreBTagMuAK4DiJet40Mu5noalgo"):
+            del process.hltPreBTagMuAK4DiJet40Mu5noalgo
 
         process.HLT_BTagMu_AK4DiJet40_Mu5_v13 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sMu3JetC35dRMax0p4+
-            process.hltPreBTagMuAK4DiJet40Mu5noalgo+
+            process.hltPreBTagMuAK4DiJet40Mu5+
             process.HLTAK4CaloJetsSequence+
             process.hltBDiJet40L1FastJetCentral+
             process.HLTBTagMuDiJet40L1FastJetSequenceL25+
@@ -2686,11 +2693,14 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     ############################################################################
     #### HLT_BTagMu_AK4DiJet70_Mu5_v13
     ############################################################################
+        process.hltPreBTagMuAK4DiJet70Mu5 = process.hltPreBTagMuAK4DiJet70Mu5noalgo.Clone()
+        if hasattr(process, "hltPreBTagMuAK4DiJet70Mu5noalgo"):
+            del process.hltPreBTagMuAK4DiJet70Mu5noalgo
 
         process.HLT_BTagMu_AK4DiJet70_Mu5_v13 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sMu3JetC60dRMax0p4+
-            process.hltPreBTagMuAK4DiJet70Mu5noalgo+
+            process.hltPreBTagMuAK4DiJet70Mu5+
             process.HLTAK4CaloJetsSequence+
             process.hltBDiJet70L1FastJetCentral+
             process.HLTBTagMuDiJet70L1FastJetSequenceL25+
@@ -2705,11 +2715,14 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     ############################################################################
     #### HLT_BTagMu_AK4DiJet110_Mu5_v13
     ############################################################################
+        process.hltPreBTagMuAK4DiJet110Mu5 = process.hltPreBTagMuAK4DiJet110Mu5noalgo.Clone()
+        if hasattr(process, "hltPreBTagMuAK4DiJet110Mu5noalgo"):
+            del process.hltPreBTagMuAK4DiJet110Mu5noalgo
 
         process.HLT_BTagMu_AK4DiJet110_Mu5_v13 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sMu3JetC80dRMax0p4+
-            process.hltPreBTagMuAK4DiJet110Mu5noalgo+
+            process.hltPreBTagMuAK4DiJet110Mu5+
             process.HLTAK4CaloJetsSequence+
             process.hltBDiJet110L1FastJetCentral+
             process.HLTBTagMuDiJet110L1FastJetSequenceL25+
@@ -2724,11 +2737,14 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     ############################################################################
     #### HLT_BTagMu_AK4DiJet170_Mu5_v12
     ############################################################################
+        process.hltPreBTagMuAK4DiJet170Mu5 = process.hltPreBTagMuAK4DiJet170Mu5noalgo.Clone()
+        if hasattr(process, "hltPreBTagMuAK4DiJet170Mu5noalgo"):
+            del process.hltPreBTagMuAK4DiJet170Mu5noalgo
 
         process.HLT_BTagMu_AK4DiJet170_Mu5_v12 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sMu3JetC120dRMax0p4+
-            process.hltPreBTagMuAK4DiJet170Mu5noalgo+
+            process.hltPreBTagMuAK4DiJet170Mu5+
             process.HLTAK4CaloJetsSequence+
             process.hltBDiJet200L1FastJetCentral+
             process.HLTBTagMuDiJet200L1FastJetSequenceL25+
@@ -2743,11 +2759,14 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     ############################################################################
     #### HLT_BTagMu_AK4Jet300_Mu5_v12
     ############################################################################
+        process.hltPreBTagMuAK4Jet300Mu5 = process.hltPreBTagMuAK4Jet300Mu5noalgo.Clone()
+        if hasattr(process, "hltPreBTagMuAK4Jet300Mu5noalgo"):
+            del process.hltPreBTagMuAK4Jet300Mu5noalgo
 
         process.HLT_BTagMu_AK4Jet300_Mu5_v12 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sSingleJet200+
-            process.hltPreBTagMuAK4Jet300Mu5noalgo+
+            process.hltPreBTagMuAK4Jet300Mu5+
             process.HLTAK4CaloJetsSequence+
             process.hltBJet300L1FastJetCentral+
             process.HLTBTagMuJet300L1FastJetSequenceL25+
@@ -2762,11 +2781,14 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     ############################################################################
     #### HLT_BTagMu_AK8DiJet170_Mu5_v9
     ############################################################################
+        process.hltPreBTagMuAK8DiJet170Mu5 = process.hltPreBTagMuAK8DiJet170Mu5noalgo.Clone()
+        if hasattr(process, "hltPreBTagMuAK8DiJet170Mu5noalgo"):
+            del process.hltPreBTagMuAK8DiJet170Mu5noalgo
 
         process.HLT_BTagMu_AK8DiJet170_Mu5_v9 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sMu3JetC120dRMax0p8+
-            process.hltPreBTagMuAK8DiJet170Mu5noalgo+
+            process.hltPreBTagMuAK8DiJet170Mu5+
             process.HLTAK8CaloJetsSequence+
             process.hltBAK8DiJet170L1FastJetCentral+
             process.HLTBTagMuAK8DiJet170L1FastJetSequenceL25+
@@ -2781,11 +2803,14 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     ############################################################################
     #### HLT_BTagMu_AK8Jet170_DoubleMu5_v2
     ############################################################################
+        process.hltPreBTagMuAK8Jet170DoubleMu5 = process.hltPreBTagMuAK8Jet170DoubleMu5noalgo.Clone()
+        if hasattr(process, "hltPreBTagMuAK8Jet170DoubleMu5noalgo"):
+            del process.hltPreBTagMuAK8Jet170DoubleMu5noalgo
 
         process.HLT_BTagMu_AK8Jet170_DoubleMu5_v2 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sDoubleMu0Jet90er2p5dRMax0p8dRMu1p6+
-            process.hltPreBTagMuAK8Jet170DoubleMu5noalgo+
+            process.hltPreBTagMuAK8Jet170DoubleMu5+
             process.hltDoubleMuon0L1Filtered0+
             process.HLTAK8CaloJetsSequence+
             process.hltBAK8Jet170L1FastJetCentral+
@@ -2801,11 +2826,14 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     ############################################################################
     #### HLT_BTagMu_AK8Jet300_Mu5_v12
     ############################################################################
+        process.hltPreBTagMuAK8Jet170DoubleMu5 = process.hltPreBTagMuAK8Jet300Mu5noalgo.Clone()
+        if hasattr(process, "hltPreBTagMuAK8Jet300Mu5noalgo"):
+            del process.hltPreBTagMuAK8Jet300Mu5noalgo
 
         process.HLT_BTagMu_AK8Jet300_Mu5_v12 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sSingleJet200+
-            process.hltPreBTagMuAK8Jet300Mu5noalgo+
+            process.hltPreBTagMuAK8Jet170DoubleMu5+
             process.HLTAK8CaloJetsSequence+
             process.hltBJet300L1AK8FastJetCentral+
             process.HLTBTagMuJet300L1AK8FastJetSequenceL25+
@@ -2843,6 +2871,47 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
                 process.HLT_BTagMu_AK8Jet300_Mu5_v12,
 
             ])
+
+    # fix prescales
+    if hasattr(process, 'PrescaleService'):
+        if addDeepJetPaths:
+            process.PrescaleService.prescaleTable.insert(-1,
+                cms.PSet(
+                    pathName = cms.string('MC_PFBTagDeepJet_v1'),
+                    prescales = cms.vuint32(
+                        0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0,
+                        1, 1, 1, 1, 1,
+                        1, 0, 0, 0
+                    )
+                ),
+            )
+        paths_to_delete = [
+            "MC_AK4CaloJetsFromPV_v8",
+        ]
+        if replaceBTagMuPaths:
+            add=[
+                "HLT_BTagMu_AK4DiJet20_Mu5_noalgo_v13",
+                "HLT_BTagMu_AK4DiJet40_Mu5_noalgo_v13",
+                "HLT_BTagMu_AK4DiJet70_Mu5_noalgo_v13",
+                "HLT_BTagMu_AK4DiJet110_Mu5_noalgo_v13",
+                "HLT_BTagMu_AK4DiJet170_Mu5_noalgo_v12",
+                "HLT_BTagMu_AK4Jet300_Mu5_noalgo_v12",
+                "HLT_BTagMu_AK8DiJet170_Mu5_noalgo_v9",
+                "HLT_BTagMu_AK8Jet170_DoubleMu5_noalgo_v2",
+                "HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12",
+            ]
+            paths_to_delete = paths_to_delete + add
+        psets_to_delete = []
+        for path in paths_to_delete:
+            print ("Fix prescale for",path)
+            for pset in process.PrescaleService.prescaleTable:
+                if pset.pathName.value() == path:
+                    psets_to_delete.append(pset)
+        for p in psets_to_delete:
+            process.PrescaleService.prescaleTable.remove(p)
 
     if addDeepJetPaths:
         if hasattr(process, "schedule"):
