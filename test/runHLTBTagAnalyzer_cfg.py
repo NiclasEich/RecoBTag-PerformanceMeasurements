@@ -413,10 +413,8 @@ elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu':
     from HLTrigger.Configuration.customizeHLTforRun3 import *
     process = TRK_newTracking(process)
     process = MUO_newReco(process)
-    process = BTV_noCalo_roiPF_DeepCSV(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
     process = BTV_noCalo_roiPF_DeepJet(process)
-    process.hltTauPt15MuPts711Mass1p3to2p1IsoCharge1.IsoTracksSrc = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
-    process.hltTauPt15MuPts711Mass1p3to2p1Iso.IsoTracksSrc = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
     pvSource                 = "hltVerticesPFFilterROIForBTag"
     pfCandidates             = 'hltParticleFlowROIForBTag'
     trackSource              = "hltMergedTracksROIForBTag"
