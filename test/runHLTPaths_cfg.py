@@ -152,7 +152,7 @@ elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu':
     process = BTV_noCalo_roiPF_DeepJet(process)
     update_jmeCalibs = True
 
-elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu_oldJEC':
+elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu_oldJECs':
     from HLTrigger.Configuration.customizeHLTforRun3 import *
     process = TRK_newTracking(process)
     process = MUO_newReco(process)
@@ -168,7 +168,7 @@ elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu':
     process = BTV_ROICalo_roiPF_DeepJet(process)
     update_jmeCalibs = True
 
-elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_oldJEC':
+elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_oldJECs':
     from HLTrigger.Configuration.customizeHLTforRun3 import *
     process = TRK_newTracking(process)
     process = MUO_newReco(process)
