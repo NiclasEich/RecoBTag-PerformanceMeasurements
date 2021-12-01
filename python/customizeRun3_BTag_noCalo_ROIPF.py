@@ -62,7 +62,13 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True, replaceBTag
 
     if hasattr(process, "hltSelectorCentralJets20L1FastJeta"):
         process.hltSelectorCentralJets20L1FastJeta.etaMax = cms.double(2.5)
-        process.hltSelectorCentralJets20L1FastJeta.etaMin = cms.double(2.5)
+        process.hltSelectorCentralJets20L1FastJeta.etaMin = cms.double(-2.5)
+    if hasattr(process, "hltSelectorCentralJets80L1FastJet"):
+        process.hltSelectorCentralJets30L1FastJeta.etaMax = cms.double(2.5)
+        process.hltSelectorCentralJets30L1FastJeta.etaMin = cms.double(-2.5)
+    if hasattr(process, "hltSelectorCentralJets30L1FastJeta"):
+        process.hltSelectorCentralJets80L1FastJet.etaMax = cms.double(2.5)
+        process.hltSelectorCentralJets80L1FastJet.etaMin = cms.double(-2.5)
 
 
     #our own tracking region
