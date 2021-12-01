@@ -2662,8 +2662,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             process.hltBDiJet20L1FastJetCentral+
             process.HLTBTagMuDiJet20L1FastJetSequenceL25+
             process.hltBSoftMuonDiJet20L1FastJetL25FilterByDR+
-            process.HLTBTagMuDiJet20L1FastJetMu5SelSequenceL3+
-            process.hltBSoftMuonDiJet20L1FastJetMu5L3FilterByDR+
+            process.HLTBTagMuDiJet20L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonDiJet20L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
         if hasattr(process, "HLT_BTagMu_AK4DiJet20_Mu5_noalgo_v13"):
@@ -2682,8 +2682,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             process.hltBDiJet40L1FastJetCentral+
             process.HLTBTagMuDiJet40L1FastJetSequenceL25+
             process.hltBSoftMuonDiJet40L1FastJetL25FilterByDR+
-            process.HLTBTagMuDiJet40L1FastJetMu5SelSequenceL3+
-            process.hltBSoftMuonDiJet40L1FastJetMu5L3FilterByDR+
+            process.HLTBTagMuDiJet40L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonDiJet40L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
         if hasattr(process, "HLT_BTagMu_AK4DiJet40_Mu5_noalgo_v13"):
@@ -2702,8 +2702,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             process.hltBDiJet70L1FastJetCentral+
             process.HLTBTagMuDiJet70L1FastJetSequenceL25+
             process.hltBSoftMuonDiJet70L1FastJetL25FilterByDR+
-            process.HLTBTagMuDiJet70L1FastJetMu5SelSequenceL3+
-            process.hltBSoftMuonDiJet70L1FastJetMu5L3FilterByDR+
+            process.HLTBTagMuDiJet70L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonDiJet70L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
         if hasattr(process, "HLT_BTagMu_AK4DiJet70_Mu5_noalgo_v13"):
@@ -2722,8 +2722,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             process.hltBDiJet110L1FastJetCentral+
             process.HLTBTagMuDiJet110L1FastJetSequenceL25+
             process.hltBSoftMuonDiJet110L1FastJetL25FilterByDR+
-            process.HLTBTagMuDiJet110L1FastJetMu5SelSequenceL3+
-            process.hltBSoftMuonDiJet110L1FastJetMu5L3FilterByDR+
+            process.HLTBTagMuDiJet110L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonDiJet110L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
         if hasattr(process, "HLT_BTagMu_AK4DiJet110_Mu5_noalgo_v13"):
@@ -2742,8 +2742,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             process.hltBDiJet200L1FastJetCentral+
             process.HLTBTagMuDiJet200L1FastJetSequenceL25+
             process.hltBSoftMuonDiJet200L1FastJetL25FilterByDR+
-            process.HLTBTagMuDiJet200L1FastJetMu5SelSequenceL3+
-            process.hltBSoftMuonDiJet200L1FastJetMu5L3FilterByDR+
+            process.HLTBTagMuDiJet200L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonDiJet200L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
         if hasattr(process, "HLT_BTagMu_AK4DiJet170_Mu5_noalgo_v12"):
@@ -2762,8 +2762,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             process.hltBJet300L1FastJetCentral+
             process.HLTBTagMuJet300L1FastJetSequenceL25+
             process.hltBSoftMuonJet300L1FastJetL25FilterByDR+
-            process.HLTBTagMuJet300L1FastJetMu5SelSequenceL3+
-            process.hltBSoftMuonJet300L1FastJetMu5L3FilterByDR+
+            process.HLTBTagMuJet300L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonJet300L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
         if hasattr(process, "HLT_BTagMu_AK4Jet300_Mu5_noalgo_v12"):
@@ -2782,8 +2782,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             process.hltBAK8DiJet170L1FastJetCentral+
             process.HLTBTagMuAK8DiJet170L1FastJetSequenceL25+
             process.hltBSoftMuonAK8DiJet170L1FastJetL25FilterByDR+
-            process.HLTBTagMuAK8DiJet170L1FastJetMu5SelSequenceL3+
-            process.hltBSoftMuonAK8DiJet170L1FastJetMu5L3FilterByDR+
+            process.HLTBTagMuAK8DiJet170L1FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonAK8DiJet170L1FastJetMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
         if hasattr(process, "HLT_BTagMu_AK8DiJet170_Mu5_noalgo_v9"):
@@ -2803,8 +2803,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             process.hltBAK8Jet170L1FastJetCentral+
             process.HLTBTagMuAK8Jet170L1FastJetDoubleMuSequenceL25+
             process.hltBSoftMuonAK8Jet170L1FastJetL25FilterByDR+
-            process.HLTBTagMuAK8Jet170L1FastJetDoubleMu5SelSequenceL3+
-            process.hltBSoftMuonAK8Jet170L1FastJetDoubleMu5L3FilterByDR+
+            process.HLTBTagMuAK8Jet170L1FastJetDoubleMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonAK8Jet170L1FastJetDoubleMu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
         if hasattr(process, "HLT_BTagMu_AK8Jet170_DoubleMu5_noalgo_v2"):
@@ -2823,8 +2823,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             process.hltBJet300L1AK8FastJetCentral+
             process.HLTBTagMuJet300L1AK8FastJetSequenceL25+
             process.hltBSoftMuonJet300L1FastJetAK8L25FilterByDR+
-            process.HLTBTagMuJet300L1AK8FastJetMu5SelSequenceL3+
-            process.hltBSoftMuonJet300L1FastJetAK8Mu5L3FilterByDR+
+            process.HLTBTagMuJet300L1AK8FastJetMu5SelSequenceL3noalgo+
+            process.hltBSoftMuonJet300L1FastJetAK8Mu5L3FilterByDRnoalgo+
             process.HLTEndSequence
         )
         if hasattr(process, "HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12"):
