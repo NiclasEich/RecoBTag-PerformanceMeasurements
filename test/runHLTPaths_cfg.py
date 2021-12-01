@@ -281,14 +281,17 @@ keepPaths = [
   # '*',
   # 'HLT_*',
   # 'HLT_QuadPFJet*DeepJet*',
-  'HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8',
-  # 'Alca_*',
-  # 'DST_ZeroBias_v2',
-  # 'DST_Physics_v7',
-  # 'Status_OnGPU',
-  # 'Status_OnCPU',
-  # 'HLTriggerFinalPath',
-  # 'HLTriggerFirstPath',
+
+  # 'HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8',
+
+  'HLT_*',
+  'Alca_*',
+  'DST_ZeroBias_v2',
+  'DST_Physics_v7',
+  'Status_OnGPU',
+  'Status_OnCPU',
+  'HLTriggerFinalPath',
+  'HLTriggerFirstPath',
 ]
 
 removePaths = []
