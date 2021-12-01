@@ -83,7 +83,7 @@ def prescale_path(path,ps_service):
         if pset.pathName.value() == path.label():
             pset.prescales = [0]*len(pset.prescales)
 
-from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_2_0_GRun_Data_NoOutput_configDump import cms, process
+from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_2_0_GRun_Data_NoOutput_configDump_rates import cms, process
 
 if opts.reco == 'HLT_GRun_oldJECs':
     update_jmeCalibs = False
