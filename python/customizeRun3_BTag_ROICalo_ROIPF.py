@@ -2830,14 +2830,14 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     ############################################################################
     #### HLT_BTagMu_AK8Jet300_Mu5_v12
     ############################################################################
-        process.hltPreBTagMuAK8Jet170DoubleMu5 = process.hltPreBTagMuAK8Jet300Mu5noalgo.clone()
+        process.hltPreBTagMuAK8Jet300Mu5 = process.hltPreBTagMuAK8Jet300Mu5noalgo.clone()
         if hasattr(process, "hltPreBTagMuAK8Jet300Mu5noalgo"):
             del process.hltPreBTagMuAK8Jet300Mu5noalgo
 
         process.HLT_BTagMu_AK8Jet300_Mu5_v12 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sSingleJet200+
-            process.hltPreBTagMuAK8Jet170DoubleMu5+
+            process.hltPreBTagMuAK8Jet300Mu5+
             process.HLTAK8CaloJetsSequence+
             process.hltBJet300L1AK8FastJetCentral+
             process.HLTBTagMuJet300L1AK8FastJetSequenceL25+
