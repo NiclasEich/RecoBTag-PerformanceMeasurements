@@ -152,6 +152,30 @@ elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu':
     process = BTV_noCalo_roiPF_DeepJet(process)
     update_jmeCalibs = True
 
+elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu_oldJEC':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_noCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = True
+
+elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_ROICalo_roiPF_DeepJet(process)
+    update_jmeCalibs = True
+
+elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_oldJEC':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_ROICalo_roiPF_DeepJet(process)
+    update_jmeCalibs = True
+
 elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking

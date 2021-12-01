@@ -55,11 +55,13 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
 
 
     #speed up PFPS
-    process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
-        # skipPS = cms.bool(True)
-        skipPS = cms.bool(False)
-    )
-
+    # process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
+    #     # skipPS = cms.bool(True)
+    #     skipPS = cms.bool(False)
+    # )
+    if hasattr(process, "hltSelectorCentralJets20L1FastJeta"):
+        process.hltSelectorCentralJets20L1FastJeta.etaMax = cms.double(2.5)
+        process.hltSelectorCentralJets20L1FastJeta.etaMin = cms.double(2.5)
     #our own tracking region
     process.hltBTaggingRegion = cms.EDProducer("CandidateSeededTrackingRegionsEDProducer",
     RegionPSet = cms.PSet(
@@ -282,7 +284,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             cms.PSet(
                 BCtoPFCMap = cms.InputTag(""),
                 importerName = cms.string("ECALClusterImporter"),
-                source = cms.InputTag("hltParticleFlowClusterECALUnseededROIForBTag")
+                source = cms.InputTag("hltParticleFlowClusterECALUnseeded")
             ),
             cms.PSet(
                 importerName = cms.string("GenericClusterImporter"),
@@ -359,7 +361,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         process.hltParticleFlowClusterECALUncorrectedUnseeded+
         process.hltParticleFlowClusterPSUnseeded+
         # process.hltParticleFlowClusterECALUnseeded+
-        process.hltParticleFlowClusterECALUnseededROIForBTag+
+        process.hltParticleFlowClusterECALUnseeded+
         process.hltParticleFlowClusterHBHE+
         process.hltParticleFlowClusterHCAL+
         process.hltParticleFlowClusterHF+

@@ -58,7 +58,9 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     # process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
     #     skipPS = cms.bool(True)
     # )
-
+    if hasattr(process, "hltSelectorCentralJets20L1FastJeta"):
+        process.hltSelectorCentralJets20L1FastJeta.etaMax = cms.double(2.5)
+        process.hltSelectorCentralJets20L1FastJeta.etaMin = cms.double(2.5)
     #our own tracking region
     process.hltBTaggingRegion = cms.EDProducer("CandidateSeededTrackingRegionsEDProducer",
     RegionPSet = cms.PSet(
