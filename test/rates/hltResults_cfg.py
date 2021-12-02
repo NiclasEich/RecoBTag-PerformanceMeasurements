@@ -83,7 +83,7 @@ def prescale_path(path,ps_service):
         if pset.pathName.value() == path.label():
             pset.prescales = [0]*len(pset.prescales)
 
-from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_2_0_GRun_Data_NoOutput_configDump_rates import cms, process
+from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_2_0_GRun_Data_NoOutput_configDump import cms, process
 
 if opts.reco == 'HLT_GRun_oldJECs':
     update_jmeCalibs = False
@@ -143,11 +143,15 @@ elif opts.reco == 'HLT_Run3TRK_noCaloROIPF_Mu':
     from HLTrigger.Configuration.customizeHLTforRun3 import *
     process = TRK_newTracking(process)
     process = MUO_newReco(process)
-    process = BTV_noCalo_roiPF_DeepCSV(process)
     process = BTV_noCalo_roiPF_DeepJet(process)
-    process.hltTauPt15MuPts711Mass1p3to2p1IsoCharge1.IsoTracksSrc = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
-    process.hltTauPt15MuPts711Mass1p3to2p1Iso.IsoTracksSrc = cms.InputTag("hltIter0L3MuonTrackSelectionHighPurity")
     update_jmeCalibs = True
+
+elif opts.reco == 'HLT_Run3TRK_noCaloROIPF_Mu_oldJECs':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_noCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = False
 
 elif opts.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
@@ -274,6 +278,7 @@ process.hltOutput = cms.OutputModule('PoolOutputModule',
 )
 
 process.hltOutputEndPath = cms.EndPath(process.hltOutput)
+process.schedule.extend([process.hltOutputEndPath])
 
 ###
 ### standard options
