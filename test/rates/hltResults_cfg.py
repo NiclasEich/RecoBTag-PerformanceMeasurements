@@ -153,6 +153,7 @@ elif opts.reco == 'HLT_Run3TRK_noCaloROIPF_Mu_oldJECs':
     process = MUO_newReco(process)
     process = BTV_noCalo_roiPF_DeepJet(process)
     update_jmeCalibs = False
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif opts.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
