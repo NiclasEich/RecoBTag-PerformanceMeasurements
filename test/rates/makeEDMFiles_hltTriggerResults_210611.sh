@@ -20,10 +20,11 @@ declare -A samplesMap
 samplesMap["Run2018D_EphemeralHLTPhysics1_RAW_run323775_ls52to151"]="${CMSSW_BASE}"/src/RecoBTag/PerformanceMeasurements/test/rates/data/tmp.json
 
 recoKeys=(
-  # HLT_GRun_oldJECs
-  #HLT_GRun
+  HLT_GRun_oldJECs
+  HLT_GRun
   # HLT_Run3TRK
-  HLT_Run3TRK_noCaloROIPF_Mu
+  #HLT_Run3TRK_noCaloROIPF_Mu
+  #HLT_Run3TRK_noCaloROIPF_Mu_oldJECs
 )
 
 for recoKey in "${recoKeys[@]}"; do

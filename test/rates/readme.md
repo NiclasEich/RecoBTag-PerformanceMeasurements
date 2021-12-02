@@ -19,7 +19,7 @@ bmonitor -i tmpout -r
   -i tmpout/HLT_Run3TRK/Run2018D_EphemeralHLTPhysics1_RAW_run323775_ls52to151/job_*/out_*.root \
   -o rates_HLT_Run3TRK.json \
   -l data/json_323775.txt \
-  -p MYHLT -v 10
+  -p HLT2 -v 10
 
 # print to stdout the rates of selected trigger paths
 ./triggerRates.py \
