@@ -17,7 +17,7 @@ if [ -d ${ODIR} ]; then
 fi
 
 declare -A samplesMap
-samplesMap["Run2018D_EphemeralHLTPhysics1_RAW_run323775_ls52to151"]="${CMSSW_BASE}"/src/RecoBTag/PerformanceMeasurements/test/rates/data/tmp.json
+samplesMap["Run2018D_EphemeralHLTPhysics1_RAW_run323775_ls38to81and84to151"]="${CMSSW_BASE}"/src/RecoBTag/PerformanceMeasurements/test/rates/data/tmp.json
 
 recoKeys=(
   HLT_GRun_oldJECs

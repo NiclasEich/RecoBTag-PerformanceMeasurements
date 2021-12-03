@@ -9,14 +9,14 @@ cd rates/
 cmsRun hltResults_cfg.py maxEvents=500 reco=HLT_Run3TRK output=tmp.root
 
 # create area(s) with batch-job submission
-./makeEDMFiles_hltTriggerResults_210611.sh tmpout
+./makeEDMFiles_hltTriggerResults_211203.sh tmpout
 
 # submit jobs to the batch system
 bmonitor -i tmpout -r
 
 # when EDM outputs are available, write raw and pure counts of HLT paths to .json file
 ./triggerResultsCounts.py \
-  -i tmpout/HLT_Run3TRK/Run2018D_EphemeralHLTPhysics1_RAW_run323775_ls52to151/job_*/out_*.root \
+  -i tmpout/HLT_Run3TRK/Run2018D_EphemeralHLTPhysics1_RAW_run323775_ls38to81and84to151/job_*/out_*.root \
   -o rates_HLT_Run3TRK.json \
   -l data/json_323775.txt \
   -p HLT2 -v 10
