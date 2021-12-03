@@ -65,6 +65,12 @@ options.register(
   VarParsing.varType.bool,
   'renaming BTagMu NoAlgo paths in reconstruction'
 )
+options.register(
+    'loadROIparamsJson', None,
+  VarParsing.multiplicity.singleton,
+  VarParsing.varType.string,
+  'Parameters to load for ROI reco'
+)
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', -1)
 
@@ -167,6 +173,67 @@ elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu':
     # process = BTV_noCalo_roiPF_DeepCSV(process)
     process = BTV_roiCalo_roiPF_DeepJet(process)
     update_jmeCalibs = True
+
+elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_optimized':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    import json
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_roiCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = True
+    roi_params = {}
+
+    if options.loadROIparamsJson is not None:
+        try:
+            with open(options.loadROIparamsJson, "r") as roi_config_file:
+                roi_params.update( json.load(roi_config_file))
+        except FileNotFoundError as e:
+            print("File {} could not be found. Using default values as fallback".format(roi_config_file))
+            raise ValueError
+
+    roi_defaults = {
+            "beamSpot" : "hltOnlineBeamSpot",
+            "deltaEta" : 0.5,
+            "deltaPhi" : 0.5,
+            "input" : "hltSelectorCentralJets20L1FastJeta",
+            "maxNRegions" : 8,
+            "maxNVertices" : 2,
+            "measurementTrackerName" : "",
+            "mode" : "VerticesFixed",
+            "nSigmaZBeamSpot" : 3.0,
+            "nSigmaZVertex" : 0.0,
+            "originRadius" : 0.3,
+            "precise" : True,
+            "ptMin" : 0.8,
+            "searchOpt" : True,
+            "vertexCollection" : "hltTrimmedPixelVertices",
+            "whereToUseMeasurementTracker" : "Never",
+            "zErrorBeamSpot" : 0.5,
+            "zErrorVetex" : 0.3
+        }
+
+    RegionPSet = cms.PSet(
+        beamSpot = cms.InputTag(roi_params.get("beamSpot", roi_defaults["beamSpot"])),
+        deltaEta = cms.double(roi_params.get("deltaEta", roi_defaults["deltaEta"])),
+        deltaPhi = cms.double(roi_params.get("deltaPhi", roi_defaults["deltaPhi"])),
+        input = cms.InputTag(roi_params.get("input", roi_defaults["input"])),
+        maxNRegions = cms.int32(roi_params.get("maxNRegions", roi_defaults["maxNRegions"])),
+        maxNVertices = cms.int32(roi_params.get("maxNVertices", roi_defaults["maxNVertices"])),
+        measurementTrackerName = cms.InputTag(roi_params.get("measurementTrackerName", roi_defaults["measurementTrackerName"])),
+        mode = cms.string(roi_params.get("mode", roi_defaults["mode"])),
+        nSigmaZBeamSpot = cms.double(roi_params.get("nSigmaZBeamSpot", roi_defaults["nSigmaZBeamSpot"])),
+        nSigmaZVertex = cms.double(roi_params.get("nSigmaZVertex", roi_defaults["nSigmaZVertex"])),
+        originRadius = cms.double(roi_params.get("originRadius", roi_defaults["originRadius"])),
+        precise = cms.bool(roi_params.get("precise", roi_defaults["precise"])),
+        ptMin = cms.double(roi_params.get("ptMin", roi_defaults["ptMin"])),
+        searchOpt = cms.bool(roi_params.get("searchOpt", roi_defaults["searchOpt"])),
+        vertexCollection = cms.InputTag(roi_params.get("vertexCollection", roi_defaults["vertexCollection"])),
+        whereToUseMeasurementTracker = cms.string(roi_params.get("whereToUseMeasurementTracker", roi_defaults["whereToUseMeasurementTracker"])),
+        zErrorBeamSpot = cms.double(roi_params.get("zErrorBeamSpot", roi_defaults["zErrorBeamSpot"])),
+        zErrorVetex = cms.double(roi_params.get("zErrorVetex", roi_defaults["zErrorVetex"]))
+        )
+    
 
 elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_oldJECs':
     from HLTrigger.Configuration.customizeHLTforRun3 import *

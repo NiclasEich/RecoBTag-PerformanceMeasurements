@@ -60,7 +60,7 @@ class TemplateClassifier(BaseEstimator):
 root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/008cdc6a-f340-488a-994b-ad0a366bb554.root,\
 root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/018caa66-83c3-4535-bd31-4af4ff5476fa.root,\
 root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/01f42c32-32fe-4cd3-b44e-88b350521e99.root"
-        files="file:/nfs/dust/cms/user/sewuchte/ForNiclas/067C301E-ACA7-E811-8E4C-FA163E4AE5F5.root"
+        # files="file:/nfs/dust/cms/user/sewuchte/ForNiclas/067C301E-ACA7-E811-8E4C-FA163E4AE5F5.root"
         args = [
             "cmsRun",
             "runHLTPaths_cfg.py",
@@ -111,6 +111,8 @@ root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cH
         entries = [a for a in lines[0].split(' ') if a != '']
         score = float(entries[3]) - float(entries[4])
         score = -1*score
+
+        # enter embed here to test Stuff for reading out the files
 
         with open(self._result_name, "w") as f:
             f.write("Score: {0:1.8f}\n".format(score))
