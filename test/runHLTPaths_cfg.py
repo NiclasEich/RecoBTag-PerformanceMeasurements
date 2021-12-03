@@ -152,6 +152,46 @@ elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu':
     process = BTV_noCalo_roiPF_DeepJet(process)
     update_jmeCalibs = True
 
+elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu_oldJECs':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_noCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = True
+
+elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_roiCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = True
+
+elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_oldJECs':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_roiCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = True
+
+elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF_Mu':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_roiCalo_globalPF_DeepJet(process)
+    update_jmeCalibs = True
+
+elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF_Mu_oldJECs':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_roiCalo_globalPF_DeepJet(process)
+    update_jmeCalibs = True
+
 elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
@@ -239,9 +279,12 @@ keepPaths = [
   # 'HLT_*DeepCSV*_v*',
   # 'HLT_*_v*',
   # '*',
-  'HLT_*',
+  # 'HLT_*',
   # 'HLT_QuadPFJet*DeepJet*',
+
   # 'HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8',
+
+  'HLT_*',
   'Alca_*',
   'DST_ZeroBias_v2',
   'DST_Physics_v7',

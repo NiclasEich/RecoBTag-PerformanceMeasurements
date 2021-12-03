@@ -55,10 +55,21 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True, replaceBTag
 
 
     #speed up PFPS
-    process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
-        # skipPS = cms.bool(True)
-        skipPS = cms.bool(False)
-    )
+    # process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
+    #     # skipPS = cms.bool(True)
+    #     skipPS = cms.bool(False)
+    # )
+
+    if hasattr(process, "hltSelectorCentralJets20L1FastJeta"):
+        process.hltSelectorCentralJets20L1FastJeta.etaMax = cms.double(2.5)
+        process.hltSelectorCentralJets20L1FastJeta.etaMin = cms.double(-2.5)
+    if hasattr(process, "hltSelectorCentralJets80L1FastJet"):
+        process.hltSelectorCentralJets30L1FastJeta.etaMax = cms.double(2.5)
+        process.hltSelectorCentralJets30L1FastJeta.etaMin = cms.double(-2.5)
+    if hasattr(process, "hltSelectorCentralJets30L1FastJeta"):
+        process.hltSelectorCentralJets80L1FastJet.etaMax = cms.double(2.5)
+        process.hltSelectorCentralJets80L1FastJet.etaMin = cms.double(-2.5)
+
 
     #our own tracking region
     process.hltBTaggingRegion = cms.EDProducer("CandidateSeededTrackingRegionsEDProducer",
@@ -83,6 +94,31 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True, replaceBTag
         zErrorVetex = cms.double(0.3)
         )
     )
+
+
+    # for reference, compare to BPhysics tuning
+    # process.hltPixelTracksTrackingRegionsDisplacedJpsiRegional = cms.EDProducer( "CandidateSeededTrackingRegionsEDProducer",
+    #   RegionPSet = cms.PSet(
+    #   vertexCollection = cms.InputTag( "hltDisplacedmumuVtxProducerDoubleMu4Jpsi" ),
+    #   zErrorVetex = cms.double( 0.25 ),
+    #   beamSpot = cms.InputTag( "hltOnlineBeamSpot" ),
+    #   zErrorBeamSpot = cms.double( 24.2 ),
+    #   maxNVertices = cms.int32( 1 ),
+    #   maxNRegions = cms.int32( 10 ),
+    #   nSigmaZVertex = cms.double( 3.0 ),
+    #   nSigmaZBeamSpot = cms.double( 4.0 ),
+    #   ptMin = cms.double( 0.5 ),
+    #   mode = cms.string( "VerticesFixed" ),
+    #   input = cms.InputTag( "hltIterL3MuonCandidates" ),
+    #   searchOpt = cms.bool( False ),
+    #   whereToUseMeasurementTracker = cms.string( "Never" ),
+    #   originRadius = cms.double( 0.25 ),
+    #   measurementTrackerName = cms.InputTag( "" ),
+    #   precise = cms.bool( True ),
+    #   deltaEta = cms.double( 1.2 ),
+    #   deltaPhi = cms.double( 1.2 )
+    # )
+    # )
 
     #select only PV tracks
     process.hltPixelTracksCleanForBTag = cms.EDProducer("TrackWithVertexSelector",
@@ -282,7 +318,7 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True, replaceBTag
             cms.PSet(
                 BCtoPFCMap = cms.InputTag(""),
                 importerName = cms.string("ECALClusterImporter"),
-                source = cms.InputTag("hltParticleFlowClusterECALUnseededROIForBTag")
+                source = cms.InputTag("hltParticleFlowClusterECALUnseeded")
             ),
             cms.PSet(
                 importerName = cms.string("GenericClusterImporter"),
@@ -359,7 +395,7 @@ def customizeRun3_BTag_noCalo_ROIPF(process, addDeepJetPaths = True, replaceBTag
         process.hltParticleFlowClusterECALUncorrectedUnseeded+
         process.hltParticleFlowClusterPSUnseeded+
         # process.hltParticleFlowClusterECALUnseeded+
-        process.hltParticleFlowClusterECALUnseededROIForBTag+
+        process.hltParticleFlowClusterECALUnseeded+
         process.hltParticleFlowClusterHBHE+
         process.hltParticleFlowClusterHCAL+
         process.hltParticleFlowClusterHF+

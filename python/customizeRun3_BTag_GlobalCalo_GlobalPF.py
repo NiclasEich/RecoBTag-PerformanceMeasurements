@@ -58,7 +58,16 @@ def customizeRun3_BTag_GlobalCalo_GlobalPF(process, addDeepJetPaths = True, repl
     # process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
     #     skipPS = cms.bool(True)
     # )
-
+    if hasattr(process, "hltSelectorCentralJets20L1FastJeta"):
+        process.hltSelectorCentralJets20L1FastJeta.etaMax = cms.double(2.5)
+        process.hltSelectorCentralJets20L1FastJeta.etaMin = cms.double(-2.5)
+    if hasattr(process, "hltSelectorCentralJets80L1FastJet"):
+        process.hltSelectorCentralJets30L1FastJeta.etaMax = cms.double(2.5)
+        process.hltSelectorCentralJets30L1FastJeta.etaMin = cms.double(-2.5)
+    if hasattr(process, "hltSelectorCentralJets30L1FastJeta"):
+        process.hltSelectorCentralJets80L1FastJet.etaMax = cms.double(2.5)
+        process.hltSelectorCentralJets80L1FastJet.etaMin = cms.double(-2.5)
+        
     #our own tracking region
     # process.hltBTaggingRegion = cms.EDProducer("CandidateSeededTrackingRegionsEDProducer",
     # RegionPSet = cms.PSet(

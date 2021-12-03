@@ -23,14 +23,6 @@ git cms-addpkg RecoBTag/Combined
 
 git cms-merge-topic silviodonato:customizeHLTforRun3_v2
 
-# git cms-addpkg HLTrigger/Configuration
-
-#Run3TRK, see https://its.cern.ch/jira/browse/CMSHLT-2187
-# git cms-remote add mmasciov
-# git fetch mmasciov
-# git cherry-pick 91909330a10724646b4aed0596d62fc30a56a024
-# git cherry-pick b9f05b0bd850fd0e24d9024e8582c7b4cb418389
-
 # clone our version of JMET tools
 git clone https://github.com/SWuchterl/JMETriggerAnalysis.git -o SWuchterl -b run3
 
@@ -47,11 +39,10 @@ cp /afs/cern.ch/work/m/missirol/public/run3/JESC/Run3Winter20_V2_MC/Run3Winter20
 git clone -b Run3_ForJIRA --recursive https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
 
 # use the newest temporary DeepJet retraining
-# not yet applicable, dummy setup commands, model file still under production
 mkdir -p RecoBTag/Combined/data/DeepFlavour_HLT_12X
 cp RecoBTag/PerformanceMeasurements/test/DeepJetnoNorm_04.onnx RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx
 
-
+# fix muon data input files
 cd HLTrigger/Configuration/python/Run3
 ./downloadCustomizationFunctions.sh
 cd $CMSSW_BASE/src/RecoMuon/TrackerSeedGenerator/data
