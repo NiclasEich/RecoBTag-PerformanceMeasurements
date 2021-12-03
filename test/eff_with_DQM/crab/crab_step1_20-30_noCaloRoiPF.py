@@ -24,7 +24,7 @@ config.Data.inputDBS = 'phys03'
 #config.Data.splitting = 'FileBased'
 #config.Data.unitsPerJob = 1
 config.Data.splitting = 'Automatic'
-config.Data.publication = True
+config.Data.publication = False
 config.Data.outLFNDirBase = '/store/user/%s/HLT_noCaloRoiPF_step1_retry/20-30/' % (getUsernameFromCRIC())
 config.Data.outputDatasetTag = 'step1_retry'
 
