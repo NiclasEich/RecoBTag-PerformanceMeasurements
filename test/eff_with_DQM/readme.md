@@ -12,6 +12,7 @@ git cms-addpkg HLTrigger/Configuration
 git cms-addpkg DQMOffline/Trigger
 git cms-addpkg HLTriggerOffline/Common
 git cms-merge-topic  silviodonato:customizeHLTforRun3_v2
+rm -rf RecoMuon/TrackerSeedGenerator/data
 git clone -b dev https://github.com/wonpoint4/RecoMuon-TrackerSeedGenerator.git RecoMuon/TrackerSeedGenerator/data
 scram b -j 32
 hltGetConfiguration  /dev/CMSSW_12_1_0/GRun --cff --offline --setup /dev/CMSSW_12_1_0/GRun --type GRun --unprescale --globaltag auto:phase1_2021_realistic --mc --max-events 10 --eras Run3 > HLT_User_cff.py
@@ -44,8 +45,18 @@ fragment = BTV_noCalo_roiPF_DeepJet(fragment)
 Get the latest customizer versions:
 
 ```bash
-cd $CMSSW_BASE/src/HLTrigger/Configuration/python/Run3/
+cd HLTrigger/Configuration/python/Run3/
 ./downloadCustomizationFunctions.sh
+cd -
+```
+
+If not done yet: check out latest temporary DeepJet training:
+
+```bash
+git cms-addpkg RecoBTag/Combined
+mkdir -p RecoBTag/Combined/data/DeepFlavour_HLT_12X
+wget https://raw.githubusercontent.com/SWuchterl/RecoBTag-PerformanceMeasurements/Run3_ForJIRA/test/DeepJetnoNorm_04.onnx
+mv DeepJetnoNorm_04.onnx RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx
 ```
 
 Copy the updated files needed for DQM Offline validation of the HLT paths:
