@@ -85,6 +85,12 @@ options.register('maxJetEta', 4.5,
     VarParsing.varType.float,
     "Maximum jet |eta| (default is 4.5)"
 )
+
+options.register('lumis', None,
+    VarParsing.multiplicity.singleton,
+    VarParsing.varType.string,
+    'path to .json with list of luminosity sections'
+)
 options.register('minJetPt', 25.0,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.float,
@@ -383,7 +389,7 @@ elif options.reco == 'HLT_Run3TRK_ROICaloROIPF':
     from HLTrigger.Configuration.customizeHLTforRun3 import *
     process = TRK_newTracking(process)
     # process = MUO_newReco(process)
-    process = BTV_roiCalo_roiPF_DeepCSV(process)
+    # process = BTV_roiCalo_roiPF_DeepCSV(process)
     process = BTV_roiCalo_roiPF_DeepJet(process)
     update_jmeCalibs = True
     # process = fixMenu(process)
@@ -421,6 +427,21 @@ elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu':
     rho                      = "hltFixedGridRhoFastjetAllROIForBTag"
     muSource = 'hltMuonsROIForBTag'
     elSource = 'hltEgammaGsfElectrons'
+    update_jmeCalibs = True
+
+elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu_oldJECs':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_noCalo_roiPF_DeepJet(process)
+    pvSource                 = "hltVerticesPFFilterROIForBTag"
+    pfCandidates             = 'hltParticleFlowROIForBTag'
+    trackSource              = "hltMergedTracksROIForBTag"
+    rho                      = "hltFixedGridRhoFastjetAllROIForBTag"
+    muSource = 'hltMuonsROIForBTag'
+    elSource = 'hltEgammaGsfElectrons'
+    update_jmeCalibs = False
 
 elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
@@ -481,7 +502,8 @@ if options.reco == "HLT_Run3TRK" or  options.reco == "HLT_GRun":
 from RecoBTag.PerformanceMeasurements.PATLikeConfig import customizePFPatLikeJets
 process = customizePFPatLikeJets(process, runPF=True, runCalo=options.runCaloJetVariables, runPuppi=options.runPuppiJetVariables,
     roiReplace = "ROIPF" in options.reco,
-    roiReplaceCalo = "ROICalo" in options.reco or "noCalo" in options.reco
+    roiReplaceCalo = "ROICalo" in options.reco or "noCalo" in options.reco,
+    isData = options.runOnData
 )
 
 if "HLT_Run3TRKPixelOnly" in options.reco:
@@ -505,6 +527,7 @@ keepPaths = [
   # 'HLT_PFHT*_v*',
   # 'HLT_PFMET*_PFMHT*_v*',
   # 'HLT_*_*_v*',
+  '*',
 ]
 
 # list of paths that are kept
@@ -733,7 +756,8 @@ process.btagana.electronCollectionName= cms.InputTag(elSource)
 process.btagana.rho                   = cms.InputTag(rho)
 
 # process.btagana.triggerTable          = cms.InputTag('TriggerResults::HLT') # Data and MC
-process.btagana.triggerTable          = cms.InputTag(trigresults) # Data and MC
+# process.btagana.triggerTable          = cms.InputTag(trigresults) # Data and MC
+process.btagana.triggerTable          = cms.InputTag("TriggerResults","","@currentProcess") # Data and MC
 process.btagana.genParticles          = cms.InputTag(genParticles)
 process.btagana.candidates            = cms.InputTag(pfCandidates)
 process.btagana.runJetVariables       = options.runJetVariables
@@ -768,6 +792,10 @@ if options.runOnData:
   process.btagana.runHadronVariables  = False
   process.btagana.runQuarkVariables   = False
   process.btagana.runGenVariables     = False
+  # select luminosity sections from .json file
+  if options.lumis is not None:
+      import FWCore.PythonUtilities.LumiList as LumiList
+      process.source.lumisToProcess = LumiList.LumiList(filename = options.lumis).getVLuminosityBlockRange()
 
 if not process.btagana.useTrackHistory  or not options.produceJetTrackTree:
     process.btagana.produceJetTrackTruthTree = False
