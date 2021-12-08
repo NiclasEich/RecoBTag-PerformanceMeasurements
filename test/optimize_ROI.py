@@ -7,6 +7,7 @@ from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
 from sklearn.metrics import euclidean_distances
 from skopt.space import Real, Categorical, Integer
+import os
 
 targets = [
     0.7,
@@ -51,19 +52,21 @@ class TemplateClassifier(BaseEstimator):
         self._fname = "opt_results/HH_HLT_Run3TRK_ROICaloROIPF_22_{}.log".format(self._short_hash)
         self._config_path = "opt_results/config_{}.json".format(self._short_hash)
 
+        if not os.path.exists("opt_results"):
+            os.makedirs("opt_results")
+
         with open(self._config_path, "w") as f:
             json_config = json.dump(self.get_params(), f)
 
 
     def run_cmssw_command(self, output_hash, fname):
         files="\
-root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/008cdc6a-f340-488a-994b-ad0a366bb554.root,\
-root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/018caa66-83c3-4535-bd31-4af4ff5476fa.root,\
-root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/01f42c32-32fe-4cd3-b44e-88b350521e99.root"
-        # files="file:/nfs/dust/cms/user/sewuchte/ForNiclas/067C301E-ACA7-E811-8E4C-FA163E4AE5F5.root"
+            root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/008cdc6a-f340-488a-994b-ad0a366bb554.root,\
+            root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/018caa66-83c3-4535-bd31-4af4ff5476fa.root,\
+            root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/01f42c32-32fe-4cd3-b44e-88b350521e99.root"
         args = [
             "cmsRun",
-            "runHLTPaths_cfg.py",
+            "runHLTPaths_HHStudy_cfg.py",
             "reco=HLT_Run3TRK_ROICaloROIPF_Mu_optimized",
             "runOnData=False",
             'inputFiles={}'.format(files),
@@ -71,7 +74,7 @@ root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cH
             "numThreads=4",
             "maxEvents=10000",
             "globalTag=122X_mcRun3_2021_realistic_v1",
-            "runTiming=False",
+            "runTiming=True",
             "dumpPython=opt_results/testdump_{}.py".format(output_hash),
             "loadROIparamsJson={}".format(self._config_path)
             # ">",
@@ -118,7 +121,7 @@ root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cH
             f.write("Score: {0:1.8f}\n".format(score))
             params = "\n".join( [ "{0}:\t{1:2.6f}".format(key, val) for key, val in self.get_params().items()])
             f.write(params)
-            
+
         return score
 
     def predict(self, X, y=None):

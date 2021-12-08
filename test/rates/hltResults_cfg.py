@@ -272,6 +272,7 @@ process.hltOutput = cms.OutputModule('PoolOutputModule',
 )
 
 process.hltOutputEndPath = cms.EndPath(process.hltOutput)
+process.schedule.extend([process.hltOutputEndPath])
 
 ###
 ### standard options

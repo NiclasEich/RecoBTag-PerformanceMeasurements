@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roiReplace=False, roiReplaceCalo=False):
+def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roiReplace=False, roiReplaceCalo=False, isData=False):
     # set some default collection variables
     pfjets =                "hltAK4PFJets" if roiReplace==False else "hltAK4PFJetsROIForBTag"                                #original ak4PFJetsCHS
     puppijets =             "hltAK4PFPuppiJets"                                  #original ak4PFJetsCHS
@@ -241,10 +241,14 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
     # create patJets  for ak4pfchs and all necessary missing inputs
     from PhysicsTools.PatAlgos.producersLayer1.jetProducer_cfi import patJets
     process.hltPatJets = patJets.clone(
-        JetFlavourInfoSource = cms.InputTag("hltPatJetFlavourAssociation"),
-        JetPartonMapSource = cms.InputTag("hltPatJetFlavourAssociationLegacy"),
+        JetFlavourInfoSource = cms.InputTag("hltPatJetFlavourAssociation") if not isData else cms.InputTag(""),
+        JetPartonMapSource = cms.InputTag("hltPatJetFlavourAssociationLegacy") if not isData else cms.InputTag(""),
         addJetID = cms.bool(False),
         addTagInfos = cms.bool(True),
+        addGenJetMatch = cms.bool(True) if not isData else cms.bool(False),
+        addGenPartonMatch = cms.bool(True) if not isData else cms.bool(False),
+        addJetFlavourInfo = cms.bool(True) if not isData else cms.bool(False),
+        addPartonJetMatch = cms.bool(True) if not isData else cms.bool(False),
         discriminatorSources = cms.VInputTag(
             cms.InputTag(PFDeepCSVTags,"probb"),cms.InputTag(PFDeepCSVTags,"probc"),cms.InputTag(PFDeepCSVTags,"probudsg"),
             # cms.InputTag(PFDeepCSVTags,"probbb"), # hltDeepCSV: probb = probb +probbb
@@ -252,8 +256,8 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
             cms.InputTag(PFDeepFlavourTags,"problepb"), cms.InputTag(PFDeepFlavourTags,"probbb"), cms.InputTag(PFDeepFlavourTags,"probuds"),
         ),
         embedGenPartonMatch = cms.bool(False),
-        genJetMatch = cms.InputTag("hltPatJetGenJetMatch"),
-        genPartonMatch = cms.InputTag("hltPatJetPartonMatch"),
+        genJetMatch = cms.InputTag("hltPatJetGenJetMatch") if not isData else cms.InputTag(""),
+        genPartonMatch = cms.InputTag("hltPatJetPartonMatch") if not isData else cms.InputTag(""),
         jetChargeSource = cms.InputTag("hltPatJetCharge"),
         jetCorrFactorsSource = cms.VInputTag(cms.InputTag("hltPatJetCorrFactors")),
         jetIDMap = cms.InputTag("hltAk4JetID"),
@@ -267,10 +271,14 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
         trackAssociationSource = cms.InputTag("hltAk4JetTracksAssociatorAtVertexPF"),
     )
     process.hltPatJetsPuppi = patJets.clone(
-        JetFlavourInfoSource = cms.InputTag("hltPatJetFlavourAssociationPuppi"),
-        JetPartonMapSource = cms.InputTag("hltPatJetFlavourAssociationLegacyPuppi"),
+        JetFlavourInfoSource = cms.InputTag("hltPatJetFlavourAssociationPuppi") if not isData else cms.InputTag(""),
+        JetPartonMapSource = cms.InputTag("hltPatJetFlavourAssociationLegacyPuppi") if not isData else cms.InputTag(""),
         addJetID = cms.bool(False),
         addTagInfos = cms.bool(True),
+        addGenJetMatch = cms.bool(True) if not isData else cms.bool(False),
+        addGenPartonMatch = cms.bool(True) if not isData else cms.bool(False),
+        addJetFlavourInfo = cms.bool(True) if not isData else cms.bool(False),
+        addPartonJetMatch = cms.bool(True) if not isData else cms.bool(False),
         discriminatorSources = cms.VInputTag(
             cms.InputTag(PFPuppiDeepCSVTags,"probb"),cms.InputTag(PFPuppiDeepCSVTags,"probc"),cms.InputTag(PFPuppiDeepCSVTags,"probudsg"),
             # cms.InputTag(PFPuppiDeepCSVTags,"probbb"), # hltDeepCSV: probb = probb +probbb
@@ -278,8 +286,8 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
             cms.InputTag(PFPuppiDeepFlavourTags,"problepb"), cms.InputTag(PFPuppiDeepFlavourTags,"probbb"), cms.InputTag(PFPuppiDeepFlavourTags,"probuds"),
         ),
         embedGenPartonMatch = cms.bool(False),
-        genJetMatch = cms.InputTag("hltPatJetGenJetMatchPuppi"),
-        genPartonMatch = cms.InputTag("hltPatJetPartonMatchPuppi"),
+        genJetMatch = cms.InputTag("hltPatJetGenJetMatchPuppi") if not isData else cms.InputTag(""),
+        genPartonMatch = cms.InputTag("hltPatJetPartonMatchPuppi") if not isData else cms.InputTag(""),
         jetChargeSource = cms.InputTag("patJetPuppiCharge"),
         jetCorrFactorsSource = cms.VInputTag(cms.InputTag("hltPatJetCorrFactorsPuppi")),
         jetIDMap = cms.InputTag("hltAk4JetID"),
@@ -293,18 +301,18 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
         trackAssociationSource = cms.InputTag("hltAk4JetTracksAssociatorAtVertexPFPuppi"),
     )
     process.hltPatJetsCalo = patJets.clone(
-        JetFlavourInfoSource = cms.InputTag("hltPatJetFlavourAssociationCalo"),
-        JetPartonMapSource = cms.InputTag("hltPatJetFlavourAssociationLegacyCalo"),
+        JetFlavourInfoSource = cms.InputTag("hltPatJetFlavourAssociationCalo") if not isData else cms.InputTag(""),
+        JetPartonMapSource = cms.InputTag("hltPatJetFlavourAssociationLegacyCalo") if not isData else cms.InputTag(""),
         addAssociatedTracks = cms.bool(True),
         addBTagInfo = cms.bool(True),
         addDiscriminators = cms.bool(True),
         addEfficiencies = cms.bool(False),
         embedCaloTowers = cms.bool(True),
-        # addGenJetMatch = cms.bool(True),
-        # addGenPartonMatch = cms.bool(True),
+        addGenJetMatch = cms.bool(True) if not isData else cms.bool(False),
+        addGenPartonMatch = cms.bool(True) if not isData else cms.bool(False),
         addJetCharge = cms.bool(False),
         addJetCorrFactors = cms.bool(False),
-        # addJetFlavourInfo = cms.bool(True),
+        addJetFlavourInfo = cms.bool(True) if not isData else cms.bool(False),
         addPartonJetMatch = cms.bool(False),
         addJetID = cms.bool(False),
         addTagInfos = cms.bool(True),
@@ -313,8 +321,8 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
             # # cms.InputTag(PFDeepCSVTags,"probbb"), # hltDeepCSV: probb = probb +probbb
         ),
         embedGenPartonMatch = cms.bool(False),
-        genJetMatch = cms.InputTag("hltPatJetGenJetMatchCalo"),
-        genPartonMatch = cms.InputTag("hltPatJetPartonMatchCalo"),
+        genJetMatch = cms.InputTag("hltPatJetGenJetMatchCalo") if not isData else cms.InputTag(""),
+        genPartonMatch = cms.InputTag("hltPatJetPartonMatchCalo") if not isData else cms.InputTag(""),
         # jetChargeSource = cms.InputTag("hltPatJetCharge"),
         # jetCorrFactorsSource = cms.VInputTag(cms.InputTag("hltPatJetCorrFactors")),
         # jetIDMap = cms.InputTag("hltAk4JetID"),
@@ -631,6 +639,35 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
                 +process.hltPatJets
                 +process.HLTEndSequence
             )
+            if isData:
+                process.MC_JetsMatchingPath = cms.Path(
+                    process.HLTBeginSequence
+                    +process.HLTAK4PFJetsSequence
+                    +process.HLTBtagDeepCSVSequencePFPat
+                    # +process.hltPrunedGenParticlesWithStatusOne
+                    # +process.hltPrunedGenParticles
+                    # +process.hltPackedGenParticles
+                    # +process.hltPatJetPartonMatch
+                    # +process.hltSlimmedGenJets
+                    +process.hltAk4JetID
+                    # +process.hltPatJetGenJetMatch
+                    # +process.hltPatJetPartonsLegacy
+                    # +process.hltPatJetPartonAssociationLegacy
+                    # +process.hltPatJetFlavourAssociationLegacy
+                    # +process.hltPatJetPartons
+                    # +process.hltPatJetFlavourAssociation
+                    +process.hltAk4JetTracksAssociatorAtVertexPF
+                    +process.hltPatJetCharge
+                    +process.hltPatJetCorrFactors
+
+                    # +process.hltPrimaryVertexAssociationPat
+                    # +process.hltPFDeepFlavourPatTagInfos
+                    # +process.hltPFDeepFlavourPatJetTags
+                    + process.HLTBtagDeepJetSequencePFPat
+
+                    +process.hltPatJets
+                    +process.HLTEndSequence
+                )
         else:
             process.MC_JetsMatchingPath = cms.Path(
                 process.HLTBeginSequence
@@ -660,6 +697,35 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
                 +process.hltPatJets
                 +process.HLTEndSequence
             )
+            if isData:
+                process.MC_JetsMatchingPath = cms.Path(
+                    process.HLTBeginSequence
+                    +process.HLTAK4PFJetsSequenceROIForBTag
+                    +process.HLTBtagDeepCSVSequencePFPat
+                    # +process.hltPrunedGenParticlesWithStatusOne
+                    # +process.hltPrunedGenParticles
+                    # +process.hltPackedGenParticles
+                    # +process.hltPatJetPartonMatch
+                    # +process.hltSlimmedGenJets
+                    +process.hltAk4JetID
+                    # +process.hltPatJetGenJetMatch
+                    # +process.hltPatJetPartonsLegacy
+                    # +process.hltPatJetPartonAssociationLegacy
+                    # +process.hltPatJetFlavourAssociationLegacy
+                    # +process.hltPatJetPartons
+                    # +process.hltPatJetFlavourAssociation
+                    +process.hltAk4JetTracksAssociatorAtVertexPF
+                    +process.hltPatJetCharge
+                    +process.hltPatJetCorrFactors
+
+                    # +process.hltPrimaryVertexAssociationPat
+                    # +process.hltPFDeepFlavourPatTagInfos
+                    # +process.hltPFDeepFlavourPatJetTags
+                    + process.HLTBtagDeepJetSequencePFPat
+
+                    +process.hltPatJets
+                    +process.HLTEndSequence
+                )
 
     if runPuppi:
         process.MC_PuppiJetsMatchingPath = cms.Path(
@@ -712,6 +778,28 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
             +process.hltPatJetsCalo
             +process.HLTEndSequence
         )
+        if isData:
+            process.MC_CaloJetsMatchingPath = cms.Path(
+                process.HLTBeginSequence
+                # +process.HLTAK4CaloJetsCorrectionSequence
+                +process.HLTAK4CaloJetsSequence
+                +process.HLTBtagDeepCSVSequenceCaloPat
+                # +process.hltPrunedGenParticlesWithStatusOne
+                # +process.hltPrunedGenParticles
+                # +process.hltPackedGenParticles
+                # +process.hltPatJetPartonMatchCalo
+                # +process.hltSlimmedGenJets
+                # +process.hltPatJetGenJetMatchCalo
+                # +process.hltPatJetPartonsLegacy
+                # +process.hltPatJetPartons
+                # +process.hltPatJetPartonAssociationLegacyCalo
+                # +process.hltPatJetFlavourAssociationLegacyCalo
+                # +process.hltPatJetFlavourAssociationCalo
+                +process.hltAk4JetTracksAssociatorAtVertexCalo
+
+                +process.hltPatJetsCalo
+                +process.HLTEndSequence
+            )
 
     if process.schedule_():
         if runPF: process.schedule.extend([process.MC_JetsMatchingPath])
