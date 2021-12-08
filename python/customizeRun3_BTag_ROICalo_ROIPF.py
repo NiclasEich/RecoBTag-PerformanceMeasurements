@@ -68,7 +68,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     if hasattr(process, "hltSelectorCentralJets30L1FastJeta"):
         process.hltSelectorCentralJets80L1FastJet.etaMax = cms.double(2.5)
         process.hltSelectorCentralJets80L1FastJet.etaMin = cms.double(-2.5)
-        
+
     #our own tracking region
     process.hltBTaggingRegion = cms.EDProducer("CandidateSeededTrackingRegionsEDProducer",
     RegionPSet = cms.PSet(
@@ -76,7 +76,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         deltaEta = cms.double(0.5),
         deltaPhi = cms.double(0.5),
         input = cms.InputTag("hltSelectorCentralJets20L1FastJeta"),
-        maxNRegions = cms.int32(8),
+        maxNRegions = cms.int32(20),
         maxNVertices = cms.int32(2),
         measurementTrackerName = cms.InputTag(""),
         mode = cms.string("VerticesFixed"),
@@ -84,7 +84,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         nSigmaZVertex = cms.double(0.0),
         originRadius = cms.double(0.3),
         precise = cms.bool(True),
-        ptMin = cms.double(0.8),
+        ptMin = cms.double(0.3),
         searchOpt = cms.bool(True),
         vertexCollection = cms.InputTag("hltTrimmedPixelVertices"),
         whereToUseMeasurementTracker = cms.string("Never"),
@@ -108,8 +108,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         numberOfValidHits = cms.uint32(0),
         numberOfValidPixelHits = cms.uint32(3),
         ptErrorCut = cms.double(5.0),
-        ptMax = cms.double(500.0),
-        ptMin = cms.double(0.8),
+        ptMax = cms.double(9999.0),
+        ptMin = cms.double(0.3),
         quality = cms.string("loose"),
         rhoVtx = cms.double(0.2),
         src = cms.InputTag("hltPixelTracks"),
@@ -2663,7 +2663,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     #### HLT_BTagMu_AK4DiJet20_Mu5_v13
     ############################################################################
         process.hltPreBTagMuAK4DiJet20Mu5 = process.hltPreBTagMuAK4DiJet20Mu5noalgo.clone()
-      
+
         if hasattr(process, "hltPreBTagMuAK4DiJet20Mu5noalgo"):
             del process.hltPreBTagMuAK4DiJet20Mu5noalgo
 
@@ -2755,7 +2755,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     #### HLT_BTagMu_AK4DiJet170_Mu5_v12
     ############################################################################
         process.hltPreBTagMuAK4DiJet170Mu5 = process.hltPreBTagMuAK4DiJet170Mu5noalgo.clone()
-      
+
         if hasattr(process, "hltPreBTagMuAK4DiJet170Mu5noalgo"):
             del process.hltPreBTagMuAK4DiJet170Mu5noalgo
 

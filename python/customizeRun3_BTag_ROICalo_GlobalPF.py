@@ -67,7 +67,7 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     if hasattr(process, "hltSelectorCentralJets30L1FastJeta"):
         process.hltSelectorCentralJets80L1FastJet.etaMax = cms.double(2.5)
         process.hltSelectorCentralJets80L1FastJet.etaMin = cms.double(-2.5)
-        
+
     #our own tracking region
     process.hltBTaggingRegion = cms.EDProducer("CandidateSeededTrackingRegionsEDProducer",
     RegionPSet = cms.PSet(
@@ -75,7 +75,7 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
         deltaEta = cms.double(0.5),
         deltaPhi = cms.double(0.5),
         input = cms.InputTag("hltSelectorCentralJets20L1FastJeta"),
-        maxNRegions = cms.int32(8),
+        maxNRegions = cms.int32(20),
         maxNVertices = cms.int32(2),
         measurementTrackerName = cms.InputTag(""),
         mode = cms.string("VerticesFixed"),
@@ -83,7 +83,7 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
         nSigmaZVertex = cms.double(0.0),
         originRadius = cms.double(0.3),
         precise = cms.bool(True),
-        ptMin = cms.double(0.8),
+        ptMin = cms.double(0.3),
         searchOpt = cms.bool(True),
         vertexCollection = cms.InputTag("hltTrimmedPixelVertices"),
         whereToUseMeasurementTracker = cms.string("Never"),
@@ -107,8 +107,8 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
         numberOfValidHits = cms.uint32(0),
         numberOfValidPixelHits = cms.uint32(3),
         ptErrorCut = cms.double(5.0),
-        ptMax = cms.double(500.0),
-        ptMin = cms.double(0.8),
+        ptMax = cms.double(9999.0),
+        ptMin = cms.double(0.3),
         quality = cms.string("loose"),
         rhoVtx = cms.double(0.2),
         src = cms.InputTag("hltPixelTracks"),
@@ -2704,7 +2704,7 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     #### HLT_BTagMu_AK4DiJet70_Mu5_v13
     ############################################################################
         process.hltPreBTagMuAK4DiJet70Mu5 = process.hltPreBTagMuAK4DiJet70Mu5noalgo.clone()
-      
+
         if hasattr(process, "hltPreBTagMuAK4DiJet70Mu5noalgo"):
             del process.hltPreBTagMuAK4DiJet70Mu5noalgo
 

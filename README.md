@@ -40,7 +40,7 @@ git clone -b Run3_ForJIRA --recursive https://github.com/SWuchterl/RecoBTag-Perf
 
 # use the newest temporary DeepJet retraining
 mkdir -p RecoBTag/Combined/data/DeepFlavour_HLT_12X
-cp RecoBTag/PerformanceMeasurements/test/DeepJetnoNorm_04.onnx RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx
+cp RecoBTag/PerformanceMeasurements/test/modelFiles/DeepJetnoNorm_04.onnx RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx
 
 # fix muon data input files
 cd HLTrigger/Configuration/python/Run3
