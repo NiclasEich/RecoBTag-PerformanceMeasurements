@@ -2663,6 +2663,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     #### HLT_BTagMu_AK4DiJet20_Mu5_v13
     ############################################################################
         process.hltPreBTagMuAK4DiJet20Mu5 = process.hltPreBTagMuAK4DiJet20Mu5noalgo.clone()
+      
         if hasattr(process, "hltPreBTagMuAK4DiJet20Mu5noalgo"):
             del process.hltPreBTagMuAK4DiJet20Mu5noalgo
 
@@ -2685,6 +2686,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     #### HLT_BTagMu_AK4DiJet40_Mu5_v13
     ############################################################################
         process.hltPreBTagMuAK4DiJet40Mu5 = process.hltPreBTagMuAK4DiJet40Mu5noalgo.clone()
+
         if hasattr(process, "hltPreBTagMuAK4DiJet40Mu5noalgo"):
             del process.hltPreBTagMuAK4DiJet40Mu5noalgo
 
@@ -2707,6 +2709,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     #### HLT_BTagMu_AK4DiJet70_Mu5_v13
     ############################################################################
         process.hltPreBTagMuAK4DiJet70Mu5 = process.hltPreBTagMuAK4DiJet70Mu5noalgo.clone()
+
         if hasattr(process, "hltPreBTagMuAK4DiJet70Mu5noalgo"):
             del process.hltPreBTagMuAK4DiJet70Mu5noalgo
 
@@ -2729,6 +2732,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     #### HLT_BTagMu_AK4DiJet110_Mu5_v13
     ############################################################################
         process.hltPreBTagMuAK4DiJet110Mu5 = process.hltPreBTagMuAK4DiJet110Mu5noalgo.clone()
+
         if hasattr(process, "hltPreBTagMuAK4DiJet110Mu5noalgo"):
             del process.hltPreBTagMuAK4DiJet110Mu5noalgo
 
@@ -2751,6 +2755,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     #### HLT_BTagMu_AK4DiJet170_Mu5_v12
     ############################################################################
         process.hltPreBTagMuAK4DiJet170Mu5 = process.hltPreBTagMuAK4DiJet170Mu5noalgo.clone()
+      
         if hasattr(process, "hltPreBTagMuAK4DiJet170Mu5noalgo"):
             del process.hltPreBTagMuAK4DiJet170Mu5noalgo
 
@@ -2773,6 +2778,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     #### HLT_BTagMu_AK4Jet300_Mu5_v12
     ############################################################################
         process.hltPreBTagMuAK4Jet300Mu5 = process.hltPreBTagMuAK4Jet300Mu5noalgo.clone()
+
         if hasattr(process, "hltPreBTagMuAK4Jet300Mu5noalgo"):
             del process.hltPreBTagMuAK4Jet300Mu5noalgo
 
@@ -2795,6 +2801,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     #### HLT_BTagMu_AK8DiJet170_Mu5_v9
     ############################################################################
         process.hltPreBTagMuAK8DiJet170Mu5 = process.hltPreBTagMuAK8DiJet170Mu5noalgo.clone()
+
         if hasattr(process, "hltPreBTagMuAK8DiJet170Mu5noalgo"):
             del process.hltPreBTagMuAK8DiJet170Mu5noalgo
 
@@ -2817,6 +2824,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     #### HLT_BTagMu_AK8Jet170_DoubleMu5_v2
     ############################################################################
         process.hltPreBTagMuAK8Jet170DoubleMu5 = process.hltPreBTagMuAK8Jet170DoubleMu5noalgo.clone()
+
         if hasattr(process, "hltPreBTagMuAK8Jet170DoubleMu5noalgo"):
             del process.hltPreBTagMuAK8Jet170DoubleMu5noalgo
 
@@ -2840,6 +2848,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     #### HLT_BTagMu_AK8Jet300_Mu5_v12
     ############################################################################
         process.hltPreBTagMuAK8Jet300Mu5 = process.hltPreBTagMuAK8Jet300Mu5noalgo.clone()
+
         if hasattr(process, "hltPreBTagMuAK8Jet300Mu5noalgo"):
             del process.hltPreBTagMuAK8Jet300Mu5noalgo
 
@@ -2857,6 +2866,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         )
         if hasattr(process, "HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12"):
             del process.HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12
+
 
         if hasattr(process, "schedule"):
             process.schedule.extend([
