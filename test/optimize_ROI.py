@@ -60,10 +60,14 @@ class TemplateClassifier(BaseEstimator):
 
 
     def run_cmssw_command(self, output_hash, fname):
+        # files="\
+        #     root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/008cdc6a-f340-488a-994b-ad0a366bb554.root,\
+        #     root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/018caa66-83c3-4535-bd31-4af4ff5476fa.root,\
+        #     root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/01f42c32-32fe-4cd3-b44e-88b350521e99.root"
         files="\
-            root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/008cdc6a-f340-488a-994b-ad0a366bb554.root,\
-            root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/018caa66-83c3-4535-bd31-4af4ff5476fa.root,\
-            root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/01f42c32-32fe-4cd3-b44e-88b350521e99.root"
+            file:///nfs/dust/cms/user/sewuchte/ForNiclas/HH/018caa66-83c3-4535-bd31-4af4ff5476fa.root,\
+            file:///nfs/dust/cms/user/sewuchte/ForNiclas/HH/06fc95e7-a2d7-4bbd-8440-ce57f4298131.root,\
+            file:///nfs/dust/cms/user/sewuchte/ForNiclas/HH/045537d7-6d4b-4458-bc5b-5941a66d894d.root"
         args = [
             "cmsRun",
             "runHLTPaths_HHStudy_cfg.py",
@@ -72,7 +76,7 @@ class TemplateClassifier(BaseEstimator):
             'inputFiles={}'.format(files),
             "numStreams=4",
             "numThreads=4",
-            "maxEvents=10000",
+            "maxEvents=-1",
             "globalTag=122X_mcRun3_2021_realistic_v1",
             "runTiming=True",
             "dumpPython=opt_results/testdump_{}.py".format(output_hash),
@@ -107,22 +111,37 @@ class TemplateClassifier(BaseEstimator):
 
         self._result_name = "opt_results/results_{}.txt".format(self._short_hash)
 
-        match = result.find("0 hltPFTripleJetLooseID71")
+        match = result.find("0 hltSelector6PFJetsROIForBTag")
         line_begin = result[:match][::-1].find("\n")
         lines = result[match-line_begin:].split("\n")[0:2]
 
         entries = [a for a in lines[0].split(' ') if a != '']
-        score = float(entries[3]) - float(entries[4])
-        score = -1*score
+        score = float(entries[3])
+
+        lines = result.split("\n")
+        hits = 0
+        for i,line in enumerate(lines):
+            if "HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8" in line:
+                hits += 1
+            if hits ==5:
+                target_line = i
+                break
+
+        time_score = float([a for a in line.split(' ') if a != ''][1])
+        score_time = -50. * time_score
+
+        final_score = score+score_time
 
         # enter embed here to test Stuff for reading out the files
 
         with open(self._result_name, "w") as f:
-            f.write("Score: {0:1.8f}\n".format(score))
+            f.write("Score: {0:1.8f}\n".format(final_score))
+            f.write("TimeScore: {0:1.8f}\n".format(score_time))
+            f.write("EffScore: {0:1.8f}\n".format(score))
             params = "\n".join( [ "{0}:\t{1:2.6f}".format(key, val) for key, val in self.get_params().items()])
             f.write(params)
 
-        return score
+        return final_score
 
     def predict(self, X, y=None):
         return X
@@ -130,19 +149,19 @@ class TemplateClassifier(BaseEstimator):
 
 def run_optimization_test():
 
-    N_iter = 1
+    N_iter = 100
     # log-uniform: understand as search over p = exp(x) by varying x
     opt = BayesSearchCV(
         TemplateClassifier(),
         {
             "deltaEta": Real(0.0, 4.0, prior="uniform"),
             "deltaPhi": Real(0.0, 4.0, prior="uniform"),
-            "maxNRegions": Integer(2, 16),
+            "maxNRegions": Integer(2, 100),
             "maxNVertices": Integer(1, 5),
             "nSigmaZBeamSpot": Real(0.0, 30.0, prior="uniform"),
             "nSigmaZVertex": Real(-1.0, 1.0, prior="uniform"),
             "originRadius": Real(0.0, 1.0, prior="uniform"),
-            "ptMin": Real(0.0, 20.0, prior="uniform"),
+            "ptMin": Real(0.0, 2.0, prior="uniform"),
             "zErrorBeamSpot": Real(0.0, 1.0, prior="uniform"),
             "zErrorVetex": Real(0.0, 1.0, prior="uniform"),
         },

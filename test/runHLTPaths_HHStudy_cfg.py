@@ -230,7 +230,7 @@ elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_optimized':
             "deltaEta" : 0.5,
             "deltaPhi" : 0.5,
             "input" : "hltSelectorCentralJets20L1FastJeta",
-            "maxNRegions" : 8,
+            "maxNRegions" : 20,
             "maxNVertices" : 2,
             "measurementTrackerName" : "",
             "mode" : "VerticesFixed",
@@ -238,13 +238,16 @@ elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_optimized':
             "nSigmaZVertex" : 0.0,
             "originRadius" : 0.3,
             "precise" : True,
-            "ptMin" : 0.8,
+            "ptMin" : 0.3,
             "searchOpt" : True,
             "vertexCollection" : "hltTrimmedPixelVertices",
             "whereToUseMeasurementTracker" : "Never",
             "zErrorBeamSpot" : 0.5,
             "zErrorVetex" : 0.3
-        }
+    }
+
+    # print (roi_params.get("ptMin", roi_defaults["ptMin"]))
+
     process.hltBTaggingRegion = cms.EDProducer("CandidateSeededTrackingRegionsEDProducer",
         RegionPSet = cms.PSet(
             beamSpot = cms.InputTag(roi_params.get("beamSpot", roi_defaults["beamSpot"])),

@@ -119,25 +119,36 @@ elif opts.reco == 'HLT_Run3TRK':
     prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif opts.reco == 'HLT_Run3TRK_ROICaloROIPF':
-    # Run-3 tracking: standard (Triplets+Quadruplets)
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    process = customizeHLTforRun3Tracking(process)
-    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_ROIPF import *
-    process = customizeRun3_BTag_ROICalo_ROIPF(process, opts.addDeepJet, opts.replaceBTagMuPaths)
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_roiCalo_roiPF_DeepJet(process)
     update_jmeCalibs = True
-    process = fixMenu(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
+elif opts.reco == 'HLT_Run3TRK_ROICaloROIPF_oldJECs':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_roiCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = False
     prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif opts.reco == 'HLT_Run3TRK_noCaloROIPF':
-    # Run-3 tracking: standard (Triplets+Quadruplets)
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    process = customizeHLTforRun3Tracking(process)
-    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_noCalo_ROIPF import *
-    process = customizeRun3_BTag_noCalo_ROIPF(process, opts.addDeepJet, opts.replaceBTagMuPaths)
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    # process = MUO_newReco(process)
+    process = BTV_noCalo_roiPF_DeepJet(process)
     update_jmeCalibs = True
-    process = fixMenu(process)
     prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
+elif opts.reco == 'HLT_Run3TRK_noCaloROIPF_oldJECs':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    # process = MUO_newReco(process)
+    process = BTV_noCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = False
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif opts.reco == 'HLT_Run3TRK_noCaloROIPF_Mu':
     from HLTrigger.Configuration.customizeHLTforRun3 import *
@@ -155,14 +166,52 @@ elif opts.reco == 'HLT_Run3TRK_noCaloROIPF_Mu_oldJECs':
     update_jmeCalibs = False
     prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
-elif opts.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
-    # Run-3 tracking: standard (Triplets+Quadruplets)
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    process = customizeHLTforRun3Tracking(process)
-    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_GlobalPF import *
-    process = customizeRun3_BTag_ROICalo_GlobalPF(process, opts.addDeepJet, opts.replaceBTagMuPaths)
+elif opts.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_roiCalo_roiPF_DeepJet(process)
     update_jmeCalibs = True
-    process = fixMenu(process)
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
+elif opts.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_oldJECs':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_roiCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = False
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
+elif opts.reco == 'HLT_Run3TRK_ROICaloGlobalPF_Mu':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_roiCalo_globalPF_DeepJet(process)
+    update_jmeCalibs = True
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
+elif opts.reco == 'HLT_Run3TRK_ROICaloGlobalPF_Mu_oldJECs':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_roiCalo_globalPF_DeepJet(process)
+    update_jmeCalibs = False
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
+elif opts.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_roiCalo_globalPF_DeepJet(process)
+    update_jmeCalibs = True
+    prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
+
+elif opts.reco == 'HLT_Run3TRK_ROICaloGlobalPF_oldJECs':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_roiCalo_globalPF_DeepJet(process)
+    update_jmeCalibs = False
     prescale_path(process.DST_Run3_PFScoutingPixelTracking_v16, process.PrescaleService)
 
 elif opts.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF':
