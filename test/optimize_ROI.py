@@ -55,8 +55,21 @@ class TemplateClassifier(BaseEstimator):
         if not os.path.exists("opt_results"):
             os.makedirs("opt_results")
 
+        config = {
+            "deltaEta":  deltaEta,
+            "deltaPhi":  deltaPhi,
+            "maxNRegions":  maxNRegions,
+            "maxNVertices":  maxNVertices,
+            "nSigmaZBeamSpot":  nSigmaZBeamSpot,
+            "nSigmaZVertex":  nSigmaZVertex,
+            "originRadius":  originRadius,
+            "ptMin":  ptMin,
+            "zErrorBeamSpot":  zErrorBeamSpot,
+            "zErrorVetex":  zErrorVetex
+        }
+
         with open(self._config_path, "w") as f:
-            json_config = json.dump(self.get_params(), f)
+            json_config = json.dump(config, f)
 
 
     def run_cmssw_command(self, output_hash, fname):
