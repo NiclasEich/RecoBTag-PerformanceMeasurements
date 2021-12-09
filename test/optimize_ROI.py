@@ -52,31 +52,17 @@ class TemplateClassifier(BaseEstimator):
         self._fname = "opt_results/HH_HLT_Run3TRK_ROICaloROIPF_22_{}.log".format(self._short_hash)
         self._config_path = "opt_results/config_{}.json".format(self._short_hash)
 
-        if not os.path.exists("opt_results"):
-            os.makedirs("opt_results")
-
-        config = {
-            "deltaEta":  deltaEta,
-            "deltaPhi":  deltaPhi,
-            "maxNRegions":  maxNRegions,
-            "maxNVertices":  maxNVertices,
-            "nSigmaZBeamSpot":  nSigmaZBeamSpot,
-            "nSigmaZVertex":  nSigmaZVertex,
-            "originRadius":  originRadius,
-            "ptMin":  ptMin,
-            "zErrorBeamSpot":  zErrorBeamSpot,
-            "zErrorVetex":  zErrorVetex
-        }
-
-        with open(self._config_path, "w") as f:
-            json_config = json.dump(config, f)
-
+        os.makedirs("opt_results", exist_ok=True)
 
     def run_cmssw_command(self, output_hash, fname):
         # files="\
         #     root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/008cdc6a-f340-488a-994b-ad0a366bb554.root,\
         #     root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/018caa66-83c3-4535-bd31-4af4ff5476fa.root,\
         #     root://xrootd-cms.infn.it//store/mc/Run3Winter21DRMiniAOD/GluGluToHHTo4B_node_cHHH1_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW/FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v2/130000/01f42c32-32fe-4cd3-b44e-88b350521e99.root"
+
+        with open(self._config_path, "w") as f:
+            json_config = json.dump(self.get_params(), f)
+
         files="\
             file:///nfs/dust/cms/user/sewuchte/ForNiclas/HH/018caa66-83c3-4535-bd31-4af4ff5476fa.root,\
             file:///nfs/dust/cms/user/sewuchte/ForNiclas/HH/06fc95e7-a2d7-4bbd-8440-ce57f4298131.root,\
