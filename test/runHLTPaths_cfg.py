@@ -200,21 +200,41 @@ elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF_Mu_oldJECs':
 
 elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    process = customizeHLTforRun3Tracking(process)
-    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_GlobalPF import *
-    process = customizeRun3_BTag_ROICalo_GlobalPF(process, options.addDeepJet, options.replaceBTagMuPaths)
+    # from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    # process = customizeHLTforRun3Tracking(process)
+    # from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_GlobalPF import *
+    # process = customizeRun3_BTag_ROICalo_GlobalPF(process, options.addDeepJet, options.replaceBTagMuPaths)
+    # update_jmeCalibs = True
+    # process = fixMenu(process)
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    # process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_roiCalo_globalPF_DeepJet(process)
     update_jmeCalibs = True
-    process = fixMenu(process)
 
 elif options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    process = customizeHLTforRun3Tracking(process)
-    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_GlobalCalo_GlobalPF import *
-    process = customizeRun3_BTag_GlobalCalo_GlobalPF(process, options.addDeepJet, options.replaceBTagMuPaths)
+    # from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    # process = customizeHLTforRun3Tracking(process)
+    # from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_GlobalCalo_GlobalPF import *
+    # process = customizeRun3_BTag_GlobalCalo_GlobalPF(process, options.addDeepJet, options.replaceBTagMuPaths)
+    # update_jmeCalibs = True
+    # process = fixMenu(process)
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    # process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_globalCalo_globalPF_DeepJet(process)
     update_jmeCalibs = True
-    process = fixMenu(process)
+
+elif options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF_Mu':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_noCalo_roiPF_DeepCSV(process)
+    process = BTV_globalCalo_globalPF_DeepJet(process)
+    update_jmeCalibs = True
 
 elif options.reco == 'HLT_Run3TRKNoCaloJetsWithSubstitutions':
     # Run-3 global/central TRK+PF reconstruction

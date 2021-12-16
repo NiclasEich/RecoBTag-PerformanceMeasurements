@@ -400,6 +400,39 @@ elif options.reco == 'HLT_Run3TRK_ROICaloROIPF':
     muSource = 'hltMuonsROIForBTag'
     elSource = 'hltEgammaGsfElectrons'
 
+elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu':
+    # Run-3 tracking: standard (Triplets+Quadruplets)
+    # from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
+    # process = customizeHLTforRun3Tracking(process)
+    # from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_ROIPF import *
+    # process = customizeRun3_BTag_ROICalo_ROIPF(process, True)
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    # process = BTV_roiCalo_roiPF_DeepCSV(process)
+    process = BTV_roiCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = True
+    # process = fixMenu(process)
+    pvSource                 = "hltVerticesPFFilterROIForBTag"
+    pfCandidates             = 'hltParticleFlowROIForBTag'
+    trackSource              = "hltMergedTracksROIForBTag"
+    rho                      = "hltFixedGridRhoFastjetAllROIForBTag"
+    muSource = 'hltMuonsROIForBTag'
+    elSource = 'hltEgammaGsfElectrons'
+
+elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_oldJECs':
+    from HLTrigger.Configuration.customizeHLTforRun3 import *
+    process = TRK_newTracking(process)
+    process = MUO_newReco(process)
+    process = BTV_roiCalo_roiPF_DeepJet(process)
+    update_jmeCalibs = False
+    pvSource                 = "hltVerticesPFFilterROIForBTag"
+    pfCandidates             = 'hltParticleFlowROIForBTag'
+    trackSource              = "hltMergedTracksROIForBTag"
+    rho                      = "hltFixedGridRhoFastjetAllROIForBTag"
+    muSource = 'hltMuonsROIForBTag'
+    elSource = 'hltEgammaGsfElectrons'
+
 elif options.reco == 'HLT_Run3TRK_noCaloROIPF':
     # Run-3 tracking: standard (Triplets+Quadruplets)
     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
@@ -645,10 +678,12 @@ process.MessageLogger.cerr.FwkReport.reportEvery = options.reportEvery
 #process.MessageLogger.cerr.default.limit = 1
 
 process.MessageLogger.suppressWarning = cms.untracked.vstring(
-        'hltPatJetFlavourAssociationCalo'
+        'hltPatJetFlavourAssociationCalo',
+        'hltCTPPSPixelDigis'
 )
 process.MessageLogger.suppressError = cms.untracked.vstring(
-        'hltPatJetFlavourAssociationCalo'
+        'hltPatJetFlavourAssociationCalo',
+        'hltCTPPSPixelDigis'
 )
 process.MessageLogger.cerr.threshold = "DEBUG"
 #process.MessageLogger.debugModules = ["hltBTagPFDeepCSV4p06SingleROI","hltDeepCombinedSecondaryVertexBJetTagsPFROI","hltDeepCombinedSecondaryVertexBPFPatROIJetTags","hltPatJetsROI"]
@@ -869,19 +904,26 @@ process.analyzerSeq += process.btagana
 # process.trkMonitoringEndPath = cms.EndPath(process.trkMonitoringSeq)
 # process.schedule.extend([process.trkMonitoringEndPath])
 
-# from JMETriggerAnalysis.Common.VertexHistogrammer_cfi import VertexHistogrammer
-# process.VertexHistograms_hltPixelVertices = VertexHistogrammer.clone(src = 'hltPixelVertices')
-# process.VertexHistograms_hltTrimmedPixelVertices = VertexHistogrammer.clone(src = 'hltTrimmedPixelVertices')
-# process.VertexHistograms_hltVerticesPF = VertexHistogrammer.clone(src = 'hltVerticesPF')
-# process.VertexHistograms_hltVerticesPFFilter = VertexHistogrammer.clone(src = 'hltVerticesPFFilter')
+from JMETriggerAnalysis.Common.VertexHistogrammer_cfi import VertexHistogrammer
+process.VertexHistograms_hltPixelVertices = VertexHistogrammer.clone(src = 'hltPixelVertices')
+process.VertexHistograms_hltTrimmedPixelVertices = VertexHistogrammer.clone(src = 'hltTrimmedPixelVertices')
+process.VertexHistograms_hltVerticesPF = VertexHistogrammer.clone(src = 'hltVerticesPF')
+process.VertexHistograms_hltVerticesPFFilter = VertexHistogrammer.clone(src = 'hltVerticesPFFilter')
+process.VertexHistograms_hltVerticesL3FilterROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesL3FilterROIForBTag')
+process.VertexHistograms_hltVerticesL3SelectorROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesL3SelectorROIForBTag')
+process.VertexHistograms_hltVerticesL3ROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesL3ROIForBTag')
 # #
 # process.vtxMonitoringSeq = cms.Sequence(
 #    process.VertexHistograms_hltPixelVertices
 #    + process.VertexHistograms_hltTrimmedPixelVertices
 #    + process.VertexHistograms_hltVerticesPF
 #    + process.VertexHistograms_hltVerticesPFFilter
+#    + process.VertexHistograms_hltVerticesL3FilterROIForBTag
+#    + process.VertexHistograms_hltVerticesL3SelectorROIForBTag
+#    + process.VertexHistograms_hltVerticesL3ROIForBTag
 # )
 # process.vtxMonitoringEndPath = cms.EndPath(process.vtxMonitoringSeq)
+# process.schedule.extend([process.vtxMonitoringEndPath])
 
 if options.runTiming:
     #timing test
