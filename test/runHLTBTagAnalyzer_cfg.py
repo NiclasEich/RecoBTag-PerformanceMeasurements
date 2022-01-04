@@ -413,7 +413,8 @@ elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu':
     process = BTV_roiCalo_roiPF_DeepJet(process)
     update_jmeCalibs = True
     # process = fixMenu(process)
-    pvSource                 = "hltVerticesPFFilterROIForBTag"
+    # pvSource                 = "hltVerticesPFFilterROIForBTag"
+    pvSource                 = "hltVerticesPFROIForBTag"
     pfCandidates             = 'hltParticleFlowROIForBTag'
     trackSource              = "hltMergedTracksROIForBTag"
     rho                      = "hltFixedGridRhoFastjetAllROIForBTag"
@@ -679,11 +680,43 @@ process.MessageLogger.cerr.FwkReport.reportEvery = options.reportEvery
 
 process.MessageLogger.suppressWarning = cms.untracked.vstring(
         'hltPatJetFlavourAssociationCalo',
-        'hltCTPPSPixelDigis'
+        'hltCTPPSPixelDigis',
+       'VertexHistograms_hltPixelVertices',
+       'VertexHistograms_hltTrimmedPixelVertices',
+       'VertexHistograms_hltVerticesPF',
+       'VertexHistograms_hltVerticesPFFilter',
+       'VertexHistograms_hltVerticesL3FilterROIForBTag',
+       'VertexHistograms_hltVerticesL3SelectorROIForBTag',
+       'VertexHistograms_hltVerticesL3ROIForBTag',
+       'VertexHistograms_hltVerticesPFROIForBTag',
+       'VertexHistograms_hltVerticesPFSelectorROIForBTag',
+       'VertexHistograms_hltVerticesPFFilterROIForBTag',
+
+       'hltL3NoFiltersNoVtxMuonsOIState',
+       'hltL3MuonsIterL3OINoVtx',
+       'hltL3NoFiltersNoVtxMuonsOIHit',
+       'hltL3NoFiltersTkTracksFromL2IOHitNoVtx',
+       'hltCSCHaloData',
 )
 process.MessageLogger.suppressError = cms.untracked.vstring(
         'hltPatJetFlavourAssociationCalo',
-        'hltCTPPSPixelDigis'
+        'hltCTPPSPixelDigis',
+       'VertexHistograms_hltPixelVertices',
+       'VertexHistograms_hltTrimmedPixelVertices',
+       'VertexHistograms_hltVerticesPF',
+       'VertexHistograms_hltVerticesPFFilter',
+       'VertexHistograms_hltVerticesL3FilterROIForBTag',
+       'VertexHistograms_hltVerticesL3SelectorROIForBTag',
+       'VertexHistograms_hltVerticesL3ROIForBTag',
+       'VertexHistograms_hltVerticesPFROIForBTag',
+       'VertexHistograms_hltVerticesPFSelectorROIForBTag',
+       'VertexHistograms_hltVerticesPFFilterROIForBTag',
+
+       'hltL3NoFiltersNoVtxMuonsOIState',
+       'hltL3MuonsIterL3OINoVtx',
+       'hltL3NoFiltersNoVtxMuonsOIHit',
+       'hltL3NoFiltersTkTracksFromL2IOHitNoVtx',
+       'hltCSCHaloData',
 )
 process.MessageLogger.cerr.threshold = "DEBUG"
 #process.MessageLogger.debugModules = ["hltBTagPFDeepCSV4p06SingleROI","hltDeepCombinedSecondaryVertexBJetTagsPFROI","hltDeepCombinedSecondaryVertexBPFPatROIJetTags","hltPatJetsROI"]
@@ -903,27 +936,35 @@ process.analyzerSeq += process.btagana
 
 # process.trkMonitoringEndPath = cms.EndPath(process.trkMonitoringSeq)
 # process.schedule.extend([process.trkMonitoringEndPath])
+monitorVertices = False
+if monitorVertices:
 
-from JMETriggerAnalysis.Common.VertexHistogrammer_cfi import VertexHistogrammer
-process.VertexHistograms_hltPixelVertices = VertexHistogrammer.clone(src = 'hltPixelVertices')
-process.VertexHistograms_hltTrimmedPixelVertices = VertexHistogrammer.clone(src = 'hltTrimmedPixelVertices')
-process.VertexHistograms_hltVerticesPF = VertexHistogrammer.clone(src = 'hltVerticesPF')
-process.VertexHistograms_hltVerticesPFFilter = VertexHistogrammer.clone(src = 'hltVerticesPFFilter')
-process.VertexHistograms_hltVerticesL3FilterROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesL3FilterROIForBTag')
-process.VertexHistograms_hltVerticesL3SelectorROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesL3SelectorROIForBTag')
-process.VertexHistograms_hltVerticesL3ROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesL3ROIForBTag')
-# #
-# process.vtxMonitoringSeq = cms.Sequence(
-#    process.VertexHistograms_hltPixelVertices
-#    + process.VertexHistograms_hltTrimmedPixelVertices
-#    + process.VertexHistograms_hltVerticesPF
-#    + process.VertexHistograms_hltVerticesPFFilter
-#    + process.VertexHistograms_hltVerticesL3FilterROIForBTag
-#    + process.VertexHistograms_hltVerticesL3SelectorROIForBTag
-#    + process.VertexHistograms_hltVerticesL3ROIForBTag
-# )
-# process.vtxMonitoringEndPath = cms.EndPath(process.vtxMonitoringSeq)
-# process.schedule.extend([process.vtxMonitoringEndPath])
+    from JMETriggerAnalysis.Common.VertexHistogrammer_cfi import VertexHistogrammer
+    process.VertexHistograms_hltPixelVertices = VertexHistogrammer.clone(src = 'hltPixelVertices')
+    process.VertexHistograms_hltTrimmedPixelVertices = VertexHistogrammer.clone(src = 'hltTrimmedPixelVertices')
+    process.VertexHistograms_hltVerticesPF = VertexHistogrammer.clone(src = 'hltVerticesPF')
+    process.VertexHistograms_hltVerticesPFFilter = VertexHistogrammer.clone(src = 'hltVerticesPFFilter')
+    process.VertexHistograms_hltVerticesL3FilterROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesL3FilterROIForBTag')
+    process.VertexHistograms_hltVerticesL3SelectorROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesL3SelectorROIForBTag')
+    process.VertexHistograms_hltVerticesL3ROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesL3ROIForBTag')
+    process.VertexHistograms_hltVerticesPFROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesPFROIForBTag')
+    process.VertexHistograms_hltVerticesPFSelectorROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesPFSelectorROIForBTag')
+    process.VertexHistograms_hltVerticesPFFilterROIForBTag = VertexHistogrammer.clone(src = 'hltVerticesPFFilterROIForBTag')
+    # #
+    process.vtxMonitoringSeq = cms.Sequence(
+       process.VertexHistograms_hltPixelVertices
+       + process.VertexHistograms_hltTrimmedPixelVertices
+       + process.VertexHistograms_hltVerticesPF
+       + process.VertexHistograms_hltVerticesPFFilter
+       + process.VertexHistograms_hltVerticesL3FilterROIForBTag
+       + process.VertexHistograms_hltVerticesL3SelectorROIForBTag
+       + process.VertexHistograms_hltVerticesL3ROIForBTag
+       + process.VertexHistograms_hltVerticesPFROIForBTag
+       + process.VertexHistograms_hltVerticesPFSelectorROIForBTag
+       + process.VertexHistograms_hltVerticesPFFilterROIForBTag
+    )
+    process.vtxMonitoringEndPath = cms.EndPath(process.vtxMonitoringSeq)
+    process.schedule.extend([process.vtxMonitoringEndPath])
 
 if options.runTiming:
     #timing test

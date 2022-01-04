@@ -39,13 +39,13 @@ declare -A samplesMap
 # samplesMap["GluGluToHHTo4B_cHHH2p45"]="/GluGluToHHTo4B_node_cHHH2p45_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v4/GEN-SIM-DIGI-RAW"
 # samplesMap["GluGluToHHTo4B_cHHH5"]="/GluGluToHHTo4B_node_cHHH5_TuneCP5_14TeV-powheg-pythia8/Run3Winter21DRMiniAOD-FlatPU30to80FEVT_112X_mcRun3_2021_realistic_v16-v4/GEN-SIM-DIGI-RAW"
 samplesMap["EphemeralHLTPhysics1"]="/EphemeralHLTPhysics1/Run2018D-v1/RAW"
-samplesMap["EphemeralHLTPhysics2"]="/EphemeralHLTPhysics2/Run2018D-v1/RAW"
-samplesMap["EphemeralHLTPhysics3"]="/EphemeralHLTPhysics3/Run2018D-v1/RAW"
-samplesMap["EphemeralHLTPhysics4"]="/EphemeralHLTPhysics4/Run2018D-v1/RAW"
-samplesMap["EphemeralHLTPhysics5"]="/EphemeralHLTPhysics5/Run2018D-v1/RAW"
-samplesMap["EphemeralHLTPhysics6"]="/EphemeralHLTPhysics6/Run2018D-v1/RAW"
-samplesMap["EphemeralHLTPhysics7"]="/EphemeralHLTPhysics7/Run2018D-v1/RAW"
-samplesMap["EphemeralHLTPhysics8"]="/EphemeralHLTPhysics8/Run2018D-v1/RAW"
+# samplesMap["EphemeralHLTPhysics2"]="/EphemeralHLTPhysics2/Run2018D-v1/RAW"
+# samplesMap["EphemeralHLTPhysics3"]="/EphemeralHLTPhysics3/Run2018D-v1/RAW"
+# samplesMap["EphemeralHLTPhysics4"]="/EphemeralHLTPhysics4/Run2018D-v1/RAW"
+# samplesMap["EphemeralHLTPhysics5"]="/EphemeralHLTPhysics5/Run2018D-v1/RAW"
+# samplesMap["EphemeralHLTPhysics6"]="/EphemeralHLTPhysics6/Run2018D-v1/RAW"
+# samplesMap["EphemeralHLTPhysics7"]="/EphemeralHLTPhysics7/Run2018D-v1/RAW"
+# samplesMap["EphemeralHLTPhysics8"]="/EphemeralHLTPhysics8/Run2018D-v1/RAW"
 
 
 recoKeys=(
@@ -65,11 +65,12 @@ if [[ ${HOSTNAME} == lxplus* ]]; then
 fi
 
 for recoKey in "${recoKeys[@]}"; do
-    python3 ../runHLTBTagAnalyzer_cfg.py dumpPython=.tmp_${recoKey}_cfg.py defaults=Run3 runOnData=True reco=${recoKey} runPuppiJetVariables=False runCaloJetVariables=True lumis=${CMSSW_BASE}/src/RecoBTag/PerformanceMeasurements/test/rates/data/json_323775.txt
+    # python3 ../runHLTBTagAnalyzer_cfg.py dumpPython=.tmp_${recoKey}_cfg.py defaults=Run3 runOnData=True reco=${recoKey} runPuppiJetVariables=False runCaloJetVariables=True lumis=${CMSSW_BASE}/src/RecoBTag/PerformanceMeasurements/test/rates/data/json_323775.txt
+    python3 ../runHLTBTagAnalyzer_cfg.py dumpPython=.tmp_${recoKey}_cfg.py defaults=Run3 runOnData=True reco=${recoKey} runPuppiJetVariables=False runCaloJetVariables=True lumis=${CMSSW_BASE}/src/RecoBTag/PerformanceMeasurements/test/rates/data/json_325022.txt
     for sampleKey in ${!samplesMap[@]}; do
         sampleName=${samplesMap[${sampleKey}]}
         numEvents=${NEVT}
-        bdriver -c .tmp_${recoKey}_cfg.py --customize-cfg -m ${numEvents} -n 1000 ${opts} --cpus 1 --mem 1999 --time 03:00:00 \
+        bdriver -c .tmp_${recoKey}_cfg.py --customize-cfg -m ${numEvents} -n -1 ${opts} --cpus 1 --mem 1999 --time 03:00:00 \
         -d ${sampleName} -p 0 -o ${ODIR}/${recoKey}/${sampleKey} --export-LD-LIBRARY-PATH -b htc\
         --customise-commands \
        '# output [TFileService]' \
