@@ -89,153 +89,154 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
         )
 
     # do the same for PuppiJets
-
-    process.hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags = process.hltDeepCombinedSecondaryVertexBJetTagsPF.clone(
-        src = cms.InputTag( "hltDeepCombinedSecondaryVertexBPuppiJetPatTagInfos" )
-    )
-    process.hltDeepCombinedSecondaryVertexBPuppiJetPatTagInfos = process.hltDeepCombinedSecondaryVertexBJetTagsInfos.clone(
-        svTagInfos = cms.InputTag( "hltDeepSecondaryVertexPFPuppiPatTagInfos" )
-    )
-    process.hltDeepSecondaryVertexPFPuppiPatTagInfos = process.hltDeepSecondaryVertexTagInfosPF.clone(
-        trackIPTagInfos = cms.InputTag( "hltDeepBLifetimePFPuppiPatTagInfos" ),
-        weights = cms.InputTag(puppi)
-    )
-    process.hltDeepBLifetimePFPuppiPatTagInfos = process.hltDeepBLifetimeTagInfosPF.clone(
-        jets = cms.InputTag( puppijets )
-    )
-    process.HLTBtagDeepCSVSequencePFPuppiPat = cms.Sequence(
-        process.hltVerticesPF
-        + process.hltVerticesPFSelector
-        + process.hltVerticesPFFilter
-        + process.hltDeepBLifetimePFPuppiPatTagInfos
-        + process.hltDeepInclusiveVertexFinderPF
-        + process.hltDeepInclusiveSecondaryVerticesPF
-        + process.hltDeepTrackVertexArbitratorPF
-        + process.hltDeepInclusiveMergedVerticesPF
-        + process.hltDeepSecondaryVertexPFPuppiPatTagInfos
-        + process.hltDeepCombinedSecondaryVertexBPuppiJetPatTagInfos
-        + process.hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags
-    )
-
-    # do the same for caloJets
-    # if roiReplace==False:
-    if roiReplaceCalo==False:
-        process.hltDeepCombinedSecondaryVertexCaloPatBJetTags = process.hltDeepCombinedSecondaryVertexBJetTagsCalo.clone(
-            src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos"),
+    if runPuppi:
+        process.hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags = process.hltDeepCombinedSecondaryVertexBJetTagsPF.clone(
+            src = cms.InputTag( "hltDeepCombinedSecondaryVertexBPuppiJetPatTagInfos" )
+        )
+        process.hltDeepCombinedSecondaryVertexBPuppiJetPatTagInfos = process.hltDeepCombinedSecondaryVertexBJetTagsInfos.clone(
+            svTagInfos = cms.InputTag( "hltDeepSecondaryVertexPFPuppiPatTagInfos" )
+        )
+        process.hltDeepSecondaryVertexPFPuppiPatTagInfos = process.hltDeepSecondaryVertexTagInfosPF.clone(
+            trackIPTagInfos = cms.InputTag( "hltDeepBLifetimePFPuppiPatTagInfos" ),
+            weights = cms.InputTag(puppi)
+        )
+        process.hltDeepBLifetimePFPuppiPatTagInfos = process.hltDeepBLifetimeTagInfosPF.clone(
+            jets = cms.InputTag( puppijets )
+        )
+        process.HLTBtagDeepCSVSequencePFPuppiPat = cms.Sequence(
+            process.hltVerticesPF
+            + process.hltVerticesPFSelector
+            + process.hltVerticesPFFilter
+            + process.hltDeepBLifetimePFPuppiPatTagInfos
+            + process.hltDeepInclusiveVertexFinderPF
+            + process.hltDeepInclusiveSecondaryVerticesPF
+            + process.hltDeepTrackVertexArbitratorPF
+            + process.hltDeepInclusiveMergedVerticesPF
+            + process.hltDeepSecondaryVertexPFPuppiPatTagInfos
+            + process.hltDeepCombinedSecondaryVertexBPuppiJetPatTagInfos
+            + process.hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags
         )
 
-        process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos = process.hltDeepCombinedSecondaryVertexBJetTagsInfosCalo.clone(
-            svTagInfos = cms.InputTag("hltInclusiveSecondaryVertexFinderPatTagInfos")
-        )
-        process.hltInclusiveSecondaryVertexFinderPatTagInfos = process.hltInclusiveSecondaryVertexFinderTagInfos.clone(
-            trackIPTagInfos = cms.InputTag("hltImpactParameterPatTagInfos"),
-        )
+    if runCalo:
+        # do the same for caloJets
+        # if roiReplace==False:
+        if roiReplaceCalo==False:
+            process.hltDeepCombinedSecondaryVertexCaloPatBJetTags = process.hltDeepCombinedSecondaryVertexBJetTagsCalo.clone(
+                src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos"),
+            )
 
-        process.hltImpactParameterPatTagInfos = process.hltImpactParameterTagInfos.clone(
-            jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorPat"),
-        )
+            process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos = process.hltDeepCombinedSecondaryVertexBJetTagsInfosCalo.clone(
+                svTagInfos = cms.InputTag("hltInclusiveSecondaryVertexFinderPatTagInfos")
+            )
+            process.hltInclusiveSecondaryVertexFinderPatTagInfos = process.hltInclusiveSecondaryVertexFinderTagInfos.clone(
+                trackIPTagInfos = cms.InputTag("hltImpactParameterPatTagInfos"),
+            )
 
-        # process.hltSelectorCentralJets20L1FastJeta2p5 = process.hltSelectorCentralJets30L1FastJeta.clone(
-        #     etaMax = cms.double(2.5),
-        #     etaMin = cms.double(-2.5),
-        #     src = cms.InputTag("hltSelectorJets20L1FastJet")
-        # )
+            process.hltImpactParameterPatTagInfos = process.hltImpactParameterTagInfos.clone(
+                jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorPat"),
+            )
 
-        # process.hltSelectorJets20L1FastJet = process.hltSelectorJets30L1FastJet.clone(
-        #     etMin = cms.double(20.0),
-        # )
+            # process.hltSelectorCentralJets20L1FastJeta2p5 = process.hltSelectorCentralJets30L1FastJeta.clone(
+            #     etaMax = cms.double(2.5),
+            #     etaMin = cms.double(-2.5),
+            #     src = cms.InputTag("hltSelectorJets20L1FastJet")
+            # )
 
-        # process.hltSelector8CentralJetsL1FastJet202p5 = cms.EDFilter("LargestEtCaloJetSelector",
-        #     filter = cms.bool(False),
-        #     maxNumber = cms.uint32(8),
-        #     src = cms.InputTag("hltSelectorCentralJets20L1FastJeta2p5")
-        # )
+            # process.hltSelectorJets20L1FastJet = process.hltSelectorJets30L1FastJet.clone(
+            #     etMin = cms.double(20.0),
+            # )
 
-        process.hltFastPixelBLifetimeL3AssociatorPat = process.hltFastPixelBLifetimeL3Associator.clone(
-            jets = cms.InputTag(calojetsCutted),
-            tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplaceCalo==False else "hltMergedTracksROIForBTag"),
-        )
+            # process.hltSelector8CentralJetsL1FastJet202p5 = cms.EDFilter("LargestEtCaloJetSelector",
+            #     filter = cms.bool(False),
+            #     maxNumber = cms.uint32(8),
+            #     src = cms.InputTag("hltSelectorCentralJets20L1FastJeta2p5")
+            # )
 
-        process.HLTBtagDeepCSVSequenceCaloPat = cms.Sequence(
-            # process.hltSelectorJets20L1FastJet
-            process.hltSelectorJets30L1FastJet
-            # +process.hltSelectorCentralJets20L1FastJeta2p5
-            +process.hltSelectorCentralJets30L1FastJeta
-            +process.hltSelector8CentralJetsL1FastJet
-            # +process.hltSelector8CentralJetsL1FastJet202p5
-            +process.HLTTrackReconstructionForBTag
-            +process.hltVerticesL3
-            # +process.hltVerticesL3Selector
-            # +process.hltVerticesL3Filter
-            +process.hltFastPixelBLifetimeL3AssociatorPat
-            +process.hltImpactParameterPatTagInfos
-            +process.hltInclusiveVertexFinder
-            +process.hltInclusiveSecondaryVertices
-            +process.hltTrackVertexArbitrator
-            +process.hltInclusiveMergedVertices
-            +process.hltInclusiveSecondaryVertexFinderPatTagInfos
-            +process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos
-            +process.hltDeepCombinedSecondaryVertexCaloPatBJetTags
-        )
-    else:
-        process.hltDeepCombinedSecondaryVertexCaloPatBJetTags = process.hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag.clone(
-            src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos"),
-        )
+            process.hltFastPixelBLifetimeL3AssociatorPat = process.hltFastPixelBLifetimeL3Associator.clone(
+                jets = cms.InputTag(calojetsCutted),
+                tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplaceCalo==False else "hltMergedTracksROIForBTag"),
+            )
 
-        process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos = process.hltDeepCombinedSecondaryVertexBJetTagsInfosCaloROIForBTag.clone(
-            svTagInfos = cms.InputTag("hltInclusiveSecondaryVertexFinderPatTagInfos")
-        )
-        process.hltInclusiveSecondaryVertexFinderPatTagInfos = process.hltInclusiveSecondaryVertexFinderTagInfosROIForBTag.clone(
-            trackIPTagInfos = cms.InputTag("hltImpactParameterPatTagInfos"),
-        )
+            process.HLTBtagDeepCSVSequenceCaloPat = cms.Sequence(
+                # process.hltSelectorJets20L1FastJet
+                process.hltSelectorJets30L1FastJet
+                # +process.hltSelectorCentralJets20L1FastJeta2p5
+                +process.hltSelectorCentralJets30L1FastJeta
+                +process.hltSelector8CentralJetsL1FastJet
+                # +process.hltSelector8CentralJetsL1FastJet202p5
+                +process.HLTTrackReconstructionForBTag
+                +process.hltVerticesL3
+                # +process.hltVerticesL3Selector
+                # +process.hltVerticesL3Filter
+                +process.hltFastPixelBLifetimeL3AssociatorPat
+                +process.hltImpactParameterPatTagInfos
+                +process.hltInclusiveVertexFinder
+                +process.hltInclusiveSecondaryVertices
+                +process.hltTrackVertexArbitrator
+                +process.hltInclusiveMergedVertices
+                +process.hltInclusiveSecondaryVertexFinderPatTagInfos
+                +process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos
+                +process.hltDeepCombinedSecondaryVertexCaloPatBJetTags
+            )
+        else:
+            process.hltDeepCombinedSecondaryVertexCaloPatBJetTags = process.hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag.clone(
+                src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos"),
+            )
 
-        process.hltImpactParameterPatTagInfos = process.hltImpactParameterTagInfosROIForBTag.clone(
-            jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorPat"),
-        )
+            process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos = process.hltDeepCombinedSecondaryVertexBJetTagsInfosCaloROIForBTag.clone(
+                svTagInfos = cms.InputTag("hltInclusiveSecondaryVertexFinderPatTagInfos")
+            )
+            process.hltInclusiveSecondaryVertexFinderPatTagInfos = process.hltInclusiveSecondaryVertexFinderTagInfosROIForBTag.clone(
+                trackIPTagInfos = cms.InputTag("hltImpactParameterPatTagInfos"),
+            )
 
-        # process.hltSelector8CentralJetsL1FastJet202p5 = cms.EDFilter("LargestEtCaloJetSelector",
-        #     filter = cms.bool(False),
-        #     maxNumber = cms.uint32(8),
-        #     src = cms.InputTag("hltSelectorCentralJets20L1FastJeta2p5")
-        # )
+            process.hltImpactParameterPatTagInfos = process.hltImpactParameterTagInfosROIForBTag.clone(
+                jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorPat"),
+            )
 
-        # process.hltSelectorCentralJets20L1FastJeta2p5 = process.hltSelectorCentralJets30L1FastJeta.clone(
-        #     etaMax = cms.double(2.5),
-        #     etaMin = cms.double(-2.5),
-        #     src = cms.InputTag("hltSelectorJets20L1FastJet")
-        # )
+            # process.hltSelector8CentralJetsL1FastJet202p5 = cms.EDFilter("LargestEtCaloJetSelector",
+            #     filter = cms.bool(False),
+            #     maxNumber = cms.uint32(8),
+            #     src = cms.InputTag("hltSelectorCentralJets20L1FastJeta2p5")
+            # )
 
-        # process.hltSelectorJets20L1FastJet = process.hltSelectorJets30L1FastJet.clone(
-        #     etMin = cms.double(20.0),
-        #     src = cms.InputTag("hltAK4CaloJetsCorrectedIDPassed")
-        # )
+            # process.hltSelectorCentralJets20L1FastJeta2p5 = process.hltSelectorCentralJets30L1FastJeta.clone(
+            #     etaMax = cms.double(2.5),
+            #     etaMin = cms.double(-2.5),
+            #     src = cms.InputTag("hltSelectorJets20L1FastJet")
+            # )
 
-        process.hltFastPixelBLifetimeL3AssociatorPat = process.hltFastPixelBLifetimeL3AssociatorROIForBTag.clone(
-            jets = cms.InputTag(calojetsCutted),
-            tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplaceCalo==False else "hltMergedTracksROIForBTag"),
-        )
+            # process.hltSelectorJets20L1FastJet = process.hltSelectorJets30L1FastJet.clone(
+            #     etMin = cms.double(20.0),
+            #     src = cms.InputTag("hltAK4CaloJetsCorrectedIDPassed")
+            # )
 
-        process.HLTBtagDeepCSVSequenceCaloPat = cms.Sequence(
-            # process.hltSelectorJets20L1FastJet
-            process.hltSelectorJets30L1FastJet
-            # +process.hltSelectorCentralJets20L1FastJeta2p5
-            +process.hltSelectorCentralJets30L1FastJeta
-            +process.hltSelector8CentralJetsL1FastJet
-            # +process.hltSelector8CentralJetsL1FastJet202p5
-            +process.HLTTrackReconstructionForBTag
-            +process.hltVerticesL3ROIForBTag
-            +process.hltVerticesL3SelectorROIForBTag
-            +process.hltVerticesL3FilterROIForBTag
-            +process.hltFastPixelBLifetimeL3AssociatorPat
-            +process.hltImpactParameterPatTagInfos
-            +process.hltInclusiveVertexFinderROIForBTag
-            +process.hltInclusiveSecondaryVerticesROIForBTag
-            +process.hltTrackVertexArbitratorROIForBTag
-            +process.hltInclusiveMergedVerticesROIForBTag
-            +process.hltInclusiveSecondaryVertexFinderPatTagInfos
-            +process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos
-            +process.hltDeepCombinedSecondaryVertexCaloPatBJetTags
-        )
+            process.hltFastPixelBLifetimeL3AssociatorPat = process.hltFastPixelBLifetimeL3AssociatorROIForBTag.clone(
+                jets = cms.InputTag(calojetsCutted),
+                tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplaceCalo==False else "hltMergedTracksROIForBTag"),
+            )
+
+            process.HLTBtagDeepCSVSequenceCaloPat = cms.Sequence(
+                # process.hltSelectorJets20L1FastJet
+                process.hltSelectorJets30L1FastJet
+                # +process.hltSelectorCentralJets20L1FastJeta2p5
+                +process.hltSelectorCentralJets30L1FastJeta
+                +process.hltSelector8CentralJetsL1FastJet
+                # +process.hltSelector8CentralJetsL1FastJet202p5
+                +process.HLTTrackReconstructionForBTag
+                +process.hltVerticesL3ROIForBTag
+                # +process.hltVerticesL3SelectorROIForBTag
+                # +process.hltVerticesL3FilterROIForBTag
+                +process.hltFastPixelBLifetimeL3AssociatorPat
+                +process.hltImpactParameterPatTagInfos
+                +process.hltInclusiveVertexFinderROIForBTag
+                +process.hltInclusiveSecondaryVerticesROIForBTag
+                +process.hltTrackVertexArbitratorROIForBTag
+                +process.hltInclusiveMergedVerticesROIForBTag
+                +process.hltInclusiveSecondaryVertexFinderPatTagInfos
+                +process.hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos
+                +process.hltDeepCombinedSecondaryVertexCaloPatBJetTags
+            )
 
 
     # create patJets  for ak4pfchs and all necessary missing inputs
@@ -270,74 +271,76 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
         ),
         trackAssociationSource = cms.InputTag("hltAk4JetTracksAssociatorAtVertexPF"),
     )
-    process.hltPatJetsPuppi = patJets.clone(
-        JetFlavourInfoSource = cms.InputTag("hltPatJetFlavourAssociationPuppi") if not isData else cms.InputTag(""),
-        JetPartonMapSource = cms.InputTag("hltPatJetFlavourAssociationLegacyPuppi") if not isData else cms.InputTag(""),
-        addJetID = cms.bool(False),
-        addTagInfos = cms.bool(True),
-        addGenJetMatch = cms.bool(True) if not isData else cms.bool(False),
-        addGenPartonMatch = cms.bool(True) if not isData else cms.bool(False),
-        addJetFlavourInfo = cms.bool(True) if not isData else cms.bool(False),
-        addPartonJetMatch = cms.bool(True) if not isData else cms.bool(False),
-        discriminatorSources = cms.VInputTag(
-            cms.InputTag(PFPuppiDeepCSVTags,"probb"),cms.InputTag(PFPuppiDeepCSVTags,"probc"),cms.InputTag(PFPuppiDeepCSVTags,"probudsg"),
-            # cms.InputTag(PFPuppiDeepCSVTags,"probbb"), # hltDeepCSV: probb = probb +probbb
-            cms.InputTag(PFPuppiDeepFlavourTags,"probb"), cms.InputTag(PFPuppiDeepFlavourTags,"probc"), cms.InputTag(PFPuppiDeepFlavourTags,"probg"),
-            cms.InputTag(PFPuppiDeepFlavourTags,"problepb"), cms.InputTag(PFPuppiDeepFlavourTags,"probbb"), cms.InputTag(PFPuppiDeepFlavourTags,"probuds"),
-        ),
-        embedGenPartonMatch = cms.bool(False),
-        genJetMatch = cms.InputTag("hltPatJetGenJetMatchPuppi") if not isData else cms.InputTag(""),
-        genPartonMatch = cms.InputTag("hltPatJetPartonMatchPuppi") if not isData else cms.InputTag(""),
-        jetChargeSource = cms.InputTag("patJetPuppiCharge"),
-        jetCorrFactorsSource = cms.VInputTag(cms.InputTag("hltPatJetCorrFactorsPuppi")),
-        jetIDMap = cms.InputTag("hltAk4JetID"),
-        jetSource = cms.InputTag(puppijets),
-        tagInfoSources = cms.VInputTag(
-            cms.InputTag("hltDeepBLifetimePFPuppiPatTagInfos"),
-            cms.InputTag("hltDeepCombinedSecondaryVertexBPuppiJetPatTagInfos"),
-            cms.InputTag("hltDeepSecondaryVertexPFPuppiPatTagInfos"),
-            cms.InputTag("hltPFPuppiDeepFlavourTagInfos"),
-        ),
-        trackAssociationSource = cms.InputTag("hltAk4JetTracksAssociatorAtVertexPFPuppi"),
-    )
-    process.hltPatJetsCalo = patJets.clone(
-        JetFlavourInfoSource = cms.InputTag("hltPatJetFlavourAssociationCalo") if not isData else cms.InputTag(""),
-        JetPartonMapSource = cms.InputTag("hltPatJetFlavourAssociationLegacyCalo") if not isData else cms.InputTag(""),
-        addAssociatedTracks = cms.bool(True),
-        addBTagInfo = cms.bool(True),
-        addDiscriminators = cms.bool(True),
-        addEfficiencies = cms.bool(False),
-        embedCaloTowers = cms.bool(True),
-        addGenJetMatch = cms.bool(True) if not isData else cms.bool(False),
-        addGenPartonMatch = cms.bool(True) if not isData else cms.bool(False),
-        addJetCharge = cms.bool(False),
-        addJetCorrFactors = cms.bool(False),
-        addJetFlavourInfo = cms.bool(True) if not isData else cms.bool(False),
-        addPartonJetMatch = cms.bool(False),
-        addJetID = cms.bool(False),
-        addTagInfos = cms.bool(True),
-        discriminatorSources = cms.VInputTag(
-            cms.InputTag(CaloDeepCSVTags,"probb"),cms.InputTag(CaloDeepCSVTags,"probc"),cms.InputTag(CaloDeepCSVTags,"probudsg"),
-            # # cms.InputTag(PFDeepCSVTags,"probbb"), # hltDeepCSV: probb = probb +probbb
-        ),
-        embedGenPartonMatch = cms.bool(False),
-        genJetMatch = cms.InputTag("hltPatJetGenJetMatchCalo") if not isData else cms.InputTag(""),
-        genPartonMatch = cms.InputTag("hltPatJetPartonMatchCalo") if not isData else cms.InputTag(""),
-        # jetChargeSource = cms.InputTag("hltPatJetCharge"),
-        # jetCorrFactorsSource = cms.VInputTag(cms.InputTag("hltPatJetCorrFactors")),
-        # jetIDMap = cms.InputTag("hltAk4JetID"),
-        jetSource = cms.InputTag(calojetsCutted),
-        tagInfoSources = cms.VInputTag(
-            cms.InputTag("hltImpactParameterPatTagInfos"),
-            cms.InputTag("hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos"),
-            cms.InputTag("hltInclusiveSecondaryVertexFinderPatTagInfos"),
-            # cms.InputTag("hltImpactParameterTagInfos"),
-            # cms.InputTag("hltInclusiveSecondaryVertexFinderTagInfos"),
-            # cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfoCalo"),
-            # cms.InputTag("hltDeepSecondaryVertexPFPuppiPatTagInfos"),
-        ),
-        trackAssociationSource = cms.InputTag("hltAk4JetTracksAssociatorAtVertexCalo"),
-    )
+    if runPuppi:
+        process.hltPatJetsPuppi = patJets.clone(
+            JetFlavourInfoSource = cms.InputTag("hltPatJetFlavourAssociationPuppi") if not isData else cms.InputTag(""),
+            JetPartonMapSource = cms.InputTag("hltPatJetFlavourAssociationLegacyPuppi") if not isData else cms.InputTag(""),
+            addJetID = cms.bool(False),
+            addTagInfos = cms.bool(True),
+            addGenJetMatch = cms.bool(True) if not isData else cms.bool(False),
+            addGenPartonMatch = cms.bool(True) if not isData else cms.bool(False),
+            addJetFlavourInfo = cms.bool(True) if not isData else cms.bool(False),
+            addPartonJetMatch = cms.bool(True) if not isData else cms.bool(False),
+            discriminatorSources = cms.VInputTag(
+                cms.InputTag(PFPuppiDeepCSVTags,"probb"),cms.InputTag(PFPuppiDeepCSVTags,"probc"),cms.InputTag(PFPuppiDeepCSVTags,"probudsg"),
+                # cms.InputTag(PFPuppiDeepCSVTags,"probbb"), # hltDeepCSV: probb = probb +probbb
+                cms.InputTag(PFPuppiDeepFlavourTags,"probb"), cms.InputTag(PFPuppiDeepFlavourTags,"probc"), cms.InputTag(PFPuppiDeepFlavourTags,"probg"),
+                cms.InputTag(PFPuppiDeepFlavourTags,"problepb"), cms.InputTag(PFPuppiDeepFlavourTags,"probbb"), cms.InputTag(PFPuppiDeepFlavourTags,"probuds"),
+            ),
+            embedGenPartonMatch = cms.bool(False),
+            genJetMatch = cms.InputTag("hltPatJetGenJetMatchPuppi") if not isData else cms.InputTag(""),
+            genPartonMatch = cms.InputTag("hltPatJetPartonMatchPuppi") if not isData else cms.InputTag(""),
+            jetChargeSource = cms.InputTag("patJetPuppiCharge"),
+            jetCorrFactorsSource = cms.VInputTag(cms.InputTag("hltPatJetCorrFactorsPuppi")),
+            jetIDMap = cms.InputTag("hltAk4JetID"),
+            jetSource = cms.InputTag(puppijets),
+            tagInfoSources = cms.VInputTag(
+                cms.InputTag("hltDeepBLifetimePFPuppiPatTagInfos"),
+                cms.InputTag("hltDeepCombinedSecondaryVertexBPuppiJetPatTagInfos"),
+                cms.InputTag("hltDeepSecondaryVertexPFPuppiPatTagInfos"),
+                cms.InputTag("hltPFPuppiDeepFlavourTagInfos"),
+            ),
+            trackAssociationSource = cms.InputTag("hltAk4JetTracksAssociatorAtVertexPFPuppi"),
+        )
+    if runCalo:
+        process.hltPatJetsCalo = patJets.clone(
+            JetFlavourInfoSource = cms.InputTag("hltPatJetFlavourAssociationCalo") if not isData else cms.InputTag(""),
+            JetPartonMapSource = cms.InputTag("hltPatJetFlavourAssociationLegacyCalo") if not isData else cms.InputTag(""),
+            addAssociatedTracks = cms.bool(True),
+            addBTagInfo = cms.bool(True),
+            addDiscriminators = cms.bool(True),
+            addEfficiencies = cms.bool(False),
+            embedCaloTowers = cms.bool(True),
+            addGenJetMatch = cms.bool(True) if not isData else cms.bool(False),
+            addGenPartonMatch = cms.bool(True) if not isData else cms.bool(False),
+            addJetCharge = cms.bool(False),
+            addJetCorrFactors = cms.bool(False),
+            addJetFlavourInfo = cms.bool(True) if not isData else cms.bool(False),
+            addPartonJetMatch = cms.bool(False),
+            addJetID = cms.bool(False),
+            addTagInfos = cms.bool(True),
+            discriminatorSources = cms.VInputTag(
+                cms.InputTag(CaloDeepCSVTags,"probb"),cms.InputTag(CaloDeepCSVTags,"probc"),cms.InputTag(CaloDeepCSVTags,"probudsg"),
+                # # cms.InputTag(PFDeepCSVTags,"probbb"), # hltDeepCSV: probb = probb +probbb
+            ),
+            embedGenPartonMatch = cms.bool(False),
+            genJetMatch = cms.InputTag("hltPatJetGenJetMatchCalo") if not isData else cms.InputTag(""),
+            genPartonMatch = cms.InputTag("hltPatJetPartonMatchCalo") if not isData else cms.InputTag(""),
+            # jetChargeSource = cms.InputTag("hltPatJetCharge"),
+            # jetCorrFactorsSource = cms.VInputTag(cms.InputTag("hltPatJetCorrFactors")),
+            # jetIDMap = cms.InputTag("hltAk4JetID"),
+            jetSource = cms.InputTag(calojetsCutted),
+            tagInfoSources = cms.VInputTag(
+                cms.InputTag("hltImpactParameterPatTagInfos"),
+                cms.InputTag("hltDeepCombinedSecondaryVertexBJetCaloPatTagInfos"),
+                cms.InputTag("hltInclusiveSecondaryVertexFinderPatTagInfos"),
+                # cms.InputTag("hltImpactParameterTagInfos"),
+                # cms.InputTag("hltInclusiveSecondaryVertexFinderTagInfos"),
+                # cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfoCalo"),
+                # cms.InputTag("hltDeepSecondaryVertexPFPuppiPatTagInfos"),
+            ),
+            trackAssociationSource = cms.InputTag("hltAk4JetTracksAssociatorAtVertexCalo"),
+        )
 
     # for patJets
     from PhysicsTools.PatAlgos.mcMatchLayer0.jetFlavourId_cff import patJetFlavourAssociation,patJetPartons,patJetFlavourAssociationLegacy,patJetPartonAssociationLegacy,patJetPartonsLegacy
@@ -348,45 +351,51 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
         leptons = cms.InputTag("hltPatJetPartons","leptons"),
         partons = cms.InputTag("hltPatJetPartons","physicsPartons"),
     )
-    process.hltPatJetFlavourAssociationPuppi = patJetFlavourAssociation.clone(
-        bHadrons = cms.InputTag("hltPatJetPartons","bHadrons"),
-        cHadrons = cms.InputTag("hltPatJetPartons","cHadrons"),
-        jets = cms.InputTag(puppijets),
-        leptons = cms.InputTag("hltPatJetPartons","leptons"),
-        partons = cms.InputTag("hltPatJetPartons","physicsPartons"),
-        weights = cms.InputTag(puppi)
-    )
-    process.hltPatJetFlavourAssociationCalo = patJetFlavourAssociation.clone(
-        bHadrons = cms.InputTag("hltPatJetPartons","bHadrons"),
-        cHadrons = cms.InputTag("hltPatJetPartons","cHadrons"),
-        jets = cms.InputTag(calojetsCutted),
-        leptons = cms.InputTag("hltPatJetPartons","leptons"),
-        partons = cms.InputTag("hltPatJetPartons","physicsPartons"),
-    )
+    if runPuppi:
+        process.hltPatJetFlavourAssociationPuppi = patJetFlavourAssociation.clone(
+            bHadrons = cms.InputTag("hltPatJetPartons","bHadrons"),
+            cHadrons = cms.InputTag("hltPatJetPartons","cHadrons"),
+            jets = cms.InputTag(puppijets),
+            leptons = cms.InputTag("hltPatJetPartons","leptons"),
+            partons = cms.InputTag("hltPatJetPartons","physicsPartons"),
+            weights = cms.InputTag(puppi)
+        )
+    if runCalo:
+        process.hltPatJetFlavourAssociationCalo = patJetFlavourAssociation.clone(
+            bHadrons = cms.InputTag("hltPatJetPartons","bHadrons"),
+            cHadrons = cms.InputTag("hltPatJetPartons","cHadrons"),
+            jets = cms.InputTag(calojetsCutted),
+            leptons = cms.InputTag("hltPatJetPartons","leptons"),
+            partons = cms.InputTag("hltPatJetPartons","physicsPartons"),
+        )
     process.hltPatJetPartons = patJetPartons.clone()
 
     process.hltPatJetFlavourAssociationLegacy = patJetFlavourAssociationLegacy.clone(
         srcByReference = cms.InputTag("hltPatJetPartonAssociationLegacy")
     )
-    process.hltPatJetFlavourAssociationLegacyCalo = patJetFlavourAssociationLegacy.clone(
-        srcByReference = cms.InputTag("hltPatJetPartonAssociationLegacyCalo")
-    )
-    process.hltPatJetFlavourAssociationLegacyPuppi = patJetFlavourAssociationLegacy.clone(
-        srcByReference = cms.InputTag("hltPatJetPartonAssociationLegacyPuppi")
-    )
+    if runCalo:
+        process.hltPatJetFlavourAssociationLegacyCalo = patJetFlavourAssociationLegacy.clone(
+            srcByReference = cms.InputTag("hltPatJetPartonAssociationLegacyCalo")
+        )
+    if runPuppi:
+        process.hltPatJetFlavourAssociationLegacyPuppi = patJetFlavourAssociationLegacy.clone(
+            srcByReference = cms.InputTag("hltPatJetPartonAssociationLegacyPuppi")
+        )
 
     process.hltPatJetPartonAssociationLegacy = patJetPartonAssociationLegacy.clone(
         jets = cms.InputTag(pfjets),
         partons = cms.InputTag("hltPatJetPartonsLegacy")
     )
-    process.hltPatJetPartonAssociationLegacyPuppi = patJetPartonAssociationLegacy.clone(
-        jets = cms.InputTag(puppijets),
-        partons = cms.InputTag("hltPatJetPartonsLegacy")
-    )
-    process.hltPatJetPartonAssociationLegacyCalo = patJetPartonAssociationLegacy.clone(
-        jets = cms.InputTag(calojetsCutted),
-        partons = cms.InputTag("hltPatJetPartonsLegacy")
-    )
+    if runPuppi:
+        process.hltPatJetPartonAssociationLegacyPuppi = patJetPartonAssociationLegacy.clone(
+            jets = cms.InputTag(puppijets),
+            partons = cms.InputTag("hltPatJetPartonsLegacy")
+        )
+    if runCalo:
+        process.hltPatJetPartonAssociationLegacyCalo = patJetPartonAssociationLegacy.clone(
+            jets = cms.InputTag(calojetsCutted),
+            partons = cms.InputTag("hltPatJetPartonsLegacy")
+        )
 
     process.hltPatJetPartonsLegacy = patJetPartonsLegacy.clone(
         src = cms.InputTag("genParticles"),
@@ -397,14 +406,16 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
         matched = cms.InputTag("hltSlimmedGenJets"),
         src = cms.InputTag(pfjets)
     )
-    process.hltPatJetGenJetMatchPuppi = patJetGenJetMatch.clone(
-        matched = cms.InputTag("hltSlimmedGenJets"),
-        src = cms.InputTag(puppijets)
-    )
-    process.hltPatJetGenJetMatchCalo = patJetGenJetMatch.clone(
-        matched = cms.InputTag("hltSlimmedGenJets"),
-        src = cms.InputTag(calojetsCutted)
-    )
+    if runPuppi:
+        process.hltPatJetGenJetMatchPuppi = patJetGenJetMatch.clone(
+            matched = cms.InputTag("hltSlimmedGenJets"),
+            src = cms.InputTag(puppijets)
+        )
+    if runCalo:
+        process.hltPatJetGenJetMatchCalo = patJetGenJetMatch.clone(
+            matched = cms.InputTag("hltSlimmedGenJets"),
+            src = cms.InputTag(calojetsCutted)
+        )
 
     from PhysicsTools.PatAlgos.slimming.slimmedGenJets_cfi import slimmedGenJets
     process.hltSlimmedGenJets = slimmedGenJets.clone(
@@ -434,22 +445,25 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
         matched = cms.InputTag("hltPrunedGenParticles"),
         src = cms.InputTag(pfjets)
     )
-    process.hltPatJetPartonMatchPuppi = patJetPartonMatch.clone(
-        matched = cms.InputTag("hltPrunedGenParticles"),
-        src = cms.InputTag(puppijets)
-    )
-    process.hltPatJetPartonMatchCalo = patJetPartonMatch.clone(
-        matched = cms.InputTag("hltPrunedGenParticles"),
-        src = cms.InputTag(calojetsCutted)
-    )
+    if runPuppi:
+        process.hltPatJetPartonMatchPuppi = patJetPartonMatch.clone(
+            matched = cms.InputTag("hltPrunedGenParticles"),
+            src = cms.InputTag(puppijets)
+        )
+    if runCalo:
+        process.hltPatJetPartonMatchCalo = patJetPartonMatch.clone(
+            matched = cms.InputTag("hltPrunedGenParticles"),
+            src = cms.InputTag(calojetsCutted)
+        )
 
     from PhysicsTools.PatAlgos.recoLayer0.jetTracksCharge_cff import patJetCharge
     process.hltPatJetCharge = patJetCharge.clone(
         src = cms.InputTag("hltAk4JetTracksAssociatorAtVertexPF"),
     )
-    process.patJetPuppiCharge = patJetCharge.clone(
-        src = cms.InputTag("hltAk4JetTracksAssociatorAtVertexPFPuppi"),
-    )
+    if runPuppi:
+        process.patJetPuppiCharge = patJetCharge.clone(
+            src = cms.InputTag("hltAk4JetTracksAssociatorAtVertexPFPuppi"),
+        )
 
     from RecoJets.JetAssociationProducers.ak4JTA_cff import ak4JetTracksAssociatorAtVertexPF
     process.hltAk4JetTracksAssociatorAtVertexPF = ak4JetTracksAssociatorAtVertexPF.clone(
@@ -457,20 +471,23 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
         pvSrc = cms.InputTag(hltVertices),
         tracks = cms.InputTag(tracks),
     )
-    process.hltAk4JetTracksAssociatorAtVertexPFPuppi = ak4JetTracksAssociatorAtVertexPF.clone(
-        jets = cms.InputTag(puppijets),
-        pvSrc = cms.InputTag(hltVertices),
-        tracks = cms.InputTag(tracks),
-    )
-    process.hltAk4JetTracksAssociatorAtVertexCalo = ak4JetTracksAssociatorAtVertexPF.clone(
-        jets = cms.InputTag(calojetsCutted),
-        # pvSrc = cms.InputTag(hltVertices),
-        # pvSrc = cms.InputTag("hltVerticesL3" if roiReplace==False else "hltVerticesL3ROIForBTag"),
-        pvSrc = cms.InputTag("hltVerticesL3" if roiReplaceCalo==False else "hltVerticesL3FilterROIForBTag"),
-        # pvSrc = cms.InputTag("hltVerticesL3Filter" if roiReplaceCalo==False else "hltVerticesL3FilterROIForBTag"),
-        # tracks = cms.InputTag(tracks),
-        tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplaceCalo==False else "hltMergedTracksROIForBTag"),
-    )
+    if runPuppi:
+        process.hltAk4JetTracksAssociatorAtVertexPFPuppi = ak4JetTracksAssociatorAtVertexPF.clone(
+            jets = cms.InputTag(puppijets),
+            pvSrc = cms.InputTag(hltVertices),
+            tracks = cms.InputTag(tracks),
+        )
+    if runCalo:
+        process.hltAk4JetTracksAssociatorAtVertexCalo = ak4JetTracksAssociatorAtVertexPF.clone(
+            jets = cms.InputTag(calojetsCutted),
+            # pvSrc = cms.InputTag(hltVertices),
+            # pvSrc = cms.InputTag("hltVerticesL3" if roiReplace==False else "hltVerticesL3ROIForBTag"),
+            # pvSrc = cms.InputTag("hltVerticesL3" if roiReplaceCalo==False else "hltVerticesL3FilterROIForBTag"),
+            pvSrc = cms.InputTag("hltVerticesL3" if roiReplaceCalo==False else "hltVerticesL3ROIForBTag"),
+            # pvSrc = cms.InputTag("hltVerticesL3Filter" if roiReplaceCalo==False else "hltVerticesL3FilterROIForBTag"),
+            # tracks = cms.InputTag(tracks),
+            tracks = cms.InputTag("hltMergedTracksForBTag" if roiReplaceCalo==False else "hltMergedTracksROIForBTag"),
+        )
 
     from PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi  import patJetCorrFactors
     process.hltPatJetCorrFactors = patJetCorrFactors.clone(
@@ -479,12 +496,13 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
         rho = cms.InputTag(rho),
         src = cms.InputTag(pfjets),
     )
-    process.hltPatJetCorrFactorsPuppi = patJetCorrFactors.clone(
-        payload = cms.string(payloadPuppi),
-        primaryVertices = cms.InputTag(hltVertices),
-        rho = cms.InputTag(rho),
-        src = cms.InputTag(puppijets),
-    )
+    if runPuppi:
+        process.hltPatJetCorrFactorsPuppi = patJetCorrFactors.clone(
+            payload = cms.string(payloadPuppi),
+            primaryVertices = cms.InputTag(hltVertices),
+            rho = cms.InputTag(rho),
+            src = cms.InputTag(puppijets),
+        )
 
     from RecoJets.JetProducers.ak4JetID_cfi import ak4JetID
     process.hltAk4JetID = ak4JetID.clone(

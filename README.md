@@ -12,8 +12,8 @@
 ```bash
 # setting up the latest release
 export SCRAM_ARCH=slc7_amd64_gcc900
-cmsrel CMSSW_12_2_0_pre2
-cd CMSSW_12_2_0_pre2/src
+cmsrel CMSSW_12_3_0_pre2
+cd CMSSW_12_3_0_pre2/src
 cmsenv
 
 export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
@@ -40,10 +40,11 @@ git clone -b Run3_ForJIRA --recursive https://github.com/SWuchterl/RecoBTag-Perf
 
 # use the newest temporary DeepJet retraining
 mkdir -p RecoBTag/Combined/data/DeepFlavour_HLT_12X
-cp RecoBTag/PerformanceMeasurements/test/modelFiles/DeepJetnoNorm_04.onnx RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx
+cp RecoBTag/PerformanceMeasurements/test/modelFiles/DeepJet_model_ntuples220104_run_04.onnx RecoBTag/Combined/data/DeepFlavour_HLT_12X/model.onnx
 
 # fix muon data input files
 cd HLTrigger/Configuration/python/Run3
+cp $RecoBTag/PerformanceMeasurements/test/downloadCustomizationFunctions.sh .
 ./downloadCustomizationFunctions.sh
 cd $CMSSW_BASE/src/RecoMuon/TrackerSeedGenerator/data
 git clone -b dev https://github.com/wonpoint4/RecoMuon-TrackerSeedGenerator.git TempNewMuonData
@@ -85,7 +86,7 @@ New variables need also to be added (apart from adding them in the code) in ```R
 Recent versions are also stored already in [here](python/Configs)
 For MC:
 ```bash
-hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
+hltGetConfiguration /dev/CMSSW_12_3_0/GRun \
 --full \
 --offline \
 --unprescale \
@@ -96,7 +97,7 @@ hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
 > tmp.py
 ```
 ```bash
-edmConfigDump tmp.py > HLT_dev_CMSSW_12_2_0_GRun_configDump_MC.py
+edmConfigDump tmp.py > HLT_dev_CMSSW_12_3_0_GRun_configDump_MC.py
 ```
 For data:
 ```bash
@@ -112,11 +113,11 @@ hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
 > tmp_data.py
 ```
 ```bash
-edmConfigDump tmp_data.py > HLT_dev_CMSSW_12_2_0_GRun_configDump_Data.py
+edmConfigDump tmp_data.py > HLT_dev_CMSSW_12_3_0_GRun_configDump_Data.py
 ```
 For data+timing:
 ```bash
-hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
+hltGetConfiguration /dev/CMSSW_12_3_0/GRun \
 --full \
 --offline \
 --unprescale \
@@ -129,7 +130,7 @@ hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
 > tmp_data_timing.py
 ```
 ```bash
-edmConfigDump tmp_data_timing.py > HLT_dev_CMSSW_12_2_0_GRun_configDump_Data_timing.py
+edmConfigDump tmp_data_timing.py > HLT_dev_CMSSW_12_3_0_GRun_configDump_Data_timing.py
 ```
 
 

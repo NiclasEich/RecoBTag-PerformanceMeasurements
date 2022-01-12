@@ -79,13 +79,6 @@ globalTag = options.globalTag
 
 update_jmeCalibs = False
 
-def fixMenu(process):
-	if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
-		process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
-	if hasattr(process, 'hltIter1ClustersRefRemoval'):
-		process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
-	return process
-
 def prescale_path(path,ps_service):
   for pset in ps_service.prescaleTable:
       if pset.pathName.value() == path.label():
@@ -96,169 +89,50 @@ def prescale_path(path,ps_service):
 ###
 if options.runOnData:
     if options.runTiming:
-        from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_2_0_GRun_configDump_Data_timing import cms, process
+        from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_0_GRun_configDump_Data_timing import cms, process
     else:
-        from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_2_0_GRun_configDump_Data import cms, process
+        from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_0_GRun_configDump_Data import cms, process
 else:
-    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_2_0_GRun_configDump_MC import cms, process
+    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_0_GRun_configDump_MC import cms, process
 
 
-if options.reco == 'HLT_GRun_oldJECs':
-    # default GRun menu (Run 2 configurations)
-    update_jmeCalibs = False
+if options.reco == 'HLT_GRun' or options.reco == "HLT_GRun_oldJECs":
+    # do nothing
+    process = process
 
-elif options.reco == 'HLT_GRun':
-    # default GRun menu (Run 2 configurations) + new PFHCs and JECs
-    update_jmeCalibs = True
+elif options.reco == 'HLT_ReplaceBTagMu' or options.reco == 'HLT_ReplaceBTagMu_oldJECs':
+    from HLTrigger.Configuration.Run3.customizeRun3_BTag_BTagMu import *
+    process = replaceBTagMuPathsInProcess(process)
 
-elif options.reco == 'HLT_GRun_PatatrackQuadruplets':
-    # default GRun menu (Run 2 configurations) + Patatrack pixeltracks (Quadruplets only) instead of legacy pixeltracks
-    from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrack
-    process = customizeHLTforPatatrack(process)
-    update_jmeCalibs = True
-    # process = fixMenu(process)
-
-elif options.reco == 'HLT_GRun_PatatrackTriplets':
-    # default GRun menu (Run 2 configurations) + Patatrack pixeltracks (Triplets+Quadruplets) instead of legacy pixeltracks
-    from HLTrigger.Configuration.customizeHLTforPatatrack import customizeHLTforPatatrackTriplets
-    process = customizeHLTforPatatrackTriplets(process)
-    update_jmeCalibs = True
-    # process = fixMenu(process)
-
-elif options.reco == 'HLT_Run3TRK' or options.reco == 'HLT_Run3TRK_Pt':
-    # Run-3 tracking: standard (Triplets+Quadruplets)
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    process = customizeHLTforRun3Tracking(process)
-    update_jmeCalibs = True
-    process = fixMenu(process)
-
-elif options.reco == 'HLT_Run3TRK_ROICaloROIPF':
-    # Run-3 tracking: standard (Triplets+Quadruplets)
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    process = customizeHLTforRun3Tracking(process)
-    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_ROIPF import *
-    process = customizeRun3_BTag_ROICalo_ROIPF(process, options.addDeepJet, options.replaceBTagMuPaths)
-    update_jmeCalibs = True
-    process = fixMenu(process)
-
-elif options.reco == 'HLT_Run3TRK_noCaloROIPF':
-    # Run-3 tracking: standard (Triplets+Quadruplets)
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    process = customizeHLTforRun3Tracking(process)
-    from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_noCalo_ROIPF import *
-    process = customizeRun3_BTag_noCalo_ROIPF(process, options.addDeepJet, options.replaceBTagMuPaths)
-    update_jmeCalibs = True
-    process = fixMenu(process)
-
-elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu':
+elif options.reco == 'HLT_Run3TRK_ROICaloROIPF' or options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu' or options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_oldJECs':
     from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = TRK_newTracking(process)
-    process = MUO_newReco(process)
-    # process = BTV_noCalo_roiPF_DeepCSV(process)
-    process = BTV_noCalo_roiPF_DeepJet(process)
-    update_jmeCalibs = True
-
-elif options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu_oldJECs':
-    from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = TRK_newTracking(process)
-    process = MUO_newReco(process)
-    # process = BTV_noCalo_roiPF_DeepCSV(process)
-    process = BTV_noCalo_roiPF_DeepJet(process)
-    update_jmeCalibs = True
-
-elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu':
-    from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = TRK_newTracking(process)
-    process = MUO_newReco(process)
-    # process = BTV_noCalo_roiPF_DeepCSV(process)
     process = BTV_roiCalo_roiPF_DeepJet(process)
-    update_jmeCalibs = True
+    if "_Mu" in options.reco:
+        process = MUO_newReco(process)
 
-elif options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_oldJECs':
+elif options.reco == 'HLT_Run3TRK_noCaloROIPF' or options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu' or options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu_oldJECs':
     from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = TRK_newTracking(process)
-    process = MUO_newReco(process)
-    # process = BTV_noCalo_roiPF_DeepCSV(process)
-    process = BTV_roiCalo_roiPF_DeepJet(process)
-    update_jmeCalibs = True
+    process = BTV_noCalo_roiPF_DeepJet(process)
+    if "_Mu" in options.reco:
+        process = MUO_newReco(process)
 
-elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF_Mu':
+elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF' or options.reco == 'HLT_Run3TRK_ROICaloGlobalPF_Mu' or options.reco == 'HLT_Run3TRK_ROICaloGlobalPF_Mu_oldJECs':
     from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = TRK_newTracking(process)
-    process = MUO_newReco(process)
-    # process = BTV_noCalo_roiPF_DeepCSV(process)
     process = BTV_roiCalo_globalPF_DeepJet(process)
-    update_jmeCalibs = True
+    if "_Mu" in options.reco:
+        process = MUO_newReco(process)
 
-elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF_Mu_oldJECs':
+elif options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF' or options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF_Mu' or options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF_Mu_oldJECs':
     from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = TRK_newTracking(process)
-    process = MUO_newReco(process)
-    # process = BTV_noCalo_roiPF_DeepCSV(process)
-    process = BTV_roiCalo_globalPF_DeepJet(process)
-    update_jmeCalibs = True
-
-elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF':
-    # Run-3 tracking: standard (Triplets+Quadruplets)
-    # from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    # process = customizeHLTforRun3Tracking(process)
-    # from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_ROICalo_GlobalPF import *
-    # process = customizeRun3_BTag_ROICalo_GlobalPF(process, options.addDeepJet, options.replaceBTagMuPaths)
-    # update_jmeCalibs = True
-    # process = fixMenu(process)
-    from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = TRK_newTracking(process)
-    # process = MUO_newReco(process)
-    # process = BTV_noCalo_roiPF_DeepCSV(process)
-    process = BTV_roiCalo_globalPF_DeepJet(process)
-    update_jmeCalibs = True
-
-elif options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF':
-    # Run-3 tracking: standard (Triplets+Quadruplets)
-    # from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    # process = customizeHLTforRun3Tracking(process)
-    # from RecoBTag.PerformanceMeasurements.customizeRun3_BTag_GlobalCalo_GlobalPF import *
-    # process = customizeRun3_BTag_GlobalCalo_GlobalPF(process, options.addDeepJet, options.replaceBTagMuPaths)
-    # update_jmeCalibs = True
-    # process = fixMenu(process)
-    from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = TRK_newTracking(process)
-    # process = MUO_newReco(process)
-    # process = BTV_noCalo_roiPF_DeepCSV(process)
     process = BTV_globalCalo_globalPF_DeepJet(process)
-    update_jmeCalibs = True
+    if "_Mu" in options.reco:
+        process = MUO_newReco(process)
 
-elif options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF_Mu':
-    from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = TRK_newTracking(process)
-    process = MUO_newReco(process)
-    # process = BTV_noCalo_roiPF_DeepCSV(process)
-    process = BTV_globalCalo_globalPF_DeepJet(process)
-    update_jmeCalibs = True
-
-elif options.reco == 'HLT_Run3TRKNoCaloJetsWithSubstitutions':
-    # Run-3 global/central TRK+PF reconstruction
-    # + removal of all paths with CaloOnlyBtagging
-    # + removal of Calo Btagging
-    from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-    process = customizeHLTforRun3Tracking(process)
-    process = fixMenu(process)
-    process = deleteCaloOnlyPaths(process)
-    process = deleteCaloPrestage(process)
-
-############################
-#   old intermediate and temporary testing configurations
-############################
-# elif options.reco == 'HLT_Run3TRKPixelOnlyCleaned2':
-#     # (d) Run-3 tracking: pixel only tracks and trimmed with PVs
-#     from HLTrigger.Configuration.customizeHLTforRun3Tracking import customizeHLTforRun3Tracking
-#     from RecoBTag.PerformanceMeasurements.customise_TRK import *
-#     process = customizeHLTforRun3Tracking(process)
-#     process = customisePFForPixelTracksCleaned(process, "hltPixelTracksCleanForBTag", vertex="hltTrimmedPixelVertices", nVertices = 2)
-#     update_jmeCalibs = True
-#     process = fixMenu(process)
 else:
   raise RuntimeError('keyword "reco = '+options.reco+'" not recognised')
+
+if not "_oldJECs" in options.reco:
+    update_jmeCalibs = True
 
 
 # remove cms.OutputModule objects from HLT config-dump
@@ -318,6 +192,7 @@ keepPaths = [
   'Status_OnCPU',
   'HLTriggerFinalPath',
   'HLTriggerFirstPath',
+  'HLTAnalyzerEndpath',
 ]
 
 removePaths = []
@@ -479,7 +354,7 @@ else:
 # from Configuration.AlCa.GlobalTag import GlobalTag
 if globalTag =="DEFAULT":
     if options.runOnData: globalTag = "122X_dataRun3_HLT_v1"
-    else: globalTag = "122X_mcRun3_2021_realistic_v1"
+    else: globalTag = "122X_mcRun3_2021_realistic_v5"
 
 process.GlobalTag.globaltag = globalTag
 

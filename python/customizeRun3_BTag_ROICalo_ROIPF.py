@@ -1,6 +1,7 @@
 import FWCore.ParameterSet.Config as cms
+from HLTrigger.Configuration.Run3.customizeRun3_BTag_BTagMu import replaceBTagMuPathsInProcess
 
-def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTagMuPaths = True, useNewDeepJetModel = True):
+def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTagMuPaths = True, useNewDeepJetModel = False, useNewDeepCSVModel = False, deleteEverythingOld = True):
 
     # delete the old legacy sequences, to be sure
     if hasattr(process, "HLTDoLocalPixelSequenceRegForBTag"):
@@ -32,33 +33,7 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     	del process.hltHtMhtFromPVForMC
     if hasattr(process, "hltCaloHtMhtFromPVOpenFilter"):
     	del process.hltCaloHtMhtFromPVOpenFilter
-    # delete old BTagMu paths containing AlgoCut
-    if replaceBTagMuPaths:
-        if hasattr(process, "HLT_BTagMu_AK4DiJet20_Mu5_v13"):
-             del process.HLT_BTagMu_AK4DiJet20_Mu5_v13
-        if hasattr(process, "HLT_BTagMu_AK4DiJet40_Mu5_v13"):
-             del process.HLT_BTagMu_AK4DiJet40_Mu5_v13
-        if hasattr(process, "HLT_BTagMu_AK4DiJet70_Mu5_v13"):
-             del process.HLT_BTagMu_AK4DiJet70_Mu5_v13
-        if hasattr(process, "HLT_BTagMu_AK4DiJet110_Mu5_v13"):
-             del process.HLT_BTagMu_AK4DiJet110_Mu5_v13
-        if hasattr(process, "HLT_BTagMu_AK4DiJet170_Mu5_v12"):
-             del process.HLT_BTagMu_AK4DiJet170_Mu5_v12
-        if hasattr(process, "HLT_BTagMu_AK4Jet300_Mu5_v12"):
-             del process.HLT_BTagMu_AK4Jet300_Mu5_v12
-        if hasattr(process, "HLT_BTagMu_AK8DiJet170_Mu5_v9"):
-             del process.HLT_BTagMu_AK8DiJet170_Mu5_v9
-        if hasattr(process, "HLT_BTagMu_AK8Jet170_DoubleMu5_v2"):
-             del process.HLT_BTagMu_AK8Jet170_DoubleMu5_v2
-        if hasattr(process, "HLT_BTagMu_AK8Jet300_Mu5_v12"):
-             del process.HLT_BTagMu_AK8Jet300_Mu5_v12
 
-
-    #speed up PFPS
-    # process.hltParticleFlowClusterECALUnseededROIForBTag = process.hltParticleFlowClusterECALUnseeded.clone(
-    #     # skipPS = cms.bool(True)
-    #     skipPS = cms.bool(False)
-    # )
     if hasattr(process, "hltSelectorCentralJets20L1FastJeta"):
         process.hltSelectorCentralJets20L1FastJeta.etaMax = cms.double(2.5)
         process.hltSelectorCentralJets20L1FastJeta.etaMin = cms.double(-2.5)
@@ -193,12 +168,26 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     )
 
     process.hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag = process.hltDeepCombinedSecondaryVertexBJetTagsPF.clone(
-        NNConfig = cms.FileInPath("RecoBTag/Combined/data/DeepCSV_PhaseI.json"),
         src = cms.InputTag("hltDeepCombinedSecondaryVertexBJetTagsInfosROIForBTag"),
-        toAdd = cms.PSet(
-            probbb = cms.string("probb")
-        )
     )
+
+    if useNewDeepCSVModel:
+        if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCalo"):
+            process.hltDeepCombinedSecondaryVertexBJetTagsCalo.NNConfig = cms.FileInPath("RecoBTag/Combined/data/DeepCSV_HLT_Run3.json")
+        if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag"):
+            process.hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag.NNConfig = cms.FileInPath("RecoBTag/Combined/data/DeepCSV_HLT_Run3.json")
+        if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPF"):
+            process.hltDeepCombinedSecondaryVertexBJetTagsPF.NNConfig = cms.FileInPath("RecoBTag/Combined/data/DeepCSV_HLT_Run3.json")
+        if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPFAK8"):
+            process.hltDeepCombinedSecondaryVertexBJetTagsPFAK8.NNConfig = cms.FileInPath("RecoBTag/Combined/data/DeepCSV_HLT_Run3.json")
+        if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag"):
+            process.hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag.NNConfig = cms.FileInPath("RecoBTag/Combined/data/DeepCSV_HLT_Run3.json")
+        if hasattr(process, "hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags"):
+            process.hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags.NNConfig = cms.FileInPath("RecoBTag/Combined/data/DeepCSV_HLT_Run3.json")
+        if hasattr(process, "hltDeepCombinedSecondaryVertexBPFPatJetTags"):
+            process.hltDeepCombinedSecondaryVertexBPFPatJetTags.NNConfig = cms.FileInPath("RecoBTag/Combined/data/DeepCSV_HLT_Run3.json")
+        if hasattr(process, "hltDeepCombinedSecondaryVertexCaloPatBJetTags"):
+            process.hltDeepCombinedSecondaryVertexCaloPatBJetTags.NNConfig = cms.FileInPath("RecoBTag/Combined/data/DeepCSV_HLT_Run3.json")
 
 
 
@@ -367,7 +356,6 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         process.hltParticleFlowRecHitPSUnseeded+
         process.hltParticleFlowClusterECALUncorrectedUnseeded+
         process.hltParticleFlowClusterPSUnseeded+
-        # process.hltParticleFlowClusterECALUnseeded+
         process.hltParticleFlowClusterECALUnseeded+
         process.hltParticleFlowClusterHBHE+
         process.hltParticleFlowClusterHCAL+
@@ -420,30 +408,32 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         TrackLabel = cms.InputTag("hltMergedTracksROIForBTag"),
     )
 
-    process.hltVerticesL3SelectorROIForBTag = process.hltVerticesPFSelector.clone(
-        filterParams = cms.PSet(
-            maxRho = cms.double(2.0),
-            maxZ = cms.double(24.0),
-            minNdof = cms.double(4.0),
-            pvSrc = cms.InputTag("hltVerticesL3ROIForBTag")
-        ),
-        src = cms.InputTag("hltVerticesL3ROIForBTag")
-    )
+    # process.hltVerticesL3SelectorROIForBTag = process.hltVerticesPFSelector.clone(
+    #     filterParams = cms.PSet(
+    #         maxRho = cms.double(2.0),
+    #         maxZ = cms.double(24.0),
+    #         minNdof = cms.double(4.0),
+    #         pvSrc = cms.InputTag("hltVerticesL3ROIForBTag")
+    #     ),
+    #     src = cms.InputTag("hltVerticesL3ROIForBTag")
+    # )
 
-    process.hltVerticesL3FilterROIForBTag = process.hltVerticesPFFilter.clone(
-        src = cms.InputTag("hltVerticesL3SelectorROIForBTag")
-    )
+    # process.hltVerticesL3FilterROIForBTag = process.hltVerticesPFFilter.clone(
+    #     src = cms.InputTag("hltVerticesL3SelectorROIForBTag")
+    # )
 
     process.hltFastPixelBLifetimeL3AssociatorROIForBTag = process.hltFastPixelBLifetimeL3Associator.clone(
         tracks = cms.InputTag("hltMergedTracksROIForBTag"),
     )
     process.hltImpactParameterTagInfosROIForBTag = process.hltImpactParameterTagInfos.clone(
         jetTracks = cms.InputTag("hltFastPixelBLifetimeL3AssociatorROIForBTag"),
-        primaryVertex = cms.InputTag("hltVerticesL3FilterROIForBTag"),
+        # primaryVertex = cms.InputTag("hltVerticesL3FilterROIForBTag"),
+        primaryVertex = cms.InputTag("hltVerticesL3ROIForBTag"),
     )
 
     process.hltInclusiveVertexFinderROIForBTag = process.hltInclusiveVertexFinder.clone(
-        primaryVertices = cms.InputTag("hltVerticesL3FilterROIForBTag"),
+        # primaryVertices = cms.InputTag("hltVerticesL3FilterROIForBTag"),
+        primaryVertices = cms.InputTag("hltVerticesL3ROIForBTag"),
         tracks = cms.InputTag("hltMergedTracksROIForBTag"),
     )
 
@@ -452,7 +442,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
     )
 
     process.hltTrackVertexArbitratorROIForBTag = process.hltTrackVertexArbitrator.clone(
-        primaryVertices = cms.InputTag("hltVerticesL3FilterROIForBTag"),
+        # primaryVertices = cms.InputTag("hltVerticesL3FilterROIForBTag"),
+        primaryVertices = cms.InputTag("hltVerticesL3ROIForBTag"),
         secondaryVertices = cms.InputTag("hltInclusiveSecondaryVerticesROIForBTag"),
         tracks = cms.InputTag("hltMergedTracksROIForBTag")
     )
@@ -480,8 +471,8 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         process.hltSelector8CentralJetsL1FastJet+
         process.HLTTrackReconstructionForBTag+
         process.hltVerticesL3ROIForBTag+
-        process.hltVerticesL3SelectorROIForBTag+
-        process.hltVerticesL3FilterROIForBTag+
+        # process.hltVerticesL3SelectorROIForBTag+
+        # process.hltVerticesL3FilterROIForBTag+
         process.hltFastPixelBLifetimeL3AssociatorROIForBTag+
         process.hltImpactParameterTagInfosROIForBTag+
         process.hltInclusiveVertexFinderROIForBTag+
@@ -1646,10 +1637,11 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         process.HLTEndSequence
     )
     if addDeepJetPaths:
+        process.hltPreQuadPFJet98837115DoublePFBTagDeepJet1p37p7VBF1 = process.hltPreQuadPFJet98837115DoublePFBTagDeepCSV1p37p7VBF1.clone()
         process.HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sTripleJet927664VBFIorHTTIorDoubleJetCIorSingleJet+
-            process.hltPreQuadPFJet98837115DoublePFBTagDeepCSV1p37p7VBF1+
+            process.hltPreQuadPFJet98837115DoublePFBTagDeepJet1p37p7VBF1+
             process.HLTAK4CaloJetsSequence+
             process.hltQuadJet15+
             process.hltTripleJet50+
@@ -1705,10 +1697,11 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         process.HLTEndSequence
     )
     if addDeepJetPaths:
+        process.hltPreQuadPFJet98837115PFBTagDeepJet1p3VBF2 = process.hltPreQuadPFJet98837115PFBTagDeepCSV1p3VBF2.clone()
         process.HLT_QuadPFJet98_83_71_15_PFBTagDeepJet_1p3_VBF2_v8 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sTripleJet927664VBFIorHTTIorDoubleJetCIorSingleJet+
-            process.hltPreQuadPFJet98837115PFBTagDeepCSV1p3VBF2+
+            process.hltPreQuadPFJet98837115PFBTagDeepJet1p3VBF2+
             process.HLTAK4CaloJetsSequence+
             process.hltQuadJet15+
             process.hltTripleJet50+
@@ -1765,10 +1758,11 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
             JetTags = cms.InputTag("hltDeepJetDiscriminatorsJetTagsROIForBTag","BvsAll"),
             Jets = cms.InputTag("hltPFJetForBtagROIForBTag"),
         )
+        process.hltPreMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZPFDiJet30PFBtagDeepJet1p5 = process.hltPreMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZPFDiJet30PFBtagDeepCSV1p5.clone()
         process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepJet_1p5_v1 = cms.Path(
             process.HLTBeginSequence+
             process.hltL1sMu5EG23IorMu5IsoEG20IorMu7EG23IorMu7IsoEG20IorMuIso7EG23+
-            process.hltPreMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZPFDiJet30PFBtagDeepCSV1p5+
+            process.hltPreMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZPFDiJet30PFBtagDeepJet1p5+
 
             process.HLTMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegSequence+
             process.HLTMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegSequence+
@@ -2655,245 +2649,9 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         process.HLTEndSequence
     )
 
-    # Rename NoAlgo BTagMu branches and delete NoAlgo paths afterwards
-    # Rename NoAlgo BTagMu branches and delete NoAlgo paths afterwards
+    # delete old BTagMu paths containing AlgoCut
     if replaceBTagMuPaths:
-
-    ############################################################################
-    #### HLT_BTagMu_AK4DiJet20_Mu5_v13
-    ############################################################################
-        process.hltPreBTagMuAK4DiJet20Mu5 = process.hltPreBTagMuAK4DiJet20Mu5noalgo.clone()
-
-        if hasattr(process, "hltPreBTagMuAK4DiJet20Mu5noalgo"):
-            del process.hltPreBTagMuAK4DiJet20Mu5noalgo
-
-        process.HLT_BTagMu_AK4DiJet20_Mu5_v13 = cms.Path(
-            process.HLTBeginSequence+
-            process.hltL1sMu3JetC16dRMax0p4+
-            process.hltPreBTagMuAK4DiJet20Mu5+
-            process.HLTAK4CaloJetsSequence+
-            process.hltBDiJet20L1FastJetCentral+
-            process.HLTBTagMuDiJet20L1FastJetSequenceL25+
-            process.hltBSoftMuonDiJet20L1FastJetL25FilterByDR+
-            process.HLTBTagMuDiJet20L1FastJetMu5SelSequenceL3noalgo+
-            process.hltBSoftMuonDiJet20L1FastJetMu5L3FilterByDRnoalgo+
-            process.HLTEndSequence
-        )
-        if hasattr(process, "HLT_BTagMu_AK4DiJet20_Mu5_noalgo_v13"):
-            del process.HLT_BTagMu_AK4DiJet20_Mu5_noalgo_v13
-
-    ############################################################################
-    #### HLT_BTagMu_AK4DiJet40_Mu5_v13
-    ############################################################################
-        process.hltPreBTagMuAK4DiJet40Mu5 = process.hltPreBTagMuAK4DiJet40Mu5noalgo.clone()
-
-        if hasattr(process, "hltPreBTagMuAK4DiJet40Mu5noalgo"):
-            del process.hltPreBTagMuAK4DiJet40Mu5noalgo
-
-        process.HLT_BTagMu_AK4DiJet40_Mu5_v13 = cms.Path(
-            process.HLTBeginSequence+
-            process.hltL1sMu3JetC35dRMax0p4+
-            process.hltPreBTagMuAK4DiJet40Mu5+
-            process.HLTAK4CaloJetsSequence+
-            process.hltBDiJet40L1FastJetCentral+
-            process.HLTBTagMuDiJet40L1FastJetSequenceL25+
-            process.hltBSoftMuonDiJet40L1FastJetL25FilterByDR+
-            process.HLTBTagMuDiJet40L1FastJetMu5SelSequenceL3noalgo+
-            process.hltBSoftMuonDiJet40L1FastJetMu5L3FilterByDRnoalgo+
-            process.HLTEndSequence
-        )
-        if hasattr(process, "HLT_BTagMu_AK4DiJet40_Mu5_noalgo_v13"):
-            del process.HLT_BTagMu_AK4DiJet40_Mu5_noalgo_v13
-
-    ############################################################################
-    #### HLT_BTagMu_AK4DiJet70_Mu5_v13
-    ############################################################################
-        process.hltPreBTagMuAK4DiJet70Mu5 = process.hltPreBTagMuAK4DiJet70Mu5noalgo.clone()
-
-        if hasattr(process, "hltPreBTagMuAK4DiJet70Mu5noalgo"):
-            del process.hltPreBTagMuAK4DiJet70Mu5noalgo
-
-        process.HLT_BTagMu_AK4DiJet70_Mu5_v13 = cms.Path(
-            process.HLTBeginSequence+
-            process.hltL1sMu3JetC60dRMax0p4+
-            process.hltPreBTagMuAK4DiJet70Mu5+
-            process.HLTAK4CaloJetsSequence+
-            process.hltBDiJet70L1FastJetCentral+
-            process.HLTBTagMuDiJet70L1FastJetSequenceL25+
-            process.hltBSoftMuonDiJet70L1FastJetL25FilterByDR+
-            process.HLTBTagMuDiJet70L1FastJetMu5SelSequenceL3noalgo+
-            process.hltBSoftMuonDiJet70L1FastJetMu5L3FilterByDRnoalgo+
-            process.HLTEndSequence
-        )
-        if hasattr(process, "HLT_BTagMu_AK4DiJet70_Mu5_noalgo_v13"):
-            del process.HLT_BTagMu_AK4DiJet70_Mu5_noalgo_v13
-
-    ############################################################################
-    #### HLT_BTagMu_AK4DiJet110_Mu5_v13
-    ############################################################################
-        process.hltPreBTagMuAK4DiJet110Mu5 = process.hltPreBTagMuAK4DiJet110Mu5noalgo.clone()
-
-        if hasattr(process, "hltPreBTagMuAK4DiJet110Mu5noalgo"):
-            del process.hltPreBTagMuAK4DiJet110Mu5noalgo
-
-        process.HLT_BTagMu_AK4DiJet110_Mu5_v13 = cms.Path(
-            process.HLTBeginSequence+
-            process.hltL1sMu3JetC80dRMax0p4+
-            process.hltPreBTagMuAK4DiJet110Mu5+
-            process.HLTAK4CaloJetsSequence+
-            process.hltBDiJet110L1FastJetCentral+
-            process.HLTBTagMuDiJet110L1FastJetSequenceL25+
-            process.hltBSoftMuonDiJet110L1FastJetL25FilterByDR+
-            process.HLTBTagMuDiJet110L1FastJetMu5SelSequenceL3noalgo+
-            process.hltBSoftMuonDiJet110L1FastJetMu5L3FilterByDRnoalgo+
-            process.HLTEndSequence
-        )
-        if hasattr(process, "HLT_BTagMu_AK4DiJet110_Mu5_noalgo_v13"):
-            del process.HLT_BTagMu_AK4DiJet110_Mu5_noalgo_v13
-
-    ############################################################################
-    #### HLT_BTagMu_AK4DiJet170_Mu5_v12
-    ############################################################################
-        process.hltPreBTagMuAK4DiJet170Mu5 = process.hltPreBTagMuAK4DiJet170Mu5noalgo.clone()
-
-        if hasattr(process, "hltPreBTagMuAK4DiJet170Mu5noalgo"):
-            del process.hltPreBTagMuAK4DiJet170Mu5noalgo
-
-        process.HLT_BTagMu_AK4DiJet170_Mu5_v12 = cms.Path(
-            process.HLTBeginSequence+
-            process.hltL1sMu3JetC120dRMax0p4+
-            process.hltPreBTagMuAK4DiJet170Mu5+
-            process.HLTAK4CaloJetsSequence+
-            process.hltBDiJet200L1FastJetCentral+
-            process.HLTBTagMuDiJet200L1FastJetSequenceL25+
-            process.hltBSoftMuonDiJet200L1FastJetL25FilterByDR+
-            process.HLTBTagMuDiJet200L1FastJetMu5SelSequenceL3noalgo+
-            process.hltBSoftMuonDiJet200L1FastJetMu5L3FilterByDRnoalgo+
-            process.HLTEndSequence
-        )
-        if hasattr(process, "HLT_BTagMu_AK4DiJet170_Mu5_noalgo_v12"):
-            del process.HLT_BTagMu_AK4DiJet170_Mu5_noalgo_v12
-
-    ############################################################################
-    #### HLT_BTagMu_AK4Jet300_Mu5_v12
-    ############################################################################
-        process.hltPreBTagMuAK4Jet300Mu5 = process.hltPreBTagMuAK4Jet300Mu5noalgo.clone()
-
-        if hasattr(process, "hltPreBTagMuAK4Jet300Mu5noalgo"):
-            del process.hltPreBTagMuAK4Jet300Mu5noalgo
-
-        process.HLT_BTagMu_AK4Jet300_Mu5_v12 = cms.Path(
-            process.HLTBeginSequence+
-            process.hltL1sSingleJet200+
-            process.hltPreBTagMuAK4Jet300Mu5+
-            process.HLTAK4CaloJetsSequence+
-            process.hltBJet300L1FastJetCentral+
-            process.HLTBTagMuJet300L1FastJetSequenceL25+
-            process.hltBSoftMuonJet300L1FastJetL25FilterByDR+
-            process.HLTBTagMuJet300L1FastJetMu5SelSequenceL3noalgo+
-            process.hltBSoftMuonJet300L1FastJetMu5L3FilterByDRnoalgo+
-            process.HLTEndSequence
-        )
-        if hasattr(process, "HLT_BTagMu_AK4Jet300_Mu5_noalgo_v12"):
-            del process.HLT_BTagMu_AK4Jet300_Mu5_noalgo_v12
-
-    ############################################################################
-    #### HLT_BTagMu_AK8DiJet170_Mu5_v9
-    ############################################################################
-        process.hltPreBTagMuAK8DiJet170Mu5 = process.hltPreBTagMuAK8DiJet170Mu5noalgo.clone()
-
-        if hasattr(process, "hltPreBTagMuAK8DiJet170Mu5noalgo"):
-            del process.hltPreBTagMuAK8DiJet170Mu5noalgo
-
-        process.HLT_BTagMu_AK8DiJet170_Mu5_v9 = cms.Path(
-            process.HLTBeginSequence+
-            process.hltL1sMu3JetC120dRMax0p8+
-            process.hltPreBTagMuAK8DiJet170Mu5+
-            process.HLTAK8CaloJetsSequence+
-            process.hltBAK8DiJet170L1FastJetCentral+
-            process.HLTBTagMuAK8DiJet170L1FastJetSequenceL25+
-            process.hltBSoftMuonAK8DiJet170L1FastJetL25FilterByDR+
-            process.HLTBTagMuAK8DiJet170L1FastJetMu5SelSequenceL3noalgo+
-            process.hltBSoftMuonAK8DiJet170L1FastJetMu5L3FilterByDRnoalgo+
-            process.HLTEndSequence
-        )
-        if hasattr(process, "HLT_BTagMu_AK8DiJet170_Mu5_noalgo_v9"):
-            del process.HLT_BTagMu_AK8DiJet170_Mu5_noalgo_v9
-
-    ############################################################################
-    #### HLT_BTagMu_AK8Jet170_DoubleMu5_v2
-    ############################################################################
-        process.hltPreBTagMuAK8Jet170DoubleMu5 = process.hltPreBTagMuAK8Jet170DoubleMu5noalgo.clone()
-
-        if hasattr(process, "hltPreBTagMuAK8Jet170DoubleMu5noalgo"):
-            del process.hltPreBTagMuAK8Jet170DoubleMu5noalgo
-
-        process.HLT_BTagMu_AK8Jet170_DoubleMu5_v2 = cms.Path(
-            process.HLTBeginSequence+
-            process.hltL1sDoubleMu0Jet90er2p5dRMax0p8dRMu1p6+
-            process.hltPreBTagMuAK8Jet170DoubleMu5+
-            process.hltDoubleMuon0L1Filtered0+
-            process.HLTAK8CaloJetsSequence+
-            process.hltBAK8Jet170L1FastJetCentral+
-            process.HLTBTagMuAK8Jet170L1FastJetDoubleMuSequenceL25+
-            process.hltBSoftMuonAK8Jet170L1FastJetL25FilterByDR+
-            process.HLTBTagMuAK8Jet170L1FastJetDoubleMu5SelSequenceL3noalgo+
-            process.hltBSoftMuonAK8Jet170L1FastJetDoubleMu5L3FilterByDRnoalgo+
-            process.HLTEndSequence
-        )
-        if hasattr(process, "HLT_BTagMu_AK8Jet170_DoubleMu5_noalgo_v2"):
-            del process.HLT_BTagMu_AK8Jet170_DoubleMu5_noalgo_v2
-
-    ############################################################################
-    #### HLT_BTagMu_AK8Jet300_Mu5_v12
-    ############################################################################
-        process.hltPreBTagMuAK8Jet300Mu5 = process.hltPreBTagMuAK8Jet300Mu5noalgo.clone()
-
-        if hasattr(process, "hltPreBTagMuAK8Jet300Mu5noalgo"):
-            del process.hltPreBTagMuAK8Jet300Mu5noalgo
-
-        process.HLT_BTagMu_AK8Jet300_Mu5_v12 = cms.Path(
-            process.HLTBeginSequence+
-            process.hltL1sSingleJet200+
-            process.hltPreBTagMuAK8Jet300Mu5+
-            process.HLTAK8CaloJetsSequence+
-            process.hltBJet300L1AK8FastJetCentral+
-            process.HLTBTagMuJet300L1AK8FastJetSequenceL25+
-            process.hltBSoftMuonJet300L1FastJetAK8L25FilterByDR+
-            process.HLTBTagMuJet300L1AK8FastJetMu5SelSequenceL3noalgo+
-            process.hltBSoftMuonJet300L1FastJetAK8Mu5L3FilterByDRnoalgo+
-            process.HLTEndSequence
-        )
-        if hasattr(process, "HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12"):
-            del process.HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12
-
-
-        if hasattr(process, "schedule"):
-            process.schedule.extend([
-                process.HLT_BTagMu_AK4DiJet20_Mu5_v13,
-                process.HLT_BTagMu_AK4DiJet40_Mu5_v13,
-                process.HLT_BTagMu_AK4DiJet70_Mu5_v13,
-                process.HLT_BTagMu_AK4DiJet110_Mu5_v13,
-                process.HLT_BTagMu_AK4DiJet170_Mu5_v12,
-                process.HLT_BTagMu_AK4Jet300_Mu5_v12,
-                process.HLT_BTagMu_AK8DiJet170_Mu5_v9,
-                process.HLT_BTagMu_AK8Jet170_DoubleMu5_v2,
-                process.HLT_BTagMu_AK8Jet300_Mu5_v12,
-
-            ])
-        elif hasattr(process, "HLTSchedule"):
-            process.HLTSchedule.extend([
-                process.HLT_BTagMu_AK4DiJet20_Mu5_v13,
-                process.HLT_BTagMu_AK4DiJet40_Mu5_v13,
-                process.HLT_BTagMu_AK4DiJet70_Mu5_v13,
-                process.HLT_BTagMu_AK4DiJet110_Mu5_v13,
-                process.HLT_BTagMu_AK4DiJet170_Mu5_v12,
-                process.HLT_BTagMu_AK4Jet300_Mu5_v12,
-                process.HLT_BTagMu_AK8DiJet170_Mu5_v9,
-                process.HLT_BTagMu_AK8Jet170_DoubleMu5_v2,
-                process.HLT_BTagMu_AK8Jet300_Mu5_v12,
-
-            ])
+        process = replaceBTagMuPathsInProcess(process)
 
     # fix prescales
     if hasattr(process, 'PrescaleService'):
@@ -2914,19 +2672,6 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
         paths_to_delete = [
             "MC_AK4CaloJetsFromPV_v8",
         ]
-        if replaceBTagMuPaths:
-            add=[
-                "HLT_BTagMu_AK4DiJet20_Mu5_noalgo_v13",
-                "HLT_BTagMu_AK4DiJet40_Mu5_noalgo_v13",
-                "HLT_BTagMu_AK4DiJet70_Mu5_noalgo_v13",
-                "HLT_BTagMu_AK4DiJet110_Mu5_noalgo_v13",
-                "HLT_BTagMu_AK4DiJet170_Mu5_noalgo_v12",
-                "HLT_BTagMu_AK4Jet300_Mu5_noalgo_v12",
-                "HLT_BTagMu_AK8DiJet170_Mu5_noalgo_v9",
-                "HLT_BTagMu_AK8Jet170_DoubleMu5_noalgo_v2",
-                "HLT_BTagMu_AK8Jet300_Mu5_noalgo_v12",
-            ]
-            paths_to_delete = paths_to_delete + add
         psets_to_delete = []
         for path in paths_to_delete:
             print ("Fix prescale for",path)
@@ -2973,5 +2718,26 @@ def customizeRun3_BTag_ROICalo_ROIPF(process, addDeepJetPaths = True, replaceBTa
                 process.HLT_QuadPFJet98_83_71_15_PFBTagDeepJet_1p3_VBF2_v8,
                 process.HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_PFDiJet30_PFBtagDeepJet_1p5_v1,
             ])
+
+    if deleteEverythingOld:
+        if hasattr(process, "HLTBtagDeepCSVSequenceL3"): del process.HLTBtagDeepCSVSequenceL3
+        if hasattr(process, "hltVerticesL3"): del process.hltVerticesL3
+        if hasattr(process, "hltFastPixelBLifetimeL3Associator"): del process.hltFastPixelBLifetimeL3Associator
+        if hasattr(process, "hltImpactParameterTagInfos"): del process.hltImpactParameterTagInfos
+        if hasattr(process, "hltInclusiveVertexFinder"): del process.hltInclusiveVertexFinder
+        if hasattr(process, "hltInclusiveSecondaryVertices"): del process.hltInclusiveSecondaryVertices
+        if hasattr(process, "hltTrackVertexArbitrator"): del process.hltTrackVertexArbitrator
+        if hasattr(process, "hltInclusiveSecondaryVertexFinderTagInfos"): del process.hltInclusiveSecondaryVertexFinderTagInfos
+        if hasattr(process, "hltInclusiveMergedVertices"): del process.hltInclusiveMergedVertices
+        if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsInfosCalo"): del process.hltDeepCombinedSecondaryVertexBJetTagsInfosCalo
+        if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCalo"): del process.hltDeepCombinedSecondaryVertexBJetTagsCalo
+
+        if hasattr(process, "HLTBtagDeepCSVSequencePF"): del process.HLTBtagDeepCSVSequencePF
+        if hasattr(process, "hltPFJetForBtagSelector"): del process.hltPFJetForBtagSelector
+        if hasattr(process, "hltPFJetForBtag"): del process.hltPFJetForBtag
+        if hasattr(process, "hltDeepBLifetimeTagInfosPF"): del process.hltDeepBLifetimeTagInfosPF
+        if hasattr(process, "hltDeepSecondaryVertexTagInfosPF"): del process.hltDeepSecondaryVertexTagInfosPF
+        if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsInfos"): del process.hltDeepCombinedSecondaryVertexBJetTagsInfos
+        if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPF"): del process.hltDeepCombinedSecondaryVertexBJetTagsPF
 
     return process
