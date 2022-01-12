@@ -222,8 +222,13 @@ private:
 
   edm::View<reco::Muon> muons ;
 
-  edm::ESHandle<TransientTrackBuilder> trackBuilder ;
+  // edm::ESHandle<TransientTrackBuilder> trackBuilder ;
+  // edm::ESHandle<TransientTrackBuilder> trackBuilder;
+  const TransientTrackBuilder* trackBuilder;
+  edm::ESGetToken<TransientTrackBuilder, TransientTrackRecord> token_trackBuilder;
   edm::Handle<reco::VertexCollection> primaryVertex ;
+
+  edm::ESGetToken<JetTagComputer, JetTagComputerRecord> token_computerHandle;
 
   int cap0, cap1, cap2, cap3, cap4, cap5, cap6, cap7, cap8;
   int can0, can1, can2, can3, can4, can5, can6, can7, can8;
@@ -365,6 +370,9 @@ HLTBTagAnalyzerT<IPTI,VTX>::HLTBTagAnalyzerT(const edm::ParameterSet& iConfig):
   generatorlhe = consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer",""));
   generatorevt = consumes<GenEventInfoProduct>(edm::InputTag("generator",""));
 
+  token_trackBuilder = esConsumes<TransientTrackBuilder, TransientTrackRecord>(edm::ESInputTag("", "TransientTrackBuilder"));
+
+
   branchNamePrefix_ = iConfig.getParameter<std::string>("BranchNamePrefix");
   branchNamePrefix2_ = iConfig.getParameter<std::string>("BranchNamePrefix2");
   branchNamePrefix3_ = iConfig.getParameter<std::string>("BranchNamePrefix3");
@@ -402,8 +410,8 @@ HLTBTagAnalyzerT<IPTI,VTX>::HLTBTagAnalyzerT(const edm::ParameterSet& iConfig):
   triggerTable_             = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerTable"));
 
   SVComputer_               = iConfig.getParameter<std::string>("svComputer");
-
-  triggerPathNames_        = iConfig.getParameter<std::vector<std::string> >("TriggerPathNames");
+  token_computerHandle      = esConsumes<JetTagComputer, JetTagComputerRecord>(edm::ESInputTag("", SVComputer_.c_str()));
+  triggerPathNames_         = iConfig.getParameter<std::vector<std::string> >("TriggerPathNames");
 
   putoken = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("addPileupInfo"));
   putokenmini = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("slimmedAddPileupInfo"));
@@ -1161,7 +1169,10 @@ void HLTBTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Ev
   //----------------------------------------
   // Transient track for IP calculation
   //----------------------------------------
-  iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", trackBuilder);
+  // iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", trackBuilder);
+  // new
+  // edm::ESHandle<TransientTrackBuilder> trackBuilder = iSetup.getHandle(token_trackBuilder);
+  trackBuilder = &iSetup.getData(token_trackBuilder);
 
   //------------------------------------------------------
   // Trigger info
@@ -1182,8 +1193,11 @@ void HLTBTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Ev
   processTrig(trigRes, triggerList);
 
   //------------- added by Camille-----------------------------------------------------------//
-  edm::ESHandle<JetTagComputer> computerHandle;
-  iSetup.get<JetTagComputerRecord>().get( SVComputer_.c_str(), computerHandle );
+  // edm::ESHandle<JetTagComputer> computerHandle;
+  // iSetup.get<JetTagComputerRecord>().get( SVComputer_.c_str(), computerHandle );
+  // computer = dynamic_cast<const GenericMVAJetTagComputer*>( computerHandle.product() );
+  //new
+  edm::ESHandle<JetTagComputer> computerHandle = iSetup.getHandle(token_computerHandle);
   computer = dynamic_cast<const GenericMVAJetTagComputer*>( computerHandle.product() );
   //------------- end added-----------------------------------------------------------//
   //------------------------------------------------------
@@ -2070,6 +2084,9 @@ void HLTBTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>
     float DeepCSVc   = (deepCSVBJetTags.size()) ? pjet->bDiscriminator((deepCSVBJetTags+":probc"   ).c_str()) : -10;
     float DeepCSVl   = (deepCSVBJetTags.size()) ? pjet->bDiscriminator((deepCSVBJetTags+":probudsg").c_str()) : -10;
     float DeepCSVbb  = (deepCSVBJetTags.size()) ? pjet->bDiscriminator((deepCSVBJetTags+":probbb"  ).c_str()) : -10;
+    if (DeepCSVbb < -10){
+        DeepCSVbb = 0. ;
+    }
     // float CombinedIVF     = pjet->bDiscriminator(combinedIVFSVBJetTags_.c_str());
     // float CombinedIVF_P   = pjet->bDiscriminator(combinedIVFSVPosBJetTags_.c_str());
     // float CombinedIVF_N   = pjet->bDiscriminator(combinedIVFSVNegBJetTags_.c_str());
@@ -2083,7 +2100,8 @@ void HLTBTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>
 
     // Jet information
     //DeepFlavour discriminators
-    JetInfo[iJetColl].Jet_DeepFlavourBDisc[JetInfo[iJetColl].nJet]     = (DeepFlavourB > -5) ? DeepFlavourB + DeepFlavourBB + DeepFlavourLepB : -10;
+    // JetInfo[iJetColl].Jet_DeepFlavourBDisc[JetInfo[iJetColl].nJet]     = (DeepFlavourB > -5) ? DeepFlavourB + DeepFlavourBB + DeepFlavourLepB : -10;
+    JetInfo[iJetColl].Jet_DeepFlavourBDisc[JetInfo[iJetColl].nJet]     = (DeepFlavourB > -5) ? (DeepFlavourB + DeepFlavourBB + DeepFlavourLepB)/(DeepFlavourB + DeepFlavourBB + DeepFlavourLepB + DeepFlavourC + DeepFlavourUDS + DeepFlavourG) : -10;
     JetInfo[iJetColl].Jet_DeepFlavourCvsLDisc[JetInfo[iJetColl].nJet]  = (DeepFlavourB > -5) ? DeepFlavourC/(DeepFlavourC + DeepFlavourUDS + DeepFlavourG) : -10;
     JetInfo[iJetColl].Jet_DeepFlavourCvsBDisc[JetInfo[iJetColl].nJet]  = (DeepFlavourB > -5) ? DeepFlavourC/(DeepFlavourC + DeepFlavourB + DeepFlavourBB + DeepFlavourLepB) : -10;
 
@@ -2101,7 +2119,8 @@ void HLTBTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>
     JetInfo[iJetColl].Jet_DeepFlavourCvsBDiscN[JetInfo[iJetColl].nJet]  = (DeepFlavourBN > -5) ? DeepFlavourCN/(DeepFlavourCN + DeepFlavourBN + DeepFlavourBBN + DeepFlavourLepBN) : -10;
 
 
-    JetInfo[iJetColl].Jet_DeepCSVBDisc[JetInfo[iJetColl].nJet]   = DeepCSVb + DeepCSVbb  ;
+    // JetInfo[iJetColl].Jet_DeepCSVBDisc[JetInfo[iJetColl].nJet]   = DeepCSVb + DeepCSVbb  ;
+    JetInfo[iJetColl].Jet_DeepCSVBDisc[JetInfo[iJetColl].nJet]   = (DeepCSVb  != -1) ? (DeepCSVb +DeepCSVbb)/(DeepCSVb  + DeepCSVbb + DeepCSVc  + DeepCSVl ) : -1  ;
     // JetInfo[iJetColl].Jet_DeepCSVBDiscN[JetInfo[iJetColl].nJet]  = DeepCSVbN + DeepCSVbbN;
     // JetInfo[iJetColl].Jet_DeepCSVBDiscP[JetInfo[iJetColl].nJet]  = DeepCSVbP + DeepCSVbbP;
     JetInfo[iJetColl].Jet_DeepCSVCvsLDisc[JetInfo[iJetColl].nJet]   = (DeepCSVc  != -1) ? (DeepCSVc )/(DeepCSVc  + DeepCSVl ) : -1;
