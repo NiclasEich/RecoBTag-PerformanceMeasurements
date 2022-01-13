@@ -36,7 +36,7 @@ cp /afs/cern.ch/work/m/missirol/public/run3/PFHC/PFHC_Run3Winter20_HLT_v01.db ${
 cp /afs/cern.ch/work/m/missirol/public/run3/JESC/Run3Winter20_V2_MC/Run3Winter20_V2_MC.db ${CMSSW_BASE}/src/JMETriggerAnalysis/NTuplizers/data/JESC_Run3Winter20_V2_MC.db
 
 # clone this repository
-git clone -b Run3_ForJIRA --recursive https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
+git clone -b Run3_ForJIRA_12_3_0 --recursive https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
 
 # use the newest temporary DeepJet retraining
 mkdir -p RecoBTag/Combined/data/DeepFlavour_HLT_12X
