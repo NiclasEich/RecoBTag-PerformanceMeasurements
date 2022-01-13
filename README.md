@@ -44,7 +44,7 @@ cp RecoBTag/PerformanceMeasurements/test/modelFiles/DeepJet_model_ntuples220104_
 
 # fix muon data input files
 cd HLTrigger/Configuration/python/Run3
-cp $RecoBTag/PerformanceMeasurements/test/downloadCustomizationFunctions.sh .
+cp $CMSSW_BASE/src/RecoBTag/PerformanceMeasurements/test/downloadCustomizationFunctions.sh .
 ./downloadCustomizationFunctions.sh
 cd $CMSSW_BASE/src/RecoMuon/TrackerSeedGenerator/data
 git clone -b dev https://github.com/wonpoint4/RecoMuon-TrackerSeedGenerator.git TempNewMuonData
