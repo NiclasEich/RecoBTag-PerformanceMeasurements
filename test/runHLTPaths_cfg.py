@@ -79,6 +79,13 @@ globalTag = options.globalTag
 
 update_jmeCalibs = False
 
+def fixMenu(process):
+	if hasattr(process, 'hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter'):
+		process.hltEG60R9Id90CaloIdLIsoLDisplacedIdFilter.inputTrack = 'hltMergedTracks'
+	if hasattr(process, 'hltIter1ClustersRefRemoval'):
+		process.hltIter1ClustersRefRemoval.trajectories = 'hltMergedTracks'
+	return process
+
 def prescale_path(path,ps_service):
   for pset in ps_service.prescaleTable:
       if pset.pathName.value() == path.label():
