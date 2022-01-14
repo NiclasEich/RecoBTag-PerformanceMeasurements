@@ -2677,7 +2677,7 @@ def customizeRun3_BTag_GlobalCalo_GlobalPF(process, addDeepJetPaths = True, repl
         ]
         psets_to_delete = []
         for path in paths_to_delete:
-            print ("Fix prescale for",path)
+            # print ("Fix prescale for",path)
             for pset in process.PrescaleService.prescaleTable:
                 if pset.pathName.value() == path:
                     psets_to_delete.append(pset)
