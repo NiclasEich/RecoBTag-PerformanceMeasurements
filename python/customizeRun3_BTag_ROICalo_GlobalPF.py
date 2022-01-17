@@ -1,38 +1,38 @@
 import FWCore.ParameterSet.Config as cms
 from HLTrigger.Configuration.Run3.customizeRun3_BTag_BTagMu import replaceBTagMuPathsInProcess
 
-def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replaceBTagMuPaths = True, useNewDeepJetModel = True, useNewDeepCSVModel = False, deleteEverythingOld = True):
+def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replaceBTagMuPaths = True, useNewDeepJetModel = True, useNewDeepCSVModel = False, deleteEverythingOld = False):
 
     # delete the old legacy sequences, to be sure
-    if hasattr(process, "HLTDoLocalPixelSequenceRegForBTag"):
-    	del process.HLTDoLocalPixelSequenceRegForBTag
-    if hasattr(process, "HLTFastRecopixelvertexingSequence"):
-    	del process.HLTFastRecopixelvertexingSequence
-    if hasattr(process, "HLTDoLocalStripSequenceRegForBTag"):
-    	del process.HLTDoLocalStripSequenceRegForBTag
-    if hasattr(process, "HLTIterativeTrackingIter02ForBTag"):
-    	del process.HLTIterativeTrackingIter02ForBTag
-    if hasattr(process, "HLTIterativeTrackingIteration0ForBTag"):
-    	del process.HLTIterativeTrackingIteration0ForBTag
-    if hasattr(process, "HLTIterativeTrackingIteration1ForBTag"):
-    	del process.HLTIterativeTrackingIteration1ForBTag
-    if hasattr(process, "HLTIterativeTrackingIteration2ForBTag"):
-    	del process.HLTIterativeTrackingIteration2ForBTag
-    if hasattr(process, "HLTIterativeTrackingDoubletRecoveryForBTag"):
-    	del process.HLTIterativeTrackingDoubletRecoveryForBTag
+    # if hasattr(process, "HLTDoLocalPixelSequenceRegForBTag"):
+    # 	del process.HLTDoLocalPixelSequenceRegForBTag
+    # if hasattr(process, "HLTFastRecopixelvertexingSequence"):
+    # 	del process.HLTFastRecopixelvertexingSequence
+    # if hasattr(process, "HLTDoLocalStripSequenceRegForBTag"):
+    # 	del process.HLTDoLocalStripSequenceRegForBTag
+    # if hasattr(process, "HLTIterativeTrackingIter02ForBTag"):
+    # 	del process.HLTIterativeTrackingIter02ForBTag
+    # if hasattr(process, "HLTIterativeTrackingIteration0ForBTag"):
+    # 	del process.HLTIterativeTrackingIteration0ForBTag
+    # if hasattr(process, "HLTIterativeTrackingIteration1ForBTag"):
+    # 	del process.HLTIterativeTrackingIteration1ForBTag
+    # if hasattr(process, "HLTIterativeTrackingIteration2ForBTag"):
+    # 	del process.HLTIterativeTrackingIteration2ForBTag
+    # if hasattr(process, "HLTIterativeTrackingDoubletRecoveryForBTag"):
+    # 	del process.HLTIterativeTrackingDoubletRecoveryForBTag
     # delete the remaining unneeded paths
-    if hasattr(process, "MC_AK4CaloJetsFromPV_v8"):
-    	del process.MC_AK4CaloJetsFromPV_v8
-    if hasattr(process, "hltPreMCAK4CaloJetsFromPV"):
-    	del process.hltPreMCAK4CaloJetsFromPV
-    if hasattr(process, "HLTNoPUSequence"):
-    	del process.HLTNoPUSequence
-    if hasattr(process, "hltCaloJetFromPVCollection20Filter"):
-    	del process.hltCaloJetFromPVCollection20Filter
-    if hasattr(process, "hltHtMhtFromPVForMC"):
-    	del process.hltHtMhtFromPVForMC
-    if hasattr(process, "hltCaloHtMhtFromPVOpenFilter"):
-    	del process.hltCaloHtMhtFromPVOpenFilter
+    # if hasattr(process, "MC_AK4CaloJetsFromPV_v8"):
+    # 	del process.MC_AK4CaloJetsFromPV_v8
+    # if hasattr(process, "hltPreMCAK4CaloJetsFromPV"):
+    # 	del process.hltPreMCAK4CaloJetsFromPV
+    # if hasattr(process, "HLTNoPUSequence"):
+    # 	del process.HLTNoPUSequence
+    # if hasattr(process, "hltCaloJetFromPVCollection20Filter"):
+    # 	del process.hltCaloJetFromPVCollection20Filter
+    # if hasattr(process, "hltHtMhtFromPVForMC"):
+    # 	del process.hltHtMhtFromPVForMC
+    # if hasattr(process, "hltCaloHtMhtFromPVOpenFilter"):
+    # 	del process.hltCaloHtMhtFromPVOpenFilter
 
     if hasattr(process, "hltSelectorCentralJets20L1FastJeta"):
         process.hltSelectorCentralJets20L1FastJeta.etaMax = cms.double(2.5)
@@ -2649,6 +2649,99 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
         process.hltPFHT450Jet30+
         process.HLTEndSequence
     )
+
+
+
+    # all the scouting stuff
+        # process.HLTFastPrimaryVertexSequenceROIForBTag = cms.Sequence(
+        #     process.hltSelectorJets20L1FastJet+
+        #     process.hltSelectorCentralJets20L1FastJeta+
+        #     process.hltSelector4CentralJetsL1FastJet+
+        #     process.HLTDoLocalPixelSequence+
+        #     process.HLTRecopixelvertexingSequence
+        # )
+        #
+        # process.HLTTrackReconstructionForBTag = cms.Sequence(
+        #     process.HLTDoLocalPixelSequence+
+        #     process.HLTRecopixelvertexingSequence+
+        #     process.HLTDoLocalStripSequence+
+        #     process.HLTIterativeTrackingIter02ROIForBTag
+        # )
+
+    process.hltCaloJetFromPV = cms.EDProducer( "PixelJetPuId",
+        jets = cms.InputTag( "hltSelectorJets20L1FastJetForNoPU" ),
+        # tracks = cms.InputTag( "hltPixelTracksForNoPU" ),
+        tracks = cms.InputTag( "hltPixelTracks" ),
+        # tracks = cms.InputTag( "hltPixelTracksCleanForBTag" ),
+        # primaryVertex = cms.InputTag( "hltFastPVPixelVertices" ),
+        primaryVertex = cms.InputTag( "hltTrimmedPixelVertices" ),
+        MinGoodJetTrackPtRatio = cms.double( 0.045 ),
+        MinGoodJetTrackPt = cms.double( 1.8 ),
+        MaxTrackDistanceToJet = cms.double( 0.04 ),
+        MinTrackPt = cms.double( 0.6 ),
+        MaxTrackChi2 = cms.double( 20.0 ),
+        UseForwardJetsAsNoPU = cms.bool( True ),
+        MinEtaForwardJets = cms.double( 2.4 ),
+        MinEtForwardJets = cms.double( 40.0 )
+    )
+
+
+    process.HLTNoPUSequence = cms.Sequence(
+        # process.HLTDoLocalPixelSequenceRegForBTag +
+        process.HLTDoLocalPixelSequence +
+        # process.HLTFastRecopixelvertexingSequence +
+        process.HLTRecopixelvertexingSequence +
+
+        # process.hltPixelTracksForNoPUFilter +
+        process.hltSelectorJets20L1FastJetForNoPU +
+        # process.hltPixelTracksForNoPUFitter +
+        # process.hltPixelTracksTrackingRegionsForNoPU +
+        # process.hltPixelTracksHitDoubletsForNoPU +
+        # process.hltPixelTracksHitQuadrupletsForNoPU +
+        # process.hltPixelTracksForNoPU +
+        process.hltCaloJetFromPV
+    )
+
+    process.HLTCaloBTagScoutingSequence = cms.Sequence(
+        process.HLTAK4CaloJetsSequence +
+        process.HLTNoPUSequence +
+        # process.HLTBtagDeepCSVSequenceL3
+        process.HLTBtagDeepCSVSequenceL3ROIForBTag
+    )
+
+
+    process.hltScoutingCaloPacker = cms.EDProducer( "HLTScoutingCaloProducer",
+        caloJetCollection = cms.InputTag( 'hltAK4CaloJetsIDPassed','','@currentProcess' ),
+        # caloJetBTagCollection = cms.InputTag( 'hltCombinedSecondaryVertexBJetTagsCalo','','@currentProcess' ),
+        caloJetBTagCollection = cms.InputTag( 'hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag','','@currentProcess' ),
+        caloJetIDTagCollection = cms.InputTag( 'hltCaloJetFromPV','','@currentProcess' ),
+        vertexCollection = cms.InputTag( 'hltPixelVertices','','@currentProcess' ),
+        metCollection = cms.InputTag( 'hltMet','','@currentProcess' ),
+        rho = cms.InputTag( 'hltFixedGridRhoFastjetAllCalo','','@currentProcess' ),
+        caloJetPtCut = cms.double( 20.0 ),
+        caloJetEtaCut = cms.double( 3.0 ),
+        doMet = cms.bool( True ),
+        doJetBTags = cms.bool( True ),
+        doJetIDTags = cms.bool( True )
+    )
+
+    # process.hltScoutingPFPacker = cms.EDProducer( "HLTScoutingPFProducer",
+    #     pfJetCollection = cms.InputTag( 'hltAK4PixelOnlyPFJets','','@currentProcess' ),
+    #     # pfJetTagCollection = cms.InputTag( 'hltCombinedSecondaryVertexBJetTagsPF','','@currentProcess' ),
+    #     pfJetTagCollection = cms.InputTag( 'hltDeepCombinedSecondaryVertexBJetTagsPF','','@currentProcess' ),
+    #     pfCandidateCollection = cms.InputTag( 'hltPixelOnlyParticleFlow','','@currentProcess' ),
+    #     vertexCollection = cms.InputTag( 'hltPixelVertices','','@currentProcess' ),
+    #     metCollection = cms.InputTag( 'hltPixelOnlyPFMETProducer','','@currentProcess' ),
+    #     rho = cms.InputTag( 'hltFixedGridRhoFastjetPixelOnlyAll','','@currentProcess' ),
+    #     pfJetPtCut = cms.double( 20.0 ),
+    #     pfJetEtaCut = cms.double( 3.0 ),
+    #     pfCandidatePtCut = cms.double( 0.6 ),
+    #     pfCandidateEtaCut = cms.double( 3.0 ),
+    #     mantissaPrecision = cms.int32( 10 ),
+    #     doJetTags = cms.bool( True ),
+    #     doCandidates = cms.bool( True ),
+    #     doMet = cms.bool( True )
+    # )
 
     # delete old BTagMu paths containing AlgoCut
     if replaceBTagMuPaths:
