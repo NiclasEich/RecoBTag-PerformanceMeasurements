@@ -1,5 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 from HLTrigger.Configuration.Run3.customizeRun3_BTag_BTagMu import replaceBTagMuPathsInProcess
+from HLTrigger.Configuration.Run3.customizeRun3_BTag_DisplacedJets import replaceDisplacedJetInProcess
 
 def addDeepJetPathsIntoProcess(process, useNewDeepJetModel = True):
         ####                    DeepJet?
@@ -642,6 +643,8 @@ def addDeepJetPathsIntoProcess(process, useNewDeepJetModel = True):
 
 def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replaceBTagMuPaths = False, useNewDeepJetModel = True, useNewDeepCSVModel = False):
 
+    process = replaceDisplacedJetInProcess(process)
+
     # adjust eta cuts for calo jets -> 2.5
     if hasattr(process, "hltSelectorCentralJets20L1FastJeta"):
         process.hltSelectorCentralJets20L1FastJeta.etaMax = cms.double(2.5)
@@ -715,31 +718,31 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
     )
 
     # clone tracking from the central one and insert our tracks
-    process.hltIter0PFLowPixelSeedsFromPixelTracksROIForBTag = process.hltIter0PFLowPixelSeedsFromPixelTracks.clone(
+    process.hltIter0PFLowPixelSeedsFromPixelTracksForBTag = process.hltIter0PFLowPixelSeedsFromPixelTracks.clone(
         InputCollection = cms.InputTag("hltPixelTracksForBTag"),
         InputVertexCollection = cms.InputTag("hltTrimmedPixelVertices"),
     )
 
-    process.hltIter0PFlowCkfTrackCandidatesROIForBTag = process.hltIter0PFlowCkfTrackCandidates.clone(
-        src = cms.InputTag("hltIter0PFLowPixelSeedsFromPixelTracksROIForBTag"),
+    process.hltIter0PFlowCkfTrackCandidatesForBTag = process.hltIter0PFlowCkfTrackCandidates.clone(
+        src = cms.InputTag("hltIter0PFLowPixelSeedsFromPixelTracksForBTag"),
     )
 
-    process.hltIter0PFlowCtfWithMaterialTracksROIForBTag = process.hltIter0PFlowCtfWithMaterialTracks.clone(
-        src = cms.InputTag("hltIter0PFlowCkfTrackCandidatesROIForBTag"),
+    process.hltIter0PFlowCtfWithMaterialTracksForBTag = process.hltIter0PFlowCtfWithMaterialTracks.clone(
+        src = cms.InputTag("hltIter0PFlowCkfTrackCandidatesForBTag"),
     )
 
-    process.hltIter0PFlowTrackCutClassifierROIForBTag = process.hltIter0PFlowTrackCutClassifier.clone(
-        src = cms.InputTag("hltIter0PFlowCtfWithMaterialTracksROIForBTag"),
+    process.hltIter0PFlowTrackCutClassifierForBTag = process.hltIter0PFlowTrackCutClassifier.clone(
+        src = cms.InputTag("hltIter0PFlowCtfWithMaterialTracksForBTag"),
         vertices = cms.InputTag("hltTrimmedPixelVertices")
     )
 
-    process.hltMergedTracksROIForBTag = process.hltMergedTracks.clone(
-        originalMVAVals = cms.InputTag("hltIter0PFlowTrackCutClassifierROIForBTag","MVAValues"),
-        originalQualVals = cms.InputTag("hltIter0PFlowTrackCutClassifierROIForBTag","QualityMasks"),
-        originalSource = cms.InputTag("hltIter0PFlowCtfWithMaterialTracksROIForBTag")
+    process.hltMergedTracksForBTag = process.hltMergedTracks.clone(
+        originalMVAVals = cms.InputTag("hltIter0PFlowTrackCutClassifierForBTag","MVAValues"),
+        originalQualVals = cms.InputTag("hltIter0PFlowTrackCutClassifierForBTag","QualityMasks"),
+        originalSource = cms.InputTag("hltIter0PFlowCtfWithMaterialTracksForBTag")
     )
 
-    process.HLTIterativeTrackingIteration0ROIForBTag = cms.Sequence(
+    process.HLTIterativeTrackingIteration0ForBTag = cms.Sequence(
         process.HLTAK4CaloJetsReconstructionNoIDSequence +
         process.HLTAK4CaloJetsCorrectionNoIDSequence +
         process.hltSelectorJets20L1FastJet +
@@ -749,37 +752,37 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
         process.hltPixelTracksCleanForBTag+
         process.hltPixelTracksForBTag +
 
-        process.hltIter0PFLowPixelSeedsFromPixelTracksROIForBTag+
-        process.hltIter0PFlowCkfTrackCandidatesROIForBTag+
-        process.hltIter0PFlowCtfWithMaterialTracksROIForBTag+
-        process.hltIter0PFlowTrackCutClassifierROIForBTag+
-        process.hltMergedTracksROIForBTag
+        process.hltIter0PFLowPixelSeedsFromPixelTracksForBTag+
+        process.hltIter0PFlowCkfTrackCandidatesForBTag+
+        process.hltIter0PFlowCtfWithMaterialTracksForBTag+
+        process.hltIter0PFlowTrackCutClassifierForBTag+
+        process.hltMergedTracksForBTag
     )
     #
-    process.HLTIterativeTrackingIter02ROIForBTag = cms.Sequence(
-        process.HLTIterativeTrackingIteration0ROIForBTag
+    process.HLTIterativeTrackingIter02ForBTag = cms.Sequence(
+        process.HLTIterativeTrackingIteration0ForBTag
     )
 
     ########################################
     # new CALO and ROI TRK
 
     process.hltVerticesL3 = process.hltVerticesL3.clone(
-        TrackLabel = cms.InputTag("hltMergedTracksROIForBTag"),
+        TrackLabel = cms.InputTag("hltMergedTracksForBTag"),
     )
 
     process.hltFastPixelBLifetimeL3Associator = process.hltFastPixelBLifetimeL3Associator.clone(
-        tracks = cms.InputTag("hltMergedTracksROIForBTag"),
+        tracks = cms.InputTag("hltMergedTracksForBTag"),
     )
 
     process.hltInclusiveVertexFinder = process.hltInclusiveVertexFinder.clone(
         primaryVertices = cms.InputTag("hltVerticesL3"),
-        tracks = cms.InputTag("hltMergedTracksROIForBTag"),
+        tracks = cms.InputTag("hltMergedTracksForBTag"),
     )
 
     process.hltTrackVertexArbitrator = process.hltTrackVertexArbitrator.clone(
         primaryVertices = cms.InputTag("hltVerticesL3"),
         secondaryVertices = cms.InputTag("hltInclusiveSecondaryVertices"),
-        tracks = cms.InputTag("hltMergedTracksROIForBTag")
+        tracks = cms.InputTag("hltMergedTracksForBTag")
     )
 
     process.HLTFastPrimaryVertexSequence = cms.Sequence(
@@ -794,7 +797,7 @@ def customizeRun3_BTag_ROICalo_GlobalPF(process, addDeepJetPaths = True, replace
         process.HLTDoLocalPixelSequence+
         process.HLTRecopixelvertexingSequence+
         process.HLTDoLocalStripSequence+
-        process.HLTIterativeTrackingIter02ROIForBTag
+        process.HLTIterativeTrackingIter02ForBTag
     )
 
     ########################################

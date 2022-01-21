@@ -381,6 +381,19 @@ else:
 if not "_oldJECs" in options.reco:
     update_jmeCalibs = True
 
+if hasattr(process, "hltPFDeepFlavourJetTagsROIForBTag"):
+    print ("DeepJet model used:", process.hltPFDeepFlavourJetTagsROIForBTag.model_path)
+if hasattr(process, "hltPFDeepFlavourJetTagsForBTag"):
+    print ("DeepJet model used:", process.hltPFDeepFlavourJetTagsForBTag.model_path)
+if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCalo"):
+    print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsCalo.model_path)
+if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag"):
+    print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag.model_path)
+if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPF"):
+    print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsPF.model_path)
+if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag"):
+    print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag.model_path)
+
 # remove cms.OutputModule objects from HLT config-dump
 for _modname in process.outputModules_():
     _mod = getattr(process, _modname)
@@ -417,7 +430,7 @@ if options.reco == "HLT_Run3TRK" or  options.reco == "HLT_GRun":
 from RecoBTag.PerformanceMeasurements.PATLikeConfig import customizePFPatLikeJets
 process = customizePFPatLikeJets(process, runPF=True, runCalo=options.runCaloJetVariables, runPuppi=options.runPuppiJetVariables,
     roiReplace = "ROIPF" in options.reco,
-    roiReplaceCalo = "ROICalo" in options.reco or "noCalo" in options.reco,
+    roiReplaceCalo = ("ROICalo" in options.reco and not "GlobalPF" in options.reco) or "noCalo" in options.reco,
     isData = options.runOnData
 )
 

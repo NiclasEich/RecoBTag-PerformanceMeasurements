@@ -101,7 +101,7 @@ edmConfigDump tmp.py > HLT_dev_CMSSW_12_3_0_GRun_configDump_MC.py
 ```
 For data:
 ```bash
-hltGetConfiguration /dev/CMSSW_12_2_0/GRun \
+hltGetConfiguration /dev/CMSSW_12_3_0/GRun \
 --full \
 --offline \
 --unprescale \
