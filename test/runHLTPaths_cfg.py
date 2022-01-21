@@ -191,10 +191,14 @@ keepPaths = [
 
   # 'HLT_QuadPFJet98_83_71_15_DoublePFBTagDeepJet_1p3_7p7_VBF1_v8',
 
+  'MC_*',
+
   'HLT_*',
+  'AlCa_*',
   'Alca_*',
   'DST_ZeroBias_v2',
   'DST_Physics_v7',
+  'DST_*',
   'Status_OnGPU',
   'Status_OnCPU',
   'HLTriggerFinalPath',
