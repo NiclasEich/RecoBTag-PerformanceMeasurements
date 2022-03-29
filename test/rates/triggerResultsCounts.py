@@ -32,7 +32,7 @@ if __name__ == '__main__':
    parser.add_argument('-t', '--triggers-json', dest='triggers_json', action='store', default=None,
                        help='path to file with list of HLT paths to be used for pure counts (.json format)')
 
-   parser.add_argument('-p', '--processName', dest='processName', action='store', default='HLTX',
+   parser.add_argument('-p', '--processName', dest='processName', action='store', default='HLT2',
                        help='process name of edm::TriggerResults in EDM input file(s)')
 
    parser.add_argument('-m', '--maxEvents', dest='maxEvents', action='store', type=int, default=-1,

@@ -350,36 +350,65 @@ for basePathName in pathList:
 print("- - "*20)
 
 for basePathName in pathList:
-    print("Creating workin points for {}".format(basePathName))
+    print("Creating working points for {}".format(basePathName))
 
     basePath = getattr(process, basePathName)
 
     prescaleName = next(p for p in basePath.moduleNames() if "hltPre" in p)
 
-    taggerModuleName = next(p for p in basePath.moduleNames() if ("DeepCSV" in p or "DeepJet" in p) and ("hltBTag" in p))
-    if "PFBTagDeepJet" in basePathName:
-        discName = "hltDeepJetDiscriminatorsJetTags"
-    elif "PFBTagDeepCSV" in basePathName or "PFAK8BTagDeepCSV":
-        discName = "hltDeepCombinedSecondaryVertexBJetTagsPF"
-    elif "CaloBTagDeepCSV" in basePathName:
-        discName = "hltDeepCombinedSecondaryVertexBJetTagsCalo"
+    taggerModules = [p for p in basePath.moduleNames() if ("DeepCSV" in p or "DeepJet" in p) and ("hltBTag" in p)]
+
+    # taggerModuleName = next(p for p in basePath.moduleNames() if ("DeepCSV" in p or "DeepJet" in p) and ("hltBTag" in p))
+    if len(taggerModules) > 1:
+        print("more than one taggerModule found!")
+        # do not care about Calo Prefilter
+        tagger = [tM for tM in taggerModules if "Calo" not in tM]
+
+        # there might be multiple filters - then chose the sinlge jet one (tighter) 
+        if len(tagger) != 1:
+            if any("Double" in t for t in tagger) and any("Single" in t for t in tagger):
+                tagger = [t for t in tagger if "Single" in t]
+            else:
+                raise ValueError("This should not happen. Make sure to delete the right calo prefilter")
+            taggerModuleName = tagger[0]
+        else:
+            taggerModuleName = tagger[0]
     else:
-        from IPython import embed;embed()
-        raise NotImplementedError("This case is not handled properly!") 
+        # print("bar")
+        taggerModuleName = taggerModules[0]
+    taggerModule = getattr(process, taggerModuleName)
+    # from IPython import embed;embed()
+    print()
+    print("Working point for: {} minTag: {}".format(taggerModuleName, taggerModule.MinTag.value()))
+    # if basePathName == "HLT_QuadPFJet103_88_75_15_PFBTagDeepCSV_1p3_VBF2_v8":
+    # if "PFBTagDeepJet" in basePathName:
+    #     discName = "hltDeepJetDiscriminatorsJetTags"
+    # elif "PFBTagDeepCSV" in basePathName or "PFAK8BTagDeepCSV":
+    #     discName = "hltDeepCombinedSecondaryVertexBJetTagsPF"
+    # elif "CaloBTagDeepCSV" in basePathName:
+    #     discName = "hltDeepCombinedSecondaryVertexBJetTagsCalo"
+    # else:
+    #     raise NotImplementedError("This case is not handled properly!") 
+
+    discName =  taggerModule.JetTags.value().split(":")
 
 
     # if "DeepCombine" in discName:
     #     from IPython import embed;embed()
 
 
-    for wp in np.linspace(0.15, 0.4, 2):
+    # Create N working points with -0.1/+0.1 %
+    for wp_diff in np.linspace(-0.1, +0.1, 7):
+
+        # 0 < wp < 1
+        wp = min( max(0.001, taggerModule.MinTag.value() + wp_diff), 0.99999)
 
         prescale = getattr(process, prescaleName).clone()
         prescales = next( p.prescales for p in process.PrescaleService.prescaleTable if p.pathName.value() == basePathName)
 
         wp_string = "{0:2d}".format(int(wp* 100))
-        value = getattr(process, taggerModuleName).clone(
-            JetTags = cms.InputTag(discName,"BvsAll"),
+        value = taggerModule.clone(
+            JetTags = cms.InputTag(discName),
             MinTag = cms.double(wp),
         )
 
@@ -407,8 +436,6 @@ for basePathName in pathList:
                 prescales = prescales
             ),
         )
-        if newPathName == "HLT_QuadPFJet103_88_75_15_PFBTagDeepCSV_1p3_VBF2_v8_WP_15":
-            from IPython import embed;embed()
         del newPath
         del prescale
         del value
@@ -421,7 +448,7 @@ pathListNew =  [p for p in dir(process) if (("DeepJet" in p) or ("DeepCSV" in p)
 with open(pathListFname, "w") as pathListFile:
     json.dump(pathListNew, pathListFile)
 
-from IPython import embed;embed()
+# from IPython import embed;embed()
 ###
 ### standard options
 ###
