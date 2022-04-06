@@ -15,7 +15,7 @@ args = parser.parse_args()
 outputFile = args.output_file 
 verbosity = args.verbosity
 
-dset = '/EphemeralHLTPhysics1/Run2018D-v1/RAW'
+dset = '/EphemeralHLTPhysics2/Run2018D-v1/RAW'
 # run = 323775
 # lumiBlocks = [ls for ls in range(52,152) if ls not in [71, 72, 78, 82, 83]]
 
@@ -26,7 +26,7 @@ if len(inp_json.keys()) > 1:
 run = list(inp_json.keys())[0]
 lumiBlocks = [item for a,b in inp_json[run] for item in list(range(a, b+1))]
 print("Running on run #{}".format(run))
-print("Luminosity-blockas:")
+print("Luminosity-blocks:")
 print(lumiBlocks)
 
 
