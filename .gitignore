@@ -11,3 +11,5 @@ test/CRAB/crab_projects_*
 
 opt_results/
 testHH/
+
+test/rates/wp_out/
