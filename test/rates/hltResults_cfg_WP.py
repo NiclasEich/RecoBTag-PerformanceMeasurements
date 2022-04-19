@@ -410,7 +410,7 @@ for basePathName in pathList:
 
 
     # Create N working points with -0.1/+0.1 %
-    for wp_diff in np.linspace(-0.1, +0.1, 7):
+    for wp_diff in np.linspace(-0.2, +0.2, 40):
 
         # 0 < wp < 1
         wp = min( max(0.001, taggerModule.MinTag.value() + wp_diff), 0.99999)
@@ -418,7 +418,7 @@ for basePathName in pathList:
         prescale = getattr(process, prescaleName).clone()
         prescales = next( p.prescales for p in process.PrescaleService.prescaleTable if p.pathName.value() == basePathName)
 
-        wp_string = "{0:2d}".format(int(wp* 100))
+        wp_string = "{:03d}".format(int(wp * 1000))
         value = taggerModule.clone(
             JetTags = cms.InputTag(discName),
             MinTag = cms.double(wp),
