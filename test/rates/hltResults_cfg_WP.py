@@ -64,6 +64,11 @@ opts.register('replaceBTagMuPaths', True,
               vpo.VarParsing.varType.bool,
               'renaming BTagMu NoAlgo paths in reconstruction')
 
+opts.register('crab', True,
+              vpo.VarParsing.multiplicity.singleton,
+              vpo.VarParsing.varType.bool,
+              'running with')
+
 opts.parseArguments()
 
 ###
@@ -240,8 +245,15 @@ if update_jmeCalibs:
     ## ES modules for PF-Hadron Calibrations
     import os
     from CondCore.CondDB.CondDB_cfi import CondDB as _CondDB
+
+    PFHCpath = os.environ['CMSSW_BASE']+'/src/JMETriggerAnalysis/NTuplizers/data/PFHC_Run3Winter20_HLT_v01.db'
+    JESCpath = os.environ['CMSSW_BASE']+'/src/JMETriggerAnalysis/NTuplizers/data/JESC_Run3Winter20_V2_MC.db'
+    if opts.crab:
+        PFHCpath = './PFHC_Run3Winter20_HLT_v01.db'
+        JESCpath = './JESC_Run3Winter20_V2_MC.db'
+
     process.pfhcESSource = cms.ESSource('PoolDBESSource',
-        _CondDB.clone(connect = 'sqlite_file:'+os.environ['CMSSW_BASE']+'/src/JMETriggerAnalysis/NTuplizers/data/PFHC_Run3Winter20_HLT_v01.db'),
+        _CondDB.clone(connect = 'sqlite_file:'+PFHCpath),
         toGet = cms.VPSet(
             cms.PSet(
                 record = cms.string('PFCalibrationRcd'),
@@ -255,7 +267,7 @@ if update_jmeCalibs:
 
   ## ES modules for HLT JECs
     process.jescESSource = cms.ESSource('PoolDBESSource',
-    _CondDB.clone(connect = 'sqlite_file:'+os.environ['CMSSW_BASE']+'/src/JMETriggerAnalysis/NTuplizers/data/JESC_Run3Winter20_V2_MC.db'),
+    _CondDB.clone(connect = 'sqlite_file:'+JESCpath),
     toGet = cms.VPSet(
       cms.PSet(
         record = cms.string('JetCorrectionsRecord'),
