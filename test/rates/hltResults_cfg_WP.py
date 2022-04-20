@@ -90,7 +90,7 @@ def prescale_path(path,ps_service):
 
 # from RecoBTa .PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_2_0_GRun_Data_NoOutput_configDump import cms, process
 # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_0_GRun_Data_NoOutput_configDump import cms, process
-from tmpRates_dump import cms, process
+from hlt_noJEC_dump import cms, process
 
 if opts.reco == 'HLT_GRun_oldJECs':
     update_jmeCalibs = False
