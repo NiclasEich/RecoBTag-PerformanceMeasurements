@@ -64,7 +64,7 @@ opts.register('replaceBTagMuPaths', True,
               vpo.VarParsing.varType.bool,
               'renaming BTagMu NoAlgo paths in reconstruction')
 
-opts.register('crab', True,
+opts.register('crab', False,
               vpo.VarParsing.multiplicity.singleton,
               vpo.VarParsing.varType.bool,
               'running with')

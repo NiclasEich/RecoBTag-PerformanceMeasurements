@@ -18,9 +18,9 @@ config.section_('Data')
 config.Data.inputDataset = '/EphemeralHLTPhysics1/Run2018D-v1/RAW'
 config.Data.outputDatasetTag = 'hltrates'
 config.Data.publication = False
-config.Data.unitsPerJob = 180
+config.Data.unitsPerJob = 1
 config.Data.inputDBS = 'global'
-config.Data.splitting = 'Automatic'
+config.Data.splitting = 'FileBased'
 config.Data.allowNonValidInputDataset = False
 config.Data.outLFNDirBase = '/store/user/mlink/hltrates/'
 config.Data.lumiMask = 'lumi_sections_323775.txt'
