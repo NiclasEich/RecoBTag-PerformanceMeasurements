@@ -64,6 +64,11 @@ opts.register('replaceBTagMuPaths', True,
               vpo.VarParsing.varType.bool,
               'renaming BTagMu NoAlgo paths in reconstruction')
 
+opts.register('crab', False,
+              vpo.VarParsing.multiplicity.singleton,
+              vpo.VarParsing.varType.bool,
+              'running with')
+
 opts.parseArguments()
 
 ###
@@ -85,7 +90,7 @@ def prescale_path(path,ps_service):
 
 # from RecoBTa .PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_2_0_GRun_Data_NoOutput_configDump import cms, process
 # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_0_GRun_Data_NoOutput_configDump import cms, process
-from tmpRates_dump import cms, process
+from hlt_noJEC_dump import cms, process
 
 if opts.reco == 'HLT_GRun_oldJECs':
     update_jmeCalibs = False
@@ -240,8 +245,15 @@ if update_jmeCalibs:
     ## ES modules for PF-Hadron Calibrations
     import os
     from CondCore.CondDB.CondDB_cfi import CondDB as _CondDB
+
+    PFHCpath = os.environ['CMSSW_BASE']+'/src/JMETriggerAnalysis/NTuplizers/data/PFHC_Run3Winter20_HLT_v01.db'
+    JESCpath = os.environ['CMSSW_BASE']+'/src/JMETriggerAnalysis/NTuplizers/data/JESC_Run3Winter20_V2_MC.db'
+    if opts.crab:
+        PFHCpath = './PFHC_Run3Winter20_HLT_v01.db'
+        JESCpath = './JESC_Run3Winter20_V2_MC.db'
+
     process.pfhcESSource = cms.ESSource('PoolDBESSource',
-        _CondDB.clone(connect = 'sqlite_file:'+os.environ['CMSSW_BASE']+'/src/JMETriggerAnalysis/NTuplizers/data/PFHC_Run3Winter20_HLT_v01.db'),
+        _CondDB.clone(connect = 'sqlite_file:'+PFHCpath),
         toGet = cms.VPSet(
             cms.PSet(
                 record = cms.string('PFCalibrationRcd'),
@@ -255,7 +267,7 @@ if update_jmeCalibs:
 
   ## ES modules for HLT JECs
     process.jescESSource = cms.ESSource('PoolDBESSource',
-    _CondDB.clone(connect = 'sqlite_file:'+os.environ['CMSSW_BASE']+'/src/JMETriggerAnalysis/NTuplizers/data/JESC_Run3Winter20_V2_MC.db'),
+    _CondDB.clone(connect = 'sqlite_file:'+JESCpath),
     toGet = cms.VPSet(
       cms.PSet(
         record = cms.string('JetCorrectionsRecord'),
@@ -398,7 +410,7 @@ for basePathName in pathList:
 
 
     # Create N working points with -0.1/+0.1 %
-    for wp_diff in np.linspace(-0.1, +0.1, 7):
+    for wp_diff in np.linspace(-0.2, +0.2, 40):
 
         # 0 < wp < 1
         wp = min( max(0.001, taggerModule.MinTag.value() + wp_diff), 0.99999)
@@ -406,7 +418,7 @@ for basePathName in pathList:
         prescale = getattr(process, prescaleName).clone()
         prescales = next( p.prescales for p in process.PrescaleService.prescaleTable if p.pathName.value() == basePathName)
 
-        wp_string = "{0:2d}".format(int(wp* 100))
+        wp_string = "{:03d}".format(int(wp * 1000))
         value = taggerModule.clone(
             JetTags = cms.InputTag(discName),
             MinTag = cms.double(wp),

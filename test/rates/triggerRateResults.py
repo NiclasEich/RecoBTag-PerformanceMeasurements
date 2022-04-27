@@ -80,7 +80,7 @@ for base_path, path_list in path_dict[tag].items():
     rates = []
     for path in path_list:
         try:
-            wps.append( float(path["trigName"].split("_WP_")[1])/100)
+            wps.append( float(path["trigName"].split("_WP_")[1])/1000)
             rates.append(float(path["rateRaw"]))
         except IndexError:
             pass
@@ -112,7 +112,7 @@ for base_path, path_list in path_dict[tag].items():
     rates = []
     for path in path_list:
         try:
-            wps.append( float(path["trigName"].split("_WP_")[1])/100)
+            wps.append( float(path["trigName"].split("_WP_")[1])/1000)
             rates.append(float(path["rateRaw"]))
         except IndexError:
             pass
