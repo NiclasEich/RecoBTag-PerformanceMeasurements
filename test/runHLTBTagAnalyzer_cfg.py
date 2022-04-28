@@ -331,7 +331,8 @@ def prescale_path(path,ps_service):
 if options.runOnData:
     from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_0_GRun_configDump_Data import cms, process
 else:
-    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_0_GRun_configDump_MC import cms, process
+    # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_0_GRun_configDump_MC import cms, process
+    from rates.hlt_MC_dump import cms, process
 
 if options.reco == 'HLT_GRun' or options.reco == "HLT_GRun_oldJECs":
     # default GRun menu (Run 2 configurations) + new PFHCs and JECs
@@ -381,18 +382,18 @@ else:
 if not "_oldJECs" in options.reco:
     update_jmeCalibs = True
 
-if hasattr(process, "hltPFDeepFlavourJetTagsROIForBTag"):
-    print ("DeepJet model used:", process.hltPFDeepFlavourJetTagsROIForBTag.model_path)
-if hasattr(process, "hltPFDeepFlavourJetTagsForBTag"):
-    print ("DeepJet model used:", process.hltPFDeepFlavourJetTagsForBTag.model_path)
-if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCalo"):
-    print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsCalo.model_path)
-if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag"):
-    print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag.model_path)
-if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPF"):
-    print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsPF.model_path)
-if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag"):
-    print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag.model_path)
+# if hasattr(process, "hltPFDeepFlavourJetTagsROIForBTag"):
+#     print ("DeepJet model used:", process.hltPFDeepFlavourJetTagsROIForBTag.model_path)
+# if hasattr(process, "hltPFDeepFlavourJetTagsForBTag"):
+#     print ("DeepJet model used:", process.hltPFDeepFlavourJetTagsForBTag.model_path)
+# if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCalo"):
+#     print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsCalo.model_path)
+# if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag"):
+#     print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag.model_path)
+# if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPF"):
+#     print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsPF.model_path)
+# if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag"):
+#     print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag.model_path)
 
 # remove cms.OutputModule objects from HLT config-dump
 for _modname in process.outputModules_():
