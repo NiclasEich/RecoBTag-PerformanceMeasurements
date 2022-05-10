@@ -339,6 +339,22 @@ if options.reco == 'HLT_GRun' or options.reco == "HLT_GRun_oldJECs":
     # do nothing
     process = process
 
+elif options.reco == "HLT_GRun_BatchNorm":
+    process = process
+
+    if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCalo"):
+        process.hltDeepCombinedSecondaryVertexBJetTagsCalo.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
+    if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPF"):
+        process.hltDeepCombinedSecondaryVertexBJetTagsPF.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
+    if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPFAK8"):
+        process.hltDeepCombinedSecondaryVertexBJetTagsPFAK8.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
+    if hasattr(process, "hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags"):
+        process.hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
+    if hasattr(process, "hltDeepCombinedSecondaryVertexBPFPatJetTags"):
+        process.hltDeepCombinedSecondaryVertexBPFPatJetTags.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
+    if hasattr(process, "hltDeepCombinedSecondaryVertexCaloPatBJetTags"):
+        process.hltDeepCombinedSecondaryVertexCaloPatBJetTags.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
+
 elif options.reco == 'HLT_Run3TRK_ROICaloROIPF' or options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu' or options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_oldJECs':
     from HLTrigger.Configuration.customizeHLTforRun3 import *
     # process = MUO_newReco(process)
@@ -423,11 +439,12 @@ for el in list(els):
 ###
 
 if options.reco == "HLT_Run3TRK" or  options.reco == "HLT_GRun":
-    from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
-    process = addDeepJet(process, doPF = True, doPuppi = options.runPuppiJetVariables,
-            roiReplace = "ROIPF" in options.reco,
-            # roiReplaceCalo = "ROICalo" in options.reco or "noCalo" in options.reco
-    )
+    pass
+    # from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
+    # process = addDeepJet(process, doPF = True, doPuppi = options.runPuppiJetVariables,
+    #         roiReplace = "ROIPF" in options.reco,
+    #         # roiReplaceCalo = "ROICalo" in options.reco or "noCalo" in options.reco
+    # )
 from RecoBTag.PerformanceMeasurements.PATLikeConfig import customizePFPatLikeJets
 process = customizePFPatLikeJets(process, runPF=True, runCalo=options.runCaloJetVariables, runPuppi=options.runPuppiJetVariables,
     roiReplace = "ROIPF" in options.reco,
