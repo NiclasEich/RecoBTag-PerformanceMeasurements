@@ -819,9 +819,11 @@ def customizePFPatLikeJets(process, runCalo=True, runPuppi=True, runPF=True, roi
                 +process.HLTEndSequence
             )
 
-    if process.schedule_():
-        if runPF: process.schedule.extend([process.MC_JetsMatchingPath])
-        if runCalo: process.schedule.extend([process.MC_CaloJetsMatchingPath])
-        if runPuppi: process.schedule.extend([process.MC_PuppiJetsMatchingPath])
+    # if process.schedule_():
+    # if hasattr(process, 'schedule'):
+    
+    if runPF: process.schedule.extend([process.MC_JetsMatchingPath])
+    if runCalo: process.schedule.extend([process.MC_CaloJetsMatchingPath])
+    if runPuppi: process.schedule.extend([process.MC_PuppiJetsMatchingPath])
 
     return process

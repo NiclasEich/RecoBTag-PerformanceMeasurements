@@ -331,8 +331,7 @@ def prescale_path(path,ps_service):
 if options.runOnData:
     from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_0_GRun_configDump_Data import cms, process
 else:
-    # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_0_GRun_configDump_MC import cms, process
-    from rates.hlt_MC_dump import cms, process
+    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_2_GRun_configDump_MC import cms, process
 
 if options.reco == 'HLT_GRun' or options.reco == "HLT_GRun_oldJECs":
     # default GRun menu (Run 2 configurations) + new PFHCs and JECs
@@ -341,75 +340,22 @@ if options.reco == 'HLT_GRun' or options.reco == "HLT_GRun_oldJECs":
 
 elif options.reco == "HLT_GRun_BatchNorm":
     process = process
-
+    from RecoBTag.PerformanceMeasurements.forceNewJEC import *
+    process = forceNewJEC(process)
     if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCalo"):
-        process.hltDeepCombinedSecondaryVertexBJetTagsCalo.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
+        process.hltDeepCombinedSecondaryVertexBJetTagsCalo.NNConfig = cms.FileInPath("RecoBTag/Combined/data/model_no_offset_DeepCSV.json")
     if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPF"):
-        process.hltDeepCombinedSecondaryVertexBJetTagsPF.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
+        process.hltDeepCombinedSecondaryVertexBJetTagsPF.NNConfig = cms.FileInPath("RecoBTag/Combined/data/model_no_offset_DeepCSV.json")
     if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPFAK8"):
-        process.hltDeepCombinedSecondaryVertexBJetTagsPFAK8.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
+        process.hltDeepCombinedSecondaryVertexBJetTagsPFAK8.NNConfig = cms.FileInPath("RecoBTag/Combined/data/model_no_offset_DeepCSV.json")
     if hasattr(process, "hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags"):
-        process.hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
+        process.hltDeepCombinedSecondaryVertexBPFPuppiPatJetTags.NNConfig = cms.FileInPath("RecoBTag/Combined/data/model_no_offset_DeepCSV.json")
     if hasattr(process, "hltDeepCombinedSecondaryVertexBPFPatJetTags"):
-        process.hltDeepCombinedSecondaryVertexBPFPatJetTags.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
+        process.hltDeepCombinedSecondaryVertexBPFPatJetTags.NNConfig = cms.FileInPath("RecoBTag/Combined/data/model_no_offset_DeepCSV.json")
     if hasattr(process, "hltDeepCombinedSecondaryVertexCaloPatBJetTags"):
-        process.hltDeepCombinedSecondaryVertexCaloPatBJetTags.NNConfig = cms.FileInPath("/nfs/dust/cms/user/neich/BTV/cmssw_tests/working_points_02/CMSSW_12_3_0_pre6/src/RecoBTag/PerformanceMeasurements/test/model_no_offset_DeepCSV.json")
-
-elif options.reco == 'HLT_Run3TRK_ROICaloROIPF' or options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu' or options.reco == 'HLT_Run3TRK_ROICaloROIPF_Mu_oldJECs':
-    from HLTrigger.Configuration.customizeHLTforRun3 import *
-    # process = MUO_newReco(process)
-    process = BTV_roiCalo_roiPF_DeepJet(process)
-    if "_Mu" in options.reco:
-        process = MUO_newReco(process)
-    pvSource                 = "hltVerticesPFFilterROIForBTag"
-    pfCandidates             = 'hltParticleFlowROIForBTag'
-    trackSource              = "hltMergedTracksROIForBTag"
-    rho                      = "hltFixedGridRhoFastjetAllROIForBTag"
-    muSource = 'hltMuonsROIForBTag'
-    elSource = 'hltEgammaGsfElectrons'
-
-elif options.reco == 'HLT_Run3TRK_noCaloROIPF' or options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu' or options.reco == 'HLT_Run3TRK_noCaloROIPF_Mu_oldJECs':
-    from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = BTV_noCalo_roiPF_DeepJet(process)
-    if "_Mu" in options.reco:
-        process = MUO_newReco(process)
-    pvSource                 = "hltVerticesPFFilterROIForBTag"
-    pfCandidates             = 'hltParticleFlowROIForBTag'
-    trackSource              = "hltMergedTracksROIForBTag"
-    rho                      = "hltFixedGridRhoFastjetAllROIForBTag"
-    muSource = 'hltMuonsROIForBTag'
-    elSource = 'hltEgammaGsfElectrons'
-
-elif options.reco == 'HLT_Run3TRK_ROICaloGlobalPF' or options.reco == 'HLT_Run3TRK_ROICaloGlobalPF_Mu' or options.reco == 'HLT_Run3TRK_ROICaloGlobalPF_Mu_oldJECs':
-    from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = BTV_roiCalo_globalPF_DeepJet(process)
-    if "_Mu" in options.reco:
-        process = MUO_newReco(process)
-
-elif options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF' or options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF_Mu' or options.reco == 'HLT_Run3TRK_GlobalCaloGlobalPF_Mu_oldJECs':
-    from HLTrigger.Configuration.customizeHLTforRun3 import *
-    process = BTV_globalCalo_globalPF_DeepJet(process)
-    if "_Mu" in options.reco:
-        process = MUO_newReco(process)
-
+        process.hltDeepCombinedSecondaryVertexCaloPatBJetTags.NNConfig = cms.FileInPath("RecoBTag/Combined/data/model_no_offset_DeepCSV.json")
 else:
   raise RuntimeError('keyword "reco = '+options.reco+'" not recognised')
-
-if not "_oldJECs" in options.reco:
-    update_jmeCalibs = True
-
-# if hasattr(process, "hltPFDeepFlavourJetTagsROIForBTag"):
-#     print ("DeepJet model used:", process.hltPFDeepFlavourJetTagsROIForBTag.model_path)
-# if hasattr(process, "hltPFDeepFlavourJetTagsForBTag"):
-#     print ("DeepJet model used:", process.hltPFDeepFlavourJetTagsForBTag.model_path)
-# if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCalo"):
-#     print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsCalo.model_path)
-# if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag"):
-#     print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsCaloROIForBTag.model_path)
-# if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPF"):
-#     print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsPF.model_path)
-# if hasattr(process, "hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag"):
-#     print ("DeepCSV model used:", process.hltDeepCombinedSecondaryVertexBJetTagsPFROIForBTag.model_path)
 
 # remove cms.OutputModule objects from HLT config-dump
 for _modname in process.outputModules_():
@@ -438,46 +384,20 @@ for el in list(els):
 #          only relevant for Ntuplizing
 ###
 
-if options.reco == "HLT_Run3TRK" or  options.reco == "HLT_GRun":
-    pass
-    # from RecoBTag.PerformanceMeasurements.customise_TRK import addDeepJet
-    # process = addDeepJet(process, doPF = True, doPuppi = options.runPuppiJetVariables,
-    #         roiReplace = "ROIPF" in options.reco,
-    #         # roiReplaceCalo = "ROICalo" in options.reco or "noCalo" in options.reco
-    # )
 from RecoBTag.PerformanceMeasurements.PATLikeConfig import customizePFPatLikeJets
 process = customizePFPatLikeJets(process, runPF=True, runCalo=options.runCaloJetVariables, runPuppi=options.runPuppiJetVariables,
-    roiReplace = "ROIPF" in options.reco,
-    roiReplaceCalo = ("ROICalo" in options.reco and not "GlobalPF" in options.reco) or "noCalo" in options.reco,
+    # roiReplace = "ROIPF" in options.reco,
+    roiReplace = False,
+    # roiReplaceCalo = ("ROICalo" in options.reco and not "GlobalPF" in options.reco) or "noCalo" in options.reco,
+    roiReplaceCalo = False,
     isData = options.runOnData
 )
 
-# if "HLT_Run3TRKPixelOnly" in options.reco:
-#     process = customizeMinHitsAndPt(process, doForPat=True)
-
-
 # list of patterns to determine paths to keep
 keepPaths = [
-  # 'MC_*Jets*',
-  # 'MC_*MET*',
-  # 'MC_*AK8Calo*',
-  # 'MC_*DeepCSV*',
-  # 'MC_*DeepJet*',
-  # 'MC_*DeepCSV*ROI*',
-  # 'MC_*DeepJet*ROI*',
-  # 'MC_*Matching*',
-  # 'DST_Run3_PFScoutingPixelTracking_v*',
-  # 'HLT_PFJet*_v*',
-  # 'HLT_AK4PFJet*_v*',
-  # 'HLT_AK8PFJet*_v*',
-  # 'HLT_PFHT*_v*',
-  # 'HLT_PFMET*_PFMHT*_v*',
-  # 'HLT_*_*_v*',
-
-  # '*',
-
   'MC_*',
-  'HLT_*',
+  'HLT_*DeepCSV*',
+  'HLT_*DeepJet*',
   'Status_OnCPU',
   'Status_OnGPU',
   'HLTriggerFinalPath',
@@ -512,84 +432,6 @@ if hasattr(process, 'FastTimerService'):
 # remove MessageLogger
 if hasattr(process, 'MessageLogger'):
   del process.MessageLogger
-
-
-
-if update_jmeCalibs:
-    ## ES modules for PF-Hadron Calibrations
-    import os
-    # from CondCore.DBCommon.CondDBSetup_cfi import *
-    from CondCore.CondDB.CondDB_cfi import CondDB as _CondDB
-
-    process.pfhcESSource = cms.ESSource('PoolDBESSource',
-      _CondDB.clone(connect = 'sqlite_fip:JMETriggerAnalysis/NTuplizers/data/PFHC_Run3Winter20_HLT_v01.db'),
-      toGet = cms.VPSet(
-        cms.PSet(
-          record = cms.string('PFCalibrationRcd'),
-          tag = cms.string('PFCalibration_HLT_mcRun3_2021'),
-          label = cms.untracked.string('HLT'),
-        ),
-      ),
-    )
-
-    process.pfhcESPrefer = cms.ESPrefer('PoolDBESSource', 'pfhcESSource')
-    ## ES modules for HLT JECs
-    process.jescESSource = cms.ESSource('PoolDBESSource',
-      _CondDB.clone(connect = 'sqlite_fip:JMETriggerAnalysis/NTuplizers/data/JESC_Run3Winter20_V2_MC.db'),
-     toGet = cms.VPSet(
-        cms.PSet(
-          record = cms.string('JetCorrectionsRecord'),
-          tag = cms.string('JetCorrectorParametersCollection_Run3Winter20_V2_MC_AK4CaloHLT'),
-          label = cms.untracked.string('AK4CaloHLT'),
-        ),
-        cms.PSet(
-          record = cms.string('JetCorrectionsRecord'),
-          tag = cms.string('JetCorrectorParametersCollection_Run3Winter20_V2_MC_AK4PFClusterHLT'),
-          label = cms.untracked.string('AK4PFClusterHLT'),
-        ),
-        cms.PSet(
-          record = cms.string('JetCorrectionsRecord'),
-          tag = cms.string('JetCorrectorParametersCollection_Run3Winter20_V2_MC_AK4PFHLT'),
-          label = cms.untracked.string('AK4PFHLT'),
-        ),
-        cms.PSet(
-          record = cms.string('JetCorrectionsRecord'),
-          tag = cms.string('JetCorrectorParametersCollection_Run3Winter20_V2_MC_AK4PFHLT'),#!!
-          label = cms.untracked.string('AK4PFchsHLT'),
-        ),
-        cms.PSet(
-          record = cms.string('JetCorrectionsRecord'),
-          tag = cms.string('JetCorrectorParametersCollection_Run3Winter20_V2_MC_AK4PFPuppiHLT'),
-          label = cms.untracked.string('AK4PFPuppiHLT'),
-        ),
-        cms.PSet(
-          record = cms.string('JetCorrectionsRecord'),
-          tag = cms.string('JetCorrectorParametersCollection_Run3Winter20_V2_MC_AK8CaloHLT'),
-          label = cms.untracked.string('AK8CaloHLT'),
-        ),
-        cms.PSet(
-          record = cms.string('JetCorrectionsRecord'),
-          tag = cms.string('JetCorrectorParametersCollection_Run3Winter20_V2_MC_AK8PFClusterHLT'),
-          label = cms.untracked.string('AK8PFClusterHLT'),
-        ),
-        cms.PSet(
-          record = cms.string('JetCorrectionsRecord'),
-          tag = cms.string('JetCorrectorParametersCollection_Run3Winter20_V2_MC_AK8PFHLT'),
-          label = cms.untracked.string('AK8PFHLT'),
-        ),
-        cms.PSet(
-          record = cms.string('JetCorrectionsRecord'),
-          tag = cms.string('JetCorrectorParametersCollection_Run3Winter20_V2_MC_AK8PFHLT'),#!!
-          label = cms.untracked.string('AK8PFchsHLT'),
-        ),
-        cms.PSet(
-          record = cms.string('JetCorrectionsRecord'),
-          tag = cms.string('JetCorrectorParametersCollection_Run3Winter20_V2_MC_AK8PFPuppiHLT'),
-          label = cms.untracked.string('AK8PFPuppiHLT'),
-        ),
-      ),
-    )
-    process.jescESPrefer = cms.ESPrefer('PoolDBESSource', 'jescESSource')
 
 ## MessageLogger
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -865,7 +707,7 @@ if monitorTracks:
     process.trkMonitoringEndPath = cms.EndPath(process.trkMonitoringSeq)
     process.schedule.extend([process.trkMonitoringEndPath])
 
-monitorVertices = True
+monitorVertices = False
 if monitorVertices:
 
     from JMETriggerAnalysis.Common.VertexHistogrammer_cfi import VertexHistogrammer
