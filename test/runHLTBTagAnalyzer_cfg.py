@@ -331,11 +331,16 @@ def prescale_path(path,ps_service):
 if options.runOnData:
     from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_0_GRun_configDump_Data import cms, process
 else:
+    # from Phase2_HLT_configDump import cms, process
+    # from JMETriggerAnalysis.Common.configs.HLT_75e33_cfg import cms, process
     from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_2_GRun_configDump_MC import cms, process
 
 if options.reco == 'HLT_GRun' or options.reco == "HLT_GRun_oldJECs":
     # default GRun menu (Run 2 configurations) + new PFHCs and JECs
     # do nothing
+    process = process
+
+elif options.reco == "Phase2":
     process = process
 
 elif options.reco == "HLT_GRun_BatchNorm":
@@ -385,13 +390,13 @@ for el in list(els):
 ###
 
 from RecoBTag.PerformanceMeasurements.PATLikeConfig import customizePFPatLikeJets
-process = customizePFPatLikeJets(process, runPF=True, runCalo=options.runCaloJetVariables, runPuppi=options.runPuppiJetVariables,
-    # roiReplace = "ROIPF" in options.reco,
-    roiReplace = False,
-    # roiReplaceCalo = ("ROICalo" in options.reco and not "GlobalPF" in options.reco) or "noCalo" in options.reco,
-    roiReplaceCalo = False,
-    isData = options.runOnData
-)
+# process = customizePFPatLikeJets(process, runPF=True, runCalo=options.runCaloJetVariables, runPuppi=options.runPuppiJetVariables,
+    # # roiReplace = "ROIPF" in options.reco,
+    # roiReplace = False,
+    # # roiReplaceCalo = ("ROICalo" in options.reco and not "GlobalPF" in options.reco) or "noCalo" in options.reco,
+    # roiReplaceCalo = False,
+    # isData = options.runOnData
+# )
 
 # list of patterns to determine paths to keep
 keepPaths = [
