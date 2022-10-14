@@ -588,6 +588,7 @@ process.btagana.runTagVariables     = options.runTagVariables  ## True if you wa
 process.btagana.runCSVTagVariables  = options.runCSVTagVariables   ## True if you want to run CSV TaggingVariables
 process.btagana.runCSVTagTrackVariables  = options.runCSVTagTrackVariables   ## True if you want to run CSV Tagging Track Variables
 process.btagana.runDeepFlavourTagVariables = options.runDeepFlavourTagVariables
+process.btagana.tofPIDColl = cms.InputTag("tofPID", "t0", "RECO") 
 process.btagana.primaryVertexColl     = cms.InputTag(pvSource)
 process.btagana.Jets                  = cms.InputTag(patJetSource)
 process.btagana.CaloJets              = cms.InputTag(patCaloJetSource)
