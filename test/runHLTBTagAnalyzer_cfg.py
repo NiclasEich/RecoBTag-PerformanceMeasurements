@@ -333,7 +333,8 @@ if options.runOnData:
 else:
     # from Phase2_HLT_configDump import cms, process
     # from JMETriggerAnalysis.Common.configs.HLT_75e33_cfg import cms, process
-    from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_2_GRun_configDump_MC import cms, process
+    from Phase2_HLT_configDump import cms, process
+    # from RecoBTag.PerformanceMeasurements.Configs.HLT_dev_CMSSW_12_3_2_GRun_configDump_MC import cms, process
 
 if options.reco == 'HLT_GRun' or options.reco == "HLT_GRun_oldJECs":
     # default GRun menu (Run 2 configurations) + new PFHCs and JECs
