@@ -401,7 +401,7 @@ from RecoBTag.PerformanceMeasurements.PATLikeConfig import customizePFPatLikeJet
 
 # list of patterns to determine paths to keep
 keepPaths = [
-  'MC_*',
+#   'MC_*',
 #   'HLT_*DeepCSV*',
 #   'HLT_*DeepJet*',
 #   'Status_OnCPU',
