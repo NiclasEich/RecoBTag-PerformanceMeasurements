@@ -403,12 +403,12 @@ from RecoBTag.PerformanceMeasurements.PATLikeConfig import customizePFPatLikeJet
 keepPaths = [
   'MC_*',
 #   'HLT_*DeepCSV*',
-  'HLT_*DeepJet*',
-  'Status_OnCPU',
-  'Status_OnGPU',
-  'HLTriggerFinalPath',
-  'HLTriggerFirstPath',
-  'HLTAnalyzerEndpath',
+#   'HLT_*DeepJet*',
+#   'Status_OnCPU',
+#   'Status_OnGPU',
+#   'HLTriggerFinalPath',
+#   'HLTriggerFirstPath',
+#   'HLTAnalyzerEndpath',
 ]
 
 # list of paths that are kept
