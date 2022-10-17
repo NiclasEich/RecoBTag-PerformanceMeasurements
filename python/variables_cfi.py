@@ -6705,6 +6705,8 @@ variableList = [
         store=cms.bool(False),
         mconly=cms.bool(False),
         description=cms.string("TOF t0"),
+        requires=cms.vstring("nJet"),
+        runOptions=cms.vstring(),
     ),
 ]
 
