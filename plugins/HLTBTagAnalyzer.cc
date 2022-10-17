@@ -142,7 +142,7 @@ private:
 
   edm::EDGetTokenT<reco::VertexCollection> primaryVertexColl_;
   edm::EDGetTokenT<reco::TrackCollection> tracksColl_;
-  edm::EDGetTokenT<reco::ValueMap<float>> tofPIDColl_;
+  edm::EDGetTokenT<ValueMap<float>> tofPIDColl_;
 
   std::string SVComputer_;
 
@@ -358,7 +358,7 @@ HLTBTagAnalyzerT<IPTI, VTX>::HLTBTagAnalyzerT(const edm::ParameterSet &iConfig) 
     clusterTPMapToken_ = consumes<ClusterTPAssociation>(iConfig.getParameter<edm::InputTag>("clusterTPMap"));
 
   // Modules
-  tofPIDColl_ = consumes<reco::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("tofPIDColl"));
+  tofPIDColl_ = consumes<ValueMap<float>>(iConfig.getParameter<edm::InputTag>("tofPIDColl"));
 
   primaryVertexColl_ = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("primaryVertexColl"));
   if (produceAllTrackTree_ && runEventInfo_)
