@@ -1091,7 +1091,7 @@ groupSet = cms.PSet(
                 "TagVar_flightDistance2dSig",
                 "TagVar_flightDistance3dVal",
                 "TagVar_flightDistance3dSig",
-                "generalTracksTOFPIDProducer",
+                "generalTracksTOFPIDProducerFoooooooooo",
             ),
         ),
         cms.PSet(
