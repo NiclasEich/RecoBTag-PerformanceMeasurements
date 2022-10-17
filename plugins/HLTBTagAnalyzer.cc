@@ -1826,6 +1826,7 @@ void HLTBTagAnalyzerT<IPTI, VTX>::processJets(const edm::Handle<PatJetCollection
       JetInfo[iJetColl].Track_dz[JetInfo[iJetColl].nTrack] = ptrack.dz(pv->position());
       JetInfo[iJetColl].Track_dxyError[JetInfo[iJetColl].nTrack] = ptrack.dxyError();
       JetInfo[iJetColl].Track_dzError[JetInfo[iJetColl].nTrack] = ptrack.dzError();
+      JetInfo[iJetColl].Jet_time[JetInfo[iJetColl].nTrack] = 0;
       {
         TransverseImpactPointExtrapolator extrapolator(transientTrack.field());
         TrajectoryStateOnSurface closestOnTransversePlaneState = extrapolator.extrapolate(transientTrack.impactPointState(), RecoVertex::convertPos(pv->position()));
