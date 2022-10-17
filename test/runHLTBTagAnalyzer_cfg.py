@@ -994,9 +994,6 @@ if options.runTiming:
 process.analysisNTupleEndPath = cms.EndPath(process.btagana)
 process.schedule.extend([process.analysisNTupleEndPath])
 
-from IPython import embed
-
-embed()
 
 # if options.runTiming:
 #     process.p *= process.FastTimerOutput

@@ -314,6 +314,8 @@ HLTBTagAnalyzerT<IPTI, VTX>::HLTBTagAnalyzerT(const edm::ParameterSet &iConfig) 
 
   std::vector<edm::ParameterSet> groupSet = iConfig.getParameter<std::vector<edm::ParameterSet>>("groups");
   std::vector<edm::ParameterSet> variableSet = iConfig.getParameter<std::vector<edm::ParameterSet>>("variables");
+  std::cout << "\nDebugging!!!!!!" << std::endl;
+  std::cout << variableSet << std::endl;
 
   bool runOnData = iConfig.getParameter<bool>("runOnData");
   VariableParser variableParser(!runOnData);
