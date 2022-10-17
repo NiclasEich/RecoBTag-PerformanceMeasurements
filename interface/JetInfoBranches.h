@@ -718,7 +718,7 @@ public:
       name += ".";
     if (variableParser.isToBeStored(name + "nJet"))
       tree->Branch((name + "nJet").c_str(), &nJet, (name + "nJet/I").c_str());
-    if (variableParser.is.isToBeStored(name + "Jet_time"))
+    if (variableParser.isToBeStored(name + "Jet_time"))
       tree->Branch((name + "Jet_time").c_str(), Jet_time, (name + "Jet_time[" + name + "nJet]/F").c_str());
     if (variableParser.isToBeStored(name + "Jet_pt"))
       tree->Branch((name + "Jet_pt").c_str(), Jet_pt, (name + "Jet_pt[" + name + "nJet]/F").c_str());
