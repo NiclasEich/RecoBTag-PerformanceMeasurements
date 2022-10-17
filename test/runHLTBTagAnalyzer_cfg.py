@@ -1004,6 +1004,11 @@ process.schedule.extend([process.analysisNTupleEndPath])
 if options.dumpPython is not None:
     open(options.dumpPython, "w").write(process.dumpPython())
 
+# fmt: off
+print(f"Entering debug in: {__file__}")
+from IPython import embed;embed()
+# fmt: on
+
 print("")
 print("option: output =", options.outFilename)
 print("option: reco =", options.reco)
