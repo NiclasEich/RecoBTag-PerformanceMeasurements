@@ -15,7 +15,7 @@ cmsenv
 git-cms-init
 
 git cms-addpkg RecoBTag/Combined
-it clone https://github.com/SWuchterl/JMETriggerAnalysis.git -o SWuchterl -b run3
+git clone https://github.com/SWuchterl/JMETriggerAnalysis.git -o SWuchterl -b run3
 
 git clone -b Run3_12_4_10 --recursive git@github.com:NiclasEich/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
 
