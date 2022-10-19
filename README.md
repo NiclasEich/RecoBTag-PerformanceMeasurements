@@ -1,5 +1,8 @@
 # RecoBTag-PerformanceMeasurements
 
+*The code below is not the one used currently and needs to be updated in the README!!!*
+
+
 ## Basics & software setup
 
 ```bash

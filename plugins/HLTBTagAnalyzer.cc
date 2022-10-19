@@ -142,7 +142,7 @@ private:
 
   edm::EDGetTokenT<reco::VertexCollection> primaryVertexColl_;
   edm::EDGetTokenT<reco::TrackCollection> tracksColl_;
-  edm::EDGetTokenT<reco::ValueMap<float>> tofPIDColl_;
+  edm::EDGetTokenT<edm::ValueMap<float>> tofPIDColl_;
 
   std::string SVComputer_;
 
@@ -356,7 +356,7 @@ HLTBTagAnalyzerT<IPTI, VTX>::HLTBTagAnalyzerT(const edm::ParameterSet &iConfig) 
     clusterTPMapToken_ = consumes<ClusterTPAssociation>(iConfig.getParameter<edm::InputTag>("clusterTPMap"));
 
   // Modules
-  tofPIDColl_ = consumes<reco::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("tofPIDColl"));
+  tofPIDColl_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("tofPIDColl"));
 
   primaryVertexColl_ = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("primaryVertexColl"));
   if (produceAllTrackTree_ && runEventInfo_)
@@ -1826,6 +1826,7 @@ void HLTBTagAnalyzerT<IPTI, VTX>::processJets(const edm::Handle<PatJetCollection
       JetInfo[iJetColl].Track_dz[JetInfo[iJetColl].nTrack] = ptrack.dz(pv->position());
       JetInfo[iJetColl].Track_dxyError[JetInfo[iJetColl].nTrack] = ptrack.dxyError();
       JetInfo[iJetColl].Track_dzError[JetInfo[iJetColl].nTrack] = ptrack.dzError();
+      JetInfo[iJetColl].Jet_time[JetInfo[iJetColl].nTrack] = 0;
       {
         TransverseImpactPointExtrapolator extrapolator(transientTrack.field());
         TrajectoryStateOnSurface closestOnTransversePlaneState = extrapolator.extrapolate(transientTrack.impactPointState(), RecoVertex::convertPos(pv->position()));
