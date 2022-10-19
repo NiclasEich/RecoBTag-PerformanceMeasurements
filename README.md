@@ -15,30 +15,27 @@ cmsenv
 git-cms-init
 
 git cms-addpkg RecoBTag/Combined
-git cms-merge-topic theochatzis:simplifiedMenuMTD_dev2
+it clone https://github.com/SWuchterl/JMETriggerAnalysis.git -o SWuchterl -b run3
 
-git clone -b Phase2_12_4_10 --recursive git@github.com:NiclasEich/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
+git clone -b Run3_12_4_10 --recursive git@github.com:NiclasEich/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
 
 scram b -j12
 
 ```
 
 ### Getting the Phase 2 menu:
-https://twiki.cern.ch/twiki/bin/viewauth/CMS/HighLevelTriggerPhase2SimplifiedMenu
+https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideGlobalHLT#Trigger_development_for_Run_3
 getting the menu:
-```
-cmsrel CMSSW_12_4_0
-cd CMSSW_12_4_0/src
-cmsenv
-git cms-init
 
-cmsDriver.py Phase2 -s HLT:75e33 --processName=HLTX \
---conditions auto:phase2_realistic_T21 \
---geometry Extended2026D88 \
---era Phase2C17I13M9 \
---eventcontent FEVTDEBUGHLT \
---filein=/store/relval/CMSSW_12_4_0/RelValTTbar_14TeV/GEN-SIM-RECO/124X_mcRun4_realistic_v6_2026D88noPU-v1/10000/7715f6d4-125f-44c0-9676-95c79ddf9598.root \
--n 100 --nThreads 1 --no_exec
+```
+hltGetConfiguration /dev/CMSSW_12_4_10/GRun \
+   --globaltag auto:phase1_2022_realistic \
+   --mc \
+   --unprescale \
+   --cff > "${CMSSW_BASE}"/src/HLTrigger/Configuration/python/HLT_User_cff.py
+scram b -j 4
+
+
 ```
 
 ### Running HLTBTagAnalyzer
