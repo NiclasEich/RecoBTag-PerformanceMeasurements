@@ -40,6 +40,16 @@ cmsDriver.py Phase2 -s HLT:75e33 --processName=HLTX \
 -n 100 --nThreads 1 --no_exec
 ```
 
+### Running HLTBTagAnalyzer
+
+```
+# this should create the menu
+python3 runHLTBTagAnalyzer_cfg.py dumpPython=test_Phase2_with_timing_cfg.py defaults=Run3 runOnData=False reco=Phase2 runPuppiJetVariables=True runCaloJetVariables=False globalTag=123X_mcRun4_realistic_v11 inputFiles=/store/relval/CMSSW_12_4_0/RelValTTbar_14TeV/GEN-SIM-RECO/124X_mcRun4_realistic_v6_2026D88noPU-v1/10000/7715f6d4-125f-44c0-9676-95c79ddf9598.root outFilename=test_timing_tree.root
+
+# this runs the exmaple
+cmsRun test_Phase2_with_timing_cfg.py
+```
+
 # The REST BELOW IS POTENTIALLY OUTDATED AND OLD!
 
 
