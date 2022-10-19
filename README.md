@@ -4,28 +4,44 @@
 
 ```bash
 # setting up the latest release
-cmsrel CMSSW_12_3_2_patch1
-cd CMSSW_12_3_2_patch1/src
-cmsenv
 
-export CMSSW_GIT_REFERENCE=/cvmfs/cms.cern.ch/cmssw.git.daily
-git cms-init
+#!/bin/bash
+cmsrel CMSSW_12_4_10
+
+cd CMSSW_12_4_10/src
+
+cmsenv
+git-cms-init
 
 git cms-addpkg RecoBTag/Combined
+git cms-merge-topic theochatzis:simplifiedMenuMTD_dev2
 
-# clone our version of JMET tools
-git clone https://github.com/SWuchterl/JMETriggerAnalysis.git -o SWuchterl -b run3
-
-# clone this repository
-git clone -b Run3_ForJIRA_12_3_2 --recursive https://github.com/SWuchterl/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
-
-cd $CMSSW_BASE/src/
-
-wget https://raw.githubusercontent.com/silviodonato/cms-tsg/forceNewJEC/forceNewJEC.py RecoBTag/PerformanceMeasurements/python/
+git clone -b Phase2_12_4_10 --recursive git@github.com:NiclasEich/RecoBTag-PerformanceMeasurements.git RecoBTag/PerformanceMeasurements
 
 scram b -j12
 
 ```
+
+### Getting the Phase 2 menu:
+https://twiki.cern.ch/twiki/bin/viewauth/CMS/HighLevelTriggerPhase2SimplifiedMenu
+getting the menu:
+```
+cmsrel CMSSW_12_4_0
+cd CMSSW_12_4_0/src
+cmsenv
+git cms-init
+
+cmsDriver.py Phase2 -s HLT:75e33 --processName=HLTX \
+--conditions auto:phase2_realistic_T21 \
+--geometry Extended2026D88 \
+--era Phase2C17I13M9 \
+--eventcontent FEVTDEBUGHLT \
+--filein=/store/relval/CMSSW_12_4_0/RelValTTbar_14TeV/GEN-SIM-RECO/124X_mcRun4_realistic_v6_2026D88noPU-v1/10000/7715f6d4-125f-44c0-9676-95c79ddf9598.root \
+-n 100 --nThreads 1 --no_exec
+```
+
+# The REST BELOW IS POTENTIALLY OUTDATED AND OLD!
+
 
 ## Instructions to run nTuplizers
 ### Offline (BTagAnalyzer)
