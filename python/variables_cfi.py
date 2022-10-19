@@ -6708,14 +6708,6 @@ variableList = [
         requires=cms.vstring("nJet"),
         runOptions=cms.vstring(),
     ),
-    cms.PSet(
-        variable=cms.string("Jet_time"),
-        store=cms.bool(False),
-        mconly=cms.bool(False),
-        description=cms.string("time"),
-        requires=cms.vstring("nJet"),
-        runOptions=cms.vstring(),
-    ),
 ]
 
 variableSet = cms.PSet(variables=cms.VPSet(variableList))

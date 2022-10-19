@@ -896,7 +896,6 @@ groupSet = cms.PSet(
                 "Track_category",
                 "Track_TPAssociationQuality",
                 "Track_idxMatchedTP",
-                "Jet_time",
             ),
         ),
         cms.PSet(
@@ -1092,7 +1091,6 @@ groupSet = cms.PSet(
                 "TagVar_flightDistance2dSig",
                 "TagVar_flightDistance3dVal",
                 "TagVar_flightDistance3dSig",
-                "generalTracksTOFPIDProducer",
             ),
         ),
         cms.PSet(
